@@ -30,6 +30,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build ${{ GITHUB_WORKSPACE }}/src/back/ICT-151/ICT-151.sln --no-restore
+      run: dotnet build ${{ env.GITHUB_WORKSPACE }}/src/back/ICT-151/ICT-151.sln --no-restore
     - name: Test
-      run: dotnet test ${{ GITHUB_WORKSPACE }}/src/back/ICT-151/ICT-151.sln --no-build --verbosity normal
+      run: dotnet test ${{ env.GITHUB_WORKSPACE }}/src/back/ICT-151/ICT-151.sln --no-build --verbosity normal
