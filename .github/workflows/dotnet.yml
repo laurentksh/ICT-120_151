@@ -3,9 +3,9 @@ name: .NET
 on:
   push:
     branches: [ master ]
-    paths: [ "src" ]
+    paths: [ "src", ".github/workflows/" ]
   pull_request:
-    paths: [ "src" ]
+    paths: [ "src", ".github/workflows/" ]
     branches:
       - "*"
 
