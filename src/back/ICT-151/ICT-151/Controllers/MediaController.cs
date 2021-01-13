@@ -9,24 +9,19 @@ namespace ICT_151.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FeedController : ControllerBase
+    public class MediaController : ControllerBase
     {
-        public FeedController()
-        {
-
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetMainFeed()
+        [HttpGet("image/{id}")]
+        public async Task<IActionResult> GetImage([FromRoute] Guid id)
         {
 
             return Ok();
         }
 
-        [HttpGet("{username}")]
-        public async Task<IActionResult> GetUserFeed([FromRoute] string username)
+        [HttpGet("video/{id}")]
+        public async Task<IActionResult> GetVideo([FromRoute] Guid id)
         {
-            
+
             return Ok();
         }
     }

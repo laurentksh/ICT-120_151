@@ -16,7 +16,11 @@ namespace ICT_151.Repositories
 
         Task<UserSession> ValidateUserSession(string token);
 
-        Task<User> CreateNew(CreateUserDto dto);
+        Task<UserSummaryViewModel> GetUser(Guid userId);
+
+        Task<UserSummaryViewModel> GetUser(string username);
+
+        Task<UserSummaryViewModel> CreateNew(CreateUserDto dto);
 
         Task Delete(Guid userId);
 
@@ -57,7 +61,7 @@ namespace ICT_151.Repositories
                 Token = Utilities.StringUtilities.Random(64, Utilities.StringUtilities.AllowedChars.All),
                 RemoteHost = remoteHost,
                 CreationDate = DateTime.UtcNow,
-                ExpiracyDate = dto.ExtendSession ? DateTime.UtcNow.AddDays(7) : DateTime.UtcNow.AddDays(30),
+                ExpiracyDate = dto.ExtendSession ? DateTime.UtcNow.Add(UserSession.DefaultTokenValidity) : DateTime.UtcNow.Add(UserSession.ExtendedTokenValidity),
                 UserId = user.Id
             };
 
@@ -83,7 +87,17 @@ namespace ICT_151.Repositories
             return session;
         }
 
-        public Task<User> CreateNew(CreateUserDto dto)
+        public async Task<UserSummaryViewModel> GetUser(Guid userId)
+        {
+            return UserSummaryViewModel.FromUser(DbContext.Users.Single(x => x.Id == userId));
+        }
+
+        public async Task<UserSummaryViewModel> GetUser(string username)
+        {
+            return UserSummaryViewModel.FromUser(DbContext.Users.Single(x => x.Username == username));
+        }
+
+        public Task<UserSummaryViewModel> CreateNew(CreateUserDto dto)
         {
             throw new NotImplementedException();
         }

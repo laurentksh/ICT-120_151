@@ -25,14 +25,21 @@ namespace ICT_151.Controllers
             ExceptionHandlerService = exceptionHandlerService;
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("{identifier}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserSummaryViewModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetUser([FromRoute] string username)
+        public async Task<IActionResult> GetUser([FromRoute] string identifier)
         {
             try
             {
+                UserSummaryViewModel result = null;
+
+                if (Guid.TryParse(identifier, out Guid id)) {
+                    result = await UserService.GetUser(id);
+                } else {
+                    result = await UserService.GetUser(identifier);
+                }
 
                 return Ok();
             } catch (Exception ex)
@@ -43,7 +50,7 @@ namespace ICT_151.Controllers
 
         [HttpPost("auth")]
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Models.UserSessionViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserSessionViewModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Authenticate([FromBody] AuthUserDto authBody)
@@ -66,7 +73,7 @@ namespace ICT_151.Controllers
             try {
                 var result = await UserService.CreateNew(dto);
 
-                return Created($"/api/User/{result.Username}", null);
+                return Created($"/api/User/{result.Username}", result);
             } catch (Exception ex) {
                 return ExceptionHandlerService.Handle(ex);
             }
@@ -76,6 +83,7 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Delete(Guid userId)
         {
             try {

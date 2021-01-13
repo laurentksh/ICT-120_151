@@ -13,9 +13,18 @@ namespace ICT_151.Services
     {
         Task<UserSessionViewModel> AuthenticateUser(AuthUserDto dto, IPAddress remoteHost);
 
+        /// <summary>
+        /// Internal use only
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         Task<UserSession> ValidateUserSession(string token);
 
-        Task<User> CreateNew(CreateUserDto dto);
+        Task<UserSummaryViewModel> GetUser(Guid userId);
+
+        Task<UserSummaryViewModel> GetUser(string username);
+
+        Task<UserSummaryViewModel> CreateNew(CreateUserDto dto);
 
         Task Delete(Guid userId);
 
@@ -46,7 +55,7 @@ namespace ICT_151.Services
             if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
 
-            dto.Password = Utilities.StringUtilities.ComputeSha256Hash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
+            dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
 
             var session = await UserRepository.AuthenticateUser(dto, remoteHost);
 
@@ -77,35 +86,45 @@ namespace ICT_151.Services
                     Id = Guid.NewGuid(),
                     Username = "MOCK_USER123",
                     Email = "abc@123.com",
-                    PasswordHash = "testabc"
+                    PasswordHash = "testabc",
                 }
             } : null; //Debug code
             //return await UserRepository.ValidateUserSession(token);
         }
 
-        public Task<User> CreateNew(CreateUserDto dto)
+        public async Task<UserSummaryViewModel> GetUser(Guid userId)
         {
-            //throw new NotImplementedException();
-            return Task.FromResult(new User()
+            return await UserRepository.GetUser(userId);
+        }
+
+        public async Task<UserSummaryViewModel> GetUser(string username)
+        {
+            return await UserRepository.GetUser(username);
+        }
+
+        public async Task<UserSummaryViewModel> CreateNew(CreateUserDto dto)
+        {
+            //return UserRepository.CreateNew(dto);
+            return new UserSummaryViewModel()
             {
                 Id = Guid.NewGuid(),
                 Username = "MOCK_USER1234",
-                PasswordHash = Utilities.StringUtilities.ComputeSha256Hash("abc123"),
-                AccountType = AccountType.User
-            });
+                //PasswordHash = Utilities.StringUtilities.ComputeHash("abc123"),
+                //AccountType = AccountType.User
+            };
         }
 
-        public Task Delete(Guid userId)
+        public async Task Delete(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task Follow(Guid userId, Guid toFollowUserId)
+        public async Task Follow(Guid userId, Guid toFollowUserId)
         {
             throw new NotImplementedException();
         }
 
-        public Task UnFollow(Guid userId, Guid toUnFollowUserId)
+        public async Task UnFollow(Guid userId, Guid toUnFollowUserId)
         {
             throw new NotImplementedException();
         }

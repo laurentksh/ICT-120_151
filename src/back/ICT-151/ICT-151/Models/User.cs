@@ -31,20 +31,40 @@ namespace ICT_151.Models
         [Required]
         public AccountType AccountType { get; set; } = AccountType.User;
 
+        public AccountDeactivationType AccountDeactivationType { get; set; } = AccountDeactivationType.None;
+
         [Required]
         public DateTime CreationDate { get; set; }
     }
 
     public enum AccountType
     {
+        /// <summary>
+        /// Base account type
+        /// </summary>
         User = 1,
-        Banned = -1,
-        Deleted = -2,
+
+        /// <summary>
+        /// If selected, AccountDeactivationType must have a value.
+        /// </summary>
+        Disabled = -1,
         Administrator = 9
+    }
+
+    public enum AccountDeactivationType
+    {
+        None = 0,
+        Unspecified = -1,
+        Banned = 1,
+        Disabled = 2,
+        Deleted = 3,
     }
 
     public class UserSession
     {
+        public static readonly TimeSpan DefaultTokenValidity = TimeSpan.FromHours(4);
+        public static readonly TimeSpan ExtendedTokenValidity = TimeSpan.FromDays(30);
+
         public Guid Id { get; set; }
 
         public string Token { get; set; }
@@ -59,19 +79,5 @@ namespace ICT_151.Models
         public Guid UserId { get; set; }
 
         public User User { get; set; }
-    }
-
-    public class UserSessionViewModel
-    {
-        public Guid Id { get; set; }
-
-        public string Token { get; set; }
-
-        public DateTime CreationDate { get; set; }
-
-        public DateTime ExpiracyDate { get; set; }
-
-
-        public Guid UserId { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace ICT_151.Models.Dto
         public string Password { get; set; }
 
         /// <summary>
-        /// false: Default token validity  (7 days)
+        /// false: Default token validity  (4 hours)
         /// true : Extended token validity (30 days)
         /// </summary>
         public bool ExtendSession { get; set; } = false;
@@ -35,8 +35,6 @@ namespace ICT_151.Models.Dto
 
         [Required, BirthdayValidator(MinimumAgeRequired = 13)]
         public DateTime BirthDay { get; set; }
-
-
     }
 
     public class UserSummaryViewModel
@@ -46,5 +44,27 @@ namespace ICT_151.Models.Dto
         public string Username { get; set; }
 
         public DateTime CreationDate { get; set; }
+
+
+        public static UserSummaryViewModel FromUser(User user) => new UserSummaryViewModel
+        {
+            Id = user.Id,
+            Username = user.Username,
+            CreationDate = user.CreationDate
+        };
+    }
+
+    public class UserSessionViewModel
+    {
+        public Guid Id { get; set; }
+
+        public string Token { get; set; }
+
+        public DateTime CreationDate { get; set; }
+
+        public DateTime ExpiracyDate { get; set; }
+
+
+        public Guid UserId { get; set; }
     }
 }

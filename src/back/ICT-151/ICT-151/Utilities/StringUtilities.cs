@@ -53,7 +53,7 @@ namespace ICT_151.Utilities
         /// <param name="rawData">String to hash</param>
         /// <param name="hashAlgorithm">Hash algorithm to use (default: SHA256)</param>
         /// <returns>Computed hash</returns>
-        public static string ComputeSha256Hash(string rawData, HashAlgorithmName? hashAlgorithm = null)
+        public static string ComputeHash(string rawData, HashAlgorithmName? hashAlgorithm = null)
         {
             hashAlgorithm = hashAlgorithm.HasValue ? hashAlgorithm : HashAlgorithmName.SHA256;
 

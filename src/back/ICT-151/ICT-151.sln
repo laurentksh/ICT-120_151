@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ICT-151", "ICT-151\ICT-151.csproj", "{6A11953B-E44C-4779-9966-84F69610E34B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICT-151-Tests", "ICT-151-Tests\ICT-151-Tests.csproj", "{2970475A-AE5F-4D25-B38F-699B0838BFF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ICT-151-Tests", "ICT-151-Tests\ICT-151-Tests.csproj", "{2970475A-AE5F-4D25-B38F-699B0838BFF4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F04A8A85-02F2-4CB4-98C4-21AF283FA5E6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

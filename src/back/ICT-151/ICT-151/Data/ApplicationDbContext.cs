@@ -12,6 +12,15 @@ namespace ICT_151.Data
         public DbSet<User> Users { get; set; }
         public DbSet<UserSession> UserSessions { get; set; }
 
+
+        public DbSet<Submission> Submissions { get; set; }
+
+        public DbSet<Reply> Replies { get; set; }
+
+        public DbSet<Like> Likes { get; set; }
+
+        public DbSet<Retweet> Retweets { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
