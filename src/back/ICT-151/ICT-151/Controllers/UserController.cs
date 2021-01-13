@@ -25,6 +25,22 @@ namespace ICT_151.Controllers
             ExceptionHandlerService = exceptionHandlerService;
         }
 
+        [HttpGet("{username}")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserSummaryViewModel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUser([FromRoute] string username)
+        {
+            try
+            {
+
+                return Ok();
+            } catch (Exception ex)
+            {
+                return ExceptionHandlerService.Handle(ex);
+            }
+        }
+
         [HttpPost("auth")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Models.UserSessionViewModel))]

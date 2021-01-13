@@ -30,6 +30,9 @@ namespace ICT_151.Models
 
         [Required]
         public AccountType AccountType { get; set; } = AccountType.User;
+
+        [Required]
+        public DateTime CreationDate { get; set; }
     }
 
     public enum AccountType
