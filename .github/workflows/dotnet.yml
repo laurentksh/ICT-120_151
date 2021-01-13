@@ -11,7 +11,10 @@ on:
 
 jobs:
   build:
-
+    name: .NET Back-End CI
+    defaults:
+      run:
+        working-directory: ./src/back/ICT-151/
     runs-on: ubuntu-latest
 
     steps:
