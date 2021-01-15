@@ -83,21 +83,24 @@ namespace ICT_151.Services
             if (token is null)
                 throw new ArgumentNullException(nameof(token));
 
-            return token == "abc123" ? new UserSession() //Debug code
-            {
-                Id = Guid.NewGuid(),
-                Token = Utilities.StringUtilities.Random(64, Utilities.StringUtilities.AllowedChars.All),
-                CreationDate = DateTime.UtcNow.AddDays(-5),
-                ExpiracyDate = DateTime.UtcNow.AddDays(5),
-                UserId = Guid.NewGuid(),
-                User = new User()
+            if (token.ToLower() == "testtoken")
+                return new UserSession() //Debug code
                 {
                     Id = Guid.NewGuid(),
-                    Username = "MOCK_USER123",
-                    Email = "abc@123.com",
-                    PasswordHash = "testabc",
-                }
-            } : await UserRepository.ValidateUserSession(token);
+                    Token = Utilities.StringUtilities.Random(64, Utilities.StringUtilities.AllowedChars.All),
+                    CreationDate = DateTime.UtcNow.AddDays(-5),
+                    ExpiracyDate = DateTime.UtcNow.AddDays(5),
+                    UserId = Guid.NewGuid(),
+                    User = new User()
+                    {
+                        Id = Guid.NewGuid(),
+                        Username = "MOCK_USER123",
+                        Email = "abc@123.com",
+                        PasswordHash = "testabc",
+                    }
+                };
+
+            return await UserRepository.ValidateUserSession(token);
         }
 
         public async Task<User> GetFullUser(Guid userId)

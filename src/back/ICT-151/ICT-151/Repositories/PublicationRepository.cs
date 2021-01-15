@@ -48,6 +48,7 @@ namespace ICT_151.Repositories
         public async Task<PublicationViewModel> GetPublication(Guid id, Guid? requestUserId)
         {
             var publication = DbContext.Publications
+                .Include(x => x.User)
                 .Include(x => x.Replies)
                 .Include(x => x.Reposts)
                 .Include(x => x.Likes)
@@ -60,6 +61,7 @@ namespace ICT_151.Repositories
         public async Task<IEnumerable<PublicationViewModel>> GetReplies(Guid id, Guid? requestUserId)
         {
             return DbContext.Publications
+                .OrderBy(x => x.CreationDate)
                 .Include(x => x.User)
                 .Include(x => x.Replies)
                 .Include(x => x.Reposts)
@@ -71,6 +73,7 @@ namespace ICT_151.Repositories
         public async Task<IEnumerable<RepostViewModel>> GetReposts(Guid publicationId)
         {
             return DbContext.Reposts
+                .OrderBy(x => x.CreationDate)
                 .Include(x => x.User)
                 .Where(x => x.PublicationId == publicationId)
                 .Select(x => RepostViewModel.FromRepost(x));

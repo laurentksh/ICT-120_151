@@ -63,6 +63,16 @@ namespace ICT_151
                 });
             });
 
+            services.AddCors(x =>
+            {
+                x.AddDefaultPolicy(y =>
+                {
+                    y.AllowAnyOrigin();
+                    y.AllowAnyHeader();
+                    y.AllowAnyMethod();
+                });
+            });
+
             services.AddDbContext<ApplicationDbContext>(x => x.UseSqlite("DataSource=AppDb.db"), ServiceLifetime.Scoped);
 
             services
@@ -98,6 +108,7 @@ namespace ICT_151
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
+                app.UseCors();
             }
 
             app.UseHttpsRedirection();

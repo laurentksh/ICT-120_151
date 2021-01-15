@@ -79,7 +79,10 @@ namespace ICT_151.Services
         {
             if (!await UserService.Exists(userId)) //Should always exist but whatever.
                 throw new UserNotFoundException();
-            
+
+            if (publication.ReplyPublicationId.HasValue && !await PublicationRepository.Exists(publication.ReplyPublicationId.Value))
+                throw new DataNotFoundException($"Target publication {publication.ReplyPublicationId} does not exist.");
+
             return await PublicationRepository.CreateNew(userId, publication);
         }
 
