@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using ICT_151.Models;
@@ -10,20 +11,32 @@ namespace ICT_151.Data
     public class ApplicationDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+
         public DbSet<UserSession> UserSessions { get; set; }
 
 
-        public DbSet<Submission> Submissions { get; set; }
-
-        public DbSet<Reply> Replies { get; set; }
-
+        public DbSet<Publication> Publications { get; set; }
+        
         public DbSet<Like> Likes { get; set; }
+        
+        /// <summary>A.k.a Retweets</summary>
+        public DbSet<Repost> Reposts { get; set; }
 
-        public DbSet<Retweet> Retweets { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            /*modelBuilder
+                .Ignore<Publication>()
+                .Ignore<Like>()
+                .Ignore<Repost>()
+                .Ignore<UserSession>()
+                .Ignore<User>();*/
+        }
+
     }
 }

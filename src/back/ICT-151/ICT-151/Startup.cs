@@ -78,9 +78,17 @@ namespace ICT_151
 
             services.AddAuthorization();
 
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            //Custom services
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
+
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserService, UserService>();
+
+            services.AddTransient<IFeedRepository, FeedRepository>();
+            services.AddTransient<IFeedService, FeedService>();
+
+            services.AddTransient<IPublicationRepository, PublicationRepository>();
+            services.AddTransient<IPublicationService, PublicationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

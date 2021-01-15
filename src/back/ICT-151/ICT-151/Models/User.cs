@@ -16,7 +16,7 @@ namespace ICT_151.Models
         /// <summary>
         /// Username, can only contain "a-zA-Z0-9_-".
         /// </summary>
-        [Required, StringLength(32, MinimumLength = 2), RegularExpression("[a-zA-Z0-9-_]*\\w", MatchTimeoutInMilliseconds = 1000)]
+        [Required, StringLength(24, MinimumLength = 2), RegularExpression("[a-zA-Z0-9-_]*\\w", MatchTimeoutInMilliseconds = 1000)]
         public string Username { get; set; }
 
         [Required, EmailAddress]
@@ -35,6 +35,11 @@ namespace ICT_151.Models
 
         [Required]
         public DateTime CreationDate { get; set; }
+
+        public string ProfilePictureUrl { get; set; } = "/api/Media/image/default_pp";
+
+
+        public List<UserSession> UserSessions { get; set; }
     }
 
     public enum AccountType
@@ -48,6 +53,7 @@ namespace ICT_151.Models
         /// If selected, AccountDeactivationType must have a value.
         /// </summary>
         Disabled = -1,
+
         Administrator = 9
     }
 
@@ -67,17 +73,22 @@ namespace ICT_151.Models
 
         public Guid Id { get; set; }
 
+        [Required]
         public string Token { get; set; }
 
         public IPAddress RemoteHost { get; set; }
 
+        [Required]
         public DateTime CreationDate { get; set; }
 
+        [Required]
         public DateTime ExpiracyDate { get; set; }
 
 
+        [Required]
         public Guid UserId { get; set; }
 
+        [ForeignKey(nameof(UserId))]
         public User User { get; set; }
     }
 }

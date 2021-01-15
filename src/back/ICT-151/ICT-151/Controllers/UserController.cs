@@ -1,4 +1,5 @@
-﻿using ICT_151.Data;
+﻿using ICT_151.Authentication;
+using ICT_151.Data;
 using ICT_151.Models.Dto;
 using ICT_151.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -41,10 +42,10 @@ namespace ICT_151.Controllers
                     result = await UserService.GetUser(identifier);
                 }
 
-                return Ok();
+                return Ok(result);
             } catch (Exception ex)
             {
-                return ExceptionHandlerService.Handle(ex);
+                return ExceptionHandlerService.Handle(ex, Request);
             }
         }
 
@@ -60,7 +61,7 @@ namespace ICT_151.Controllers
 
                 return Ok(result);
             } catch (Exception ex) {
-                return ExceptionHandlerService.Handle(ex);
+                return ExceptionHandlerService.Handle(ex, Request);
             }
         }
 
@@ -75,7 +76,7 @@ namespace ICT_151.Controllers
 
                 return Created($"/api/User/{result.Username}", result);
             } catch (Exception ex) {
-                return ExceptionHandlerService.Handle(ex);
+                return ExceptionHandlerService.Handle(ex, Request);
             }
         }
 
@@ -87,11 +88,13 @@ namespace ICT_151.Controllers
         public async Task<IActionResult> Delete(Guid userId)
         {
             try {
-                await UserService.Delete(userId);
+                var user = await HttpContext.GetUser();
+
+                await UserService.Delete(user.Id, userId);
 
                 return Ok();
             } catch (Exception ex) {
-                return ExceptionHandlerService.Handle(ex);
+                return ExceptionHandlerService.Handle(ex, Request);
             }
         }
 
@@ -106,7 +109,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                return ExceptionHandlerService.Handle(ex);
+                return ExceptionHandlerService.Handle(ex, Request);
             }
         }
 
@@ -121,7 +124,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                return ExceptionHandlerService.Handle(ex);
+                return ExceptionHandlerService.Handle(ex, Request);
             }
         }
     }

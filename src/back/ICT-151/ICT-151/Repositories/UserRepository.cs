@@ -7,6 +7,7 @@ using ICT_151.Data;
 using ICT_151.Exceptions;
 using ICT_151.Models;
 using ICT_151.Models.Dto;
+using Microsoft.EntityFrameworkCore;
 
 namespace ICT_151.Repositories
 {
@@ -15,6 +16,10 @@ namespace ICT_151.Repositories
         Task<UserSession> AuthenticateUser(AuthUserDto dto, IPAddress remoteHost);
 
         Task<UserSession> ValidateUserSession(string token);
+
+        Task<User> GetFullUser(Guid userId);
+
+        Task<User> GetFullUser(string username);
 
         Task<UserSummaryViewModel> GetUser(Guid userId);
 
@@ -35,6 +40,10 @@ namespace ICT_151.Repositories
         Task Block(Guid userId, Guid targetId);
 
         Task UnBlock(Guid userId, Guid targetId);
+
+        Task<bool> Exists(Guid id);
+
+        Task<bool> Exists(string username);
     }
 
     public class UserRepository : IUserRepository
@@ -58,10 +67,10 @@ namespace ICT_151.Repositories
 
             UserSession session = new UserSession()
             {
-                Token = Utilities.StringUtilities.Random(64, Utilities.StringUtilities.AllowedChars.All),
+                Token = Utilities.StringUtilities.SecureRandom(64, Utilities.StringUtilities.AllowedChars.AlphabetNumbers),
                 RemoteHost = remoteHost,
                 CreationDate = DateTime.UtcNow,
-                ExpiracyDate = dto.ExtendSession ? DateTime.UtcNow.Add(UserSession.DefaultTokenValidity) : DateTime.UtcNow.Add(UserSession.ExtendedTokenValidity),
+                ExpiracyDate = dto.ExtendSession ? DateTime.UtcNow.Add(UserSession.ExtendedTokenValidity) : DateTime.UtcNow.Add(UserSession.DefaultTokenValidity),
                 UserId = user.Id
             };
 
@@ -73,7 +82,9 @@ namespace ICT_151.Repositories
 
         public async Task<UserSession> ValidateUserSession(string token)
         {
-            var session = DbContext.UserSessions.SingleOrDefault(session => session.Token == token);
+            var session = DbContext.UserSessions
+                .Include(t => t.User)
+                .SingleOrDefault(session => session.Token == token);
 
             if (session == null)
                 return null;
@@ -87,6 +98,20 @@ namespace ICT_151.Repositories
             return session;
         }
 
+        public async Task<User> GetFullUser(Guid userId)
+        {
+            return DbContext.Users
+                .Include(x => x.UserSessions)
+                .Single(x => x.Id == userId);
+        }
+
+        public async Task<User> GetFullUser(string username)
+        {
+            return DbContext.Users
+                .Include(x => x.UserSessions)
+                .Single(x => x.Username == username);
+        }
+
         public async Task<UserSummaryViewModel> GetUser(Guid userId)
         {
             return UserSummaryViewModel.FromUser(DbContext.Users.Single(x => x.Id == userId));
@@ -97,14 +122,31 @@ namespace ICT_151.Repositories
             return UserSummaryViewModel.FromUser(DbContext.Users.Single(x => x.Username == username));
         }
 
-        public Task<UserSummaryViewModel> CreateNew(CreateUserDto dto)
+        public async Task<UserSummaryViewModel> CreateNew(CreateUserDto dto)
         {
-            throw new NotImplementedException();
+            var result = await DbContext.Users.AddAsync(new User
+            {
+                Username = dto.Username,
+                Email = dto.Email,
+                PasswordHash = dto.Password,
+                CreationDate = DateTime.UtcNow,
+                AccountType = AccountType.User
+            });
+
+            await DbContext.SaveChangesAsync();
+
+            return new UserSummaryViewModel
+            {
+                Id = result.Entity.Id,
+                Username = result.Entity.Username,
+                CreationDate = result.Entity.CreationDate
+            };
         }
 
-        public Task Delete(Guid userId)
+        public async Task Delete(Guid userId)
         {
-            throw new NotImplementedException();
+            DbContext.Users.Remove(DbContext.Users.Single(x => x.Id == userId));
+            await DbContext.SaveChangesAsync();
         }
 
         public Task Follow(Guid userId, Guid toFollowUserId)
@@ -135,6 +177,16 @@ namespace ICT_151.Repositories
         public Task UnBlock(Guid userId, Guid targetId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> Exists(Guid id)
+        {
+            return await DbContext.Users.AnyAsync(x => x.Id == id);
+        }
+
+        public async Task<bool> Exists(string username)
+        {
+            return await DbContext.Users.AnyAsync(x => x.Username == username);
         }
     }
 }

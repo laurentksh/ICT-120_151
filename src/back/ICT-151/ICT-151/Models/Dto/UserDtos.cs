@@ -27,7 +27,7 @@ namespace ICT_151.Models.Dto
         [Required, EmailAddress]
         public string Email { get; set; }
 
-        [Required, StringLength(24, MinimumLength = 4)]
+        [Required, StringLength(24, MinimumLength = 2), RegularExpression("[a-zA-Z0-9-_]*\\w", MatchTimeoutInMilliseconds = 1000)]
         public string Username { get; set; }
 
         [Required, StringLength(128, MinimumLength = 6)]
@@ -43,6 +43,8 @@ namespace ICT_151.Models.Dto
 
         public string Username { get; set; }
 
+        public string ProfilePictureUrl { get; set; }
+
         public DateTime CreationDate { get; set; }
 
 
@@ -50,7 +52,8 @@ namespace ICT_151.Models.Dto
         {
             Id = user.Id,
             Username = user.Username,
-            CreationDate = user.CreationDate
+            ProfilePictureUrl = user.ProfilePictureUrl,
+            CreationDate = user.CreationDate,
         };
     }
 

@@ -48,6 +48,37 @@ namespace ICT_151.Utilities
         }
 
         /// <summary>
+        /// Get a secure random string.
+        /// </summary>
+        /// <param name="length">String length</param>
+        /// <param name="allowedChars">Which characters to use.</param>
+        /// <returns></returns>
+        public static string SecureRandom(int length, AllowedChars allowedChars = AllowedChars.All)
+        {
+            var chars = string.Empty;
+
+            if (allowedChars.HasFlag(AllowedChars.AlphabetMin))
+                chars += AlphabetMin;
+            if (allowedChars.HasFlag(AllowedChars.AlphabetMaj))
+                chars += AlphabetMaj;
+            if (allowedChars.HasFlag(AllowedChars.Numbers))
+                chars += Numbers;
+            if (allowedChars.HasFlag(AllowedChars.SpecialChars))
+                chars += SpecialChars;
+            if (allowedChars.HasFlag(AllowedChars.Spaces))
+                chars += Space;
+
+            var stringChars = new char[length];
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[RandomNumberGenerator.GetInt32(chars.Length)];
+            }
+
+            return new string(stringChars);
+        }
+
+        /// <summary>
         /// Hash a string (default algorithm: SHA256)
         /// </summary>
         /// <param name="rawData">String to hash</param>
