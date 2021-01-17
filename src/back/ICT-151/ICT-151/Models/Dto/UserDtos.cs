@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using ICT_151.Validators;
 
@@ -67,7 +68,34 @@ namespace ICT_151.Models.Dto
 
         public DateTime ExpiracyDate { get; set; }
 
-
         public Guid UserId { get; set; }
+
+        public static UserSessionViewModel FromUserSession(UserSession session) => new UserSessionViewModel
+        {
+            Id = session.Id,
+            Token = session.Token,
+            CreationDate = session.CreationDate,
+            ExpiracyDate = session.ExpiracyDate,
+            UserId = session.UserId
+        };
+    }
+
+    public class UserSessionSummaryViewModel
+    {
+        public Guid Id { get; set; }
+
+        public IPAddress RemoteHost { get; set; }
+
+        public DateTime CreationDateUtc { get; set; }
+
+        public DateTime ExpiracyDateUtc { get; set; }
+
+        public static UserSessionSummaryViewModel FromUserSession(UserSession session) => new UserSessionSummaryViewModel
+        {
+            Id = session.Id,
+            RemoteHost = session.RemoteHost,
+            CreationDateUtc = session.CreationDate,
+            ExpiracyDateUtc = session.ExpiracyDate
+        };
     }
 }

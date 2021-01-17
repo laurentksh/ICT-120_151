@@ -2,6 +2,7 @@ using ICT_151.Authentication;
 using ICT_151.Data;
 using ICT_151.Repositories;
 using ICT_151.Services;
+using ICT_151.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,7 +32,12 @@ namespace ICT_151
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(x =>
+                {
+                    x.JsonSerializerOptions.Converters.Add(new IPAddressJsonConverter());
+                });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -61,6 +67,12 @@ namespace ICT_151
                         Array.Empty<string>()
                     }
                 });
+            });
+
+            services.AddLogging(x =>
+            {
+                x.AddConsole();
+                x.SetMinimumLevel(LogLevel.Debug);
             });
 
             services.AddCors(x =>
@@ -110,7 +122,7 @@ namespace ICT_151
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
                 app.UseCors();
             }
-
+            
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();

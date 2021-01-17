@@ -17,6 +17,10 @@ namespace ICT_151.Repositories
 
         Task<UserSession> ValidateUserSession(string token);
 
+        Task<IEnumerable<UserSessionSummaryViewModel>> GetSessions(Guid userId);
+
+        Task ClearSessions(Guid userId);
+
         Task<User> GetFullUser(Guid userId);
 
         Task<User> GetFullUser(string username);
@@ -35,7 +39,7 @@ namespace ICT_151.Repositories
 
         Task SendPrivateMessage(Guid userId, Guid recipientId, string message);
 
-        Task<IEnumerable<string>> GetPrivateMessages(Guid userId, Guid recipientId);
+        Task<IEnumerable<PrivateMessageViewModel>> GetPrivateMessages(Guid userId, Guid recipientId);
 
         Task Block(Guid userId, Guid targetId);
 
@@ -98,6 +102,21 @@ namespace ICT_151.Repositories
             return session;
         }
 
+        public async Task<IEnumerable<UserSessionSummaryViewModel>> GetSessions(Guid userId)
+        {
+            var sessions = DbContext.UserSessions
+                .Where(x => x.UserId == userId)
+                .Select(y => UserSessionSummaryViewModel.FromUserSession(y));
+
+            return sessions.AsEnumerable();
+        }
+
+        public async Task ClearSessions(Guid userId)
+        {
+            DbContext.UserSessions.RemoveRange(DbContext.UserSessions.Where(x => x.UserId == userId));
+            await DbContext.SaveChangesAsync();
+        }
+
         public async Task<User> GetFullUser(Guid userId)
         {
             return DbContext.Users
@@ -149,34 +168,57 @@ namespace ICT_151.Repositories
             await DbContext.SaveChangesAsync();
         }
 
-        public Task Follow(Guid userId, Guid toFollowUserId)
+        public async Task Follow(Guid userId, Guid toFollowUserId)
         {
-            throw new NotImplementedException();
+            await DbContext.Follows.AddAsync(new Follow
+            {
+                CreationDate = DateTime.UtcNow,
+                FollowerId = userId,
+                FollowTargetId = toFollowUserId
+            });
+            await DbContext.SaveChangesAsync();
         }
 
-        public Task UnFollow(Guid userId, Guid toUnFollowUserId)
+        public async Task UnFollow(Guid userId, Guid toUnFollowUserId)
         {
-            throw new NotImplementedException();
+            DbContext.Follows.Remove(await DbContext.Follows.SingleAsync(x => x.FollowerId == userId && x.FollowTargetId == toUnFollowUserId));
+            await DbContext.SaveChangesAsync();
         }
 
-        public Task SendPrivateMessage(Guid userId, Guid recipientId, string message)
+        public async Task SendPrivateMessage(Guid userId, Guid recipientId, string message)
         {
-            throw new NotImplementedException();
+            await DbContext.PrivateMessages.AddAsync(new PrivateMessage
+            {
+                MessageContent = message,
+                CreationDate = DateTime.UtcNow,
+                SenderId = userId,
+                RecipientId = recipientId
+            });
         }
 
-        public Task<IEnumerable<string>> GetPrivateMessages(Guid userId, Guid recipientId)
+        public async Task<IEnumerable<PrivateMessageViewModel>> GetPrivateMessages(Guid userId, Guid recipientId)
         {
-            throw new NotImplementedException();
+            return DbContext.PrivateMessages
+                .Where(x => x.SenderId == userId && x.RecipientId == recipientId)
+                .Select(y => PrivateMessageViewModel.FromPrivateMessage(y))
+                .AsEnumerable();
         }
 
-        public Task Block(Guid userId, Guid targetId)
+        public async Task Block(Guid userId, Guid targetId)
         {
-            throw new NotImplementedException();
+            await DbContext.Blocks.AddAsync(new Block
+            {
+                CreationDate = DateTime.UtcNow,
+                BlockerId = userId,
+                BlockTargetId = targetId
+            });
+            await DbContext.SaveChangesAsync();
         }
 
-        public Task UnBlock(Guid userId, Guid targetId)
+        public async Task UnBlock(Guid userId, Guid targetId)
         {
-            throw new NotImplementedException();
+            DbContext.Blocks.Remove(await DbContext.Blocks.SingleAsync(x => x.BlockerId == userId && x.BlockTargetId == targetId));
+            await DbContext.SaveChangesAsync();
         }
 
         public async Task<bool> Exists(Guid id)

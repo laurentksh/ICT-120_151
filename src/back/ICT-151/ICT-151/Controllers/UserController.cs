@@ -5,6 +5,7 @@ using ICT_151.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +18,18 @@ namespace ICT_151.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private ILogger<UserController> Logger;
         private IUserService UserService;
         private IExceptionHandlerService ExceptionHandlerService;
 
-        public UserController(IUserService userService, IExceptionHandlerService exceptionHandlerService)
+        public UserController(ILogger<UserController> logger, IUserService userService, IExceptionHandlerService exceptionHandlerService)
         {
+            Logger = logger;
             UserService = userService;
             ExceptionHandlerService = exceptionHandlerService;
         }
 
-        [HttpGet("{identifier}")]
+        [HttpGet("get/{identifier}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserSummaryViewModel))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -45,6 +48,7 @@ namespace ICT_151.Controllers
                 return Ok(result);
             } catch (Exception ex)
             {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -61,6 +65,41 @@ namespace ICT_151.Controllers
 
                 return Ok(result);
             } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
+
+        [HttpGet("sessions")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetSessions()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var result = await UserService.GetSessions(user.Id);
+
+                return Ok(result);
+            } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
+
+        [HttpDelete("sessions")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ClearSessions()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await UserService.ClearSessions(user.Id);
+
+                return Ok();
+            } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -69,18 +108,19 @@ namespace ICT_151.Controllers
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateNew(CreateUserDto dto)
+        public async Task<IActionResult> CreateNew([FromBody] CreateUserDto dto)
         {
             try {
-                var result = await UserService.CreateNew(dto);
+                var result = await UserService.CreateNew(dto, HttpContext.Connection.RemoteIpAddress);
 
                 return Created($"/api/User/{result.Username}", result);
             } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -94,36 +134,75 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
 
-        [HttpPost("follow")]
+        [HttpPost("{userId}/follow")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Follow(Guid userId, Guid toFollowUserId)
+        public async Task<IActionResult> Follow(Guid userId)
         {
             try {
-                await UserService.Follow(userId, toFollowUserId);
+                var user = await HttpContext.GetUser();
+                await UserService.Follow(user.Id, userId);
 
                 return Ok();
             } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
 
-        [HttpPost("unfollow")]
+        [HttpPost("{userId}/unfollow")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UnFollow(Guid userId, Guid toUnFollowUserId)
+        public async Task<IActionResult> UnFollow(Guid userId)
         {
             try {
-                await UserService.UnFollow(userId, toUnFollowUserId);
+                var user = await HttpContext.GetUser();
+                await UserService.UnFollow(user.Id, userId);
 
                 return Ok();
             } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("{userId}/block")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Block(Guid userId)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await UserService.Block(user.Id, userId);
+
+                return Ok();
+            } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("{userId}/unblock")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UnBlock(Guid userId)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await UserService.UnBlock(user.Id, userId);
+
+                return Ok();
+            } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }

@@ -22,6 +22,12 @@ namespace ICT_151.Data
         /// <summary>A.k.a Retweets</summary>
         public DbSet<Repost> Reposts { get; set; }
 
+        public DbSet<Follow> Follows { get; set; }
+
+        public DbSet<Block> Blocks { get; set; }
+
+        public DbSet<PrivateMessage> PrivateMessages { get; set; }
+
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

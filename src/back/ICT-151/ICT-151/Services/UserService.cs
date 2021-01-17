@@ -12,41 +12,139 @@ namespace ICT_151.Services
 {
     public interface IUserService
     {
+        /// <summary>
+        /// Authenticates a user using it's email and password.
+        /// </summary>
+        /// <param name="dto">Auth request payload</param>
+        /// <param name="remoteHost">Client IP Address</param>
+        /// <returns>A newly created user session</returns>
         Task<UserSessionViewModel> AuthenticateUser(AuthUserDto dto, IPAddress remoteHost);
 
         /// <summary>
-        /// Internal use only
+        /// Validates a user session (Internal use only)
         /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
+        /// <param name="token">Session token</param>
+        /// <returns>The full user session</returns>
         Task<UserSession> ValidateUserSession(string token);
 
+        /// <summary>
+        /// Get the existing sessions
+        /// </summary>
+        /// <param name="userId">User GUID</param>
+        /// <returns>A list containing existing user sessions</returns>
+        Task<List<UserSessionSummaryViewModel>> GetSessions(Guid userId);
+
+        /// <summary>
+        /// Clear sessions for a specified user
+        /// </summary>
+        /// <param name="userId">User GUID</param>
+        /// <returns></returns>
+        Task ClearSessions(Guid userId);
+
+        /// <summary>
+        /// Returns the full user (Internal use only)
+        /// </summary>
+        /// <param name="userId">User GUID</param>
+        /// <returns>Full user</returns>
         Task<User> GetFullUser(Guid userId);
 
+        /// <summary>
+        /// Returns the full user (Internal use only)
+        /// </summary>
+        /// <param name="username">Username</param>
+        /// <returns>Full user</returns>
         Task<User> GetFullUser(string username);
 
+        /// <summary>
+        /// Returns a summary of the user
+        /// </summary>
+        /// <param name="userId">User GUID</param>
+        /// <returns>A summary of the user</returns>
         Task<UserSummaryViewModel> GetUser(Guid userId);
 
+        /// <summary>
+        /// Returns a summary of the user
+        /// </summary>
+        /// <param name="username">Username</param>
+        /// <returns>A summary of the user</returns>
         Task<UserSummaryViewModel> GetUser(string username);
 
-        Task<UserSummaryViewModel> CreateNew(CreateUserDto dto);
+        /// <summary>
+        /// Creates a new user with the specified parameters
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns>A summary of the user</returns>
+        Task<UserSummaryViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost);
 
+        /// <summary>
+        /// Delete an user
+        /// </summary>
+        /// <param name="userId">User GUID requesting the account deletion</param>
+        /// <param name="toDeleteId">User GUID to delete</param>
+        /// <returns></returns>
         Task Delete(Guid userId, Guid toDeleteId);
 
+        /// <summary>
+        /// Follow another user
+        /// </summary>
+        /// <param name="userId">User GUID following another user</param>
+        /// <param name="toFollowUserId">The user to follow</param>
+        /// <returns></returns>
         Task Follow(Guid userId, Guid toFollowUserId);
 
+        /// <summary>
+        /// Unfollow another user
+        /// </summary>
+        /// <param name="userId">User GUID unfollowing another user</param>
+        /// <param name="toUnFollowUserId">The user to follow</param>
+        /// <returns></returns>
         Task UnFollow(Guid userId, Guid toUnFollowUserId);
 
+        /// <summary>
+        /// Send a private message to another user
+        /// </summary>
+        /// <param name="userId">User GUID sending the message</param>
+        /// <param name="recipientId">The recipient User GUID</param>
+        /// <param name="message">The message content</param>
+        /// <returns></returns>
         Task SendPrivateMessage(Guid userId, Guid recipientId, string message);
 
-        Task<List<string>> GetPrivateMessages(Guid userId, Guid recipientId);
+        /// <summary>
+        /// Returns the private messages between two users
+        /// </summary>
+        /// <param name="userId">User GUID requesting the conversation</param>
+        /// <param name="recipientId">Target User GUID</param>
+        /// <returns>A list of private messages</returns>
+        Task<List<PrivateMessageViewModel>> GetPrivateMessages(Guid userId, Guid recipientId);
 
+        /// <summary>
+        /// Block another user
+        /// </summary>
+        /// <param name="userId">User GUID blocking another user</param>
+        /// <param name="toBlockId">User GUID to block</param>
+        /// <returns></returns>
         Task Block(Guid userId, Guid toBlockId);
 
+        /// <summary>
+        /// Unblock another user
+        /// </summary>
+        /// <param name="userId">User GUID unblocking another user</param>
+        /// <param name="toUnBlockId">User GUID to block</param>
+        /// <returns></returns>
         Task UnBlock(Guid userId, Guid toUnBlockId);
 
+        /// <summary>
+        /// Check if a user with the specified GUID exists
+        /// </summary>
+        /// <param name="id">User GUID to check</param>
+        /// <returns>True if the user exists, otherwise false</returns>
         Task<bool> Exists(Guid id);
 
+        /// <summary>
+        /// Check if a user with the specified username exists
+        /// </summary>
+        /// <param name="id">Username to check</param>
+        /// <returns>True if the user exists, otherwise false</returns>
         Task<bool> Exists(string username);
     }
 
@@ -68,14 +166,7 @@ namespace ICT_151.Services
 
             var session = await UserRepository.AuthenticateUser(dto, remoteHost);
 
-            return new UserSessionViewModel
-            {
-                Id = session.Id,
-                Token = session.Token,
-                CreationDate = session.CreationDate,
-                ExpiracyDate = session.ExpiracyDate,
-                UserId = session.UserId
-            };
+            return UserSessionViewModel.FromUserSession(session);
         }
 
         public async Task<UserSession> ValidateUserSession(string token)
@@ -103,10 +194,26 @@ namespace ICT_151.Services
             return await UserRepository.ValidateUserSession(token);
         }
 
+        public async Task<List<UserSessionSummaryViewModel>> GetSessions(Guid userId)
+        {
+            if (!await Exists(userId))
+                throw new UserNotFoundException("User does not exist.");
+
+            return (await UserRepository.GetSessions(userId)).ToList();
+        }
+
+        public async Task ClearSessions(Guid userId)
+        {
+            if (!await Exists(userId))
+                throw new UserNotFoundException("User does not exist.");
+
+            await UserRepository.ClearSessions(userId);
+        }
+
         public async Task<User> GetFullUser(Guid userId)
         {
             if (!await Exists(userId))
-                throw new UserNotFoundException("User does not exists.");
+                throw new UserNotFoundException("User does not exist.");
 
             return await UserRepository.GetFullUser(userId);
         }
@@ -114,7 +221,7 @@ namespace ICT_151.Services
         public async Task<User> GetFullUser(string username)
         {
             if (!await Exists(username))
-                throw new UserNotFoundException("User does not exists.");
+                throw new UserNotFoundException("User does not exist.");
 
             return await UserRepository.GetFullUser(username);
         }
@@ -122,7 +229,7 @@ namespace ICT_151.Services
         public async Task<UserSummaryViewModel> GetUser(Guid userId)
         {
             if (!await Exists(userId))
-                throw new UserNotFoundException("User does not exists.");
+                throw new UserNotFoundException("User does not exist.");
 
             return await UserRepository.GetUser(userId);
         }
@@ -130,13 +237,16 @@ namespace ICT_151.Services
         public async Task<UserSummaryViewModel> GetUser(string username)
         {
             if (!await Exists(username))
-                throw new UserNotFoundException("User does not exists.");
+                throw new UserNotFoundException("User does not exist.");
 
             return await UserRepository.GetUser(username);
         }
 
-        public async Task<UserSummaryViewModel> CreateNew(CreateUserDto dto)
+        public async Task<UserSummaryViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost)
         {
+            if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+                throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
+
             dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
             
             return await UserRepository.CreateNew(dto);
@@ -161,7 +271,7 @@ namespace ICT_151.Services
         public async Task Follow(Guid userId, Guid toFollowUserId)
         {
             if (!await Exists(userId) || !await Exists(toFollowUserId))
-                throw new UserNotFoundException();
+                throw new UserNotFoundException("User does not exist.");
 
             await UserRepository.Follow(userId, toFollowUserId);
         }
@@ -169,7 +279,7 @@ namespace ICT_151.Services
         public async Task UnFollow(Guid userId, Guid toUnFollowUserId)
         {
             if (!await Exists(userId) || !await Exists(toUnFollowUserId))
-                throw new UserNotFoundException();
+                throw new UserNotFoundException("User does not exist.");
 
             await UserRepository.UnFollow(userId, toUnFollowUserId);
         }
@@ -177,14 +287,15 @@ namespace ICT_151.Services
         public async Task SendPrivateMessage(Guid userId, Guid recipientId, string message)
         {
             if (!await Exists(userId) || !await Exists(recipientId))
-                throw new UserNotFoundException();
+                throw new UserNotFoundException("User does not exist.");
 
+            await UserRepository.SendPrivateMessage(userId, recipientId, message);
         }
 
-        public async Task<List<string>> GetPrivateMessages(Guid userId, Guid recipientId)
+        public async Task<List<PrivateMessageViewModel>> GetPrivateMessages(Guid userId, Guid recipientId)
         {
             if (!await Exists(userId) || !await Exists(recipientId))
-                throw new UserNotFoundException();
+                throw new UserNotFoundException("User does not exist.");
 
             return (await UserRepository.GetPrivateMessages(userId, recipientId)).ToList();
         }
@@ -192,7 +303,7 @@ namespace ICT_151.Services
         public async Task Block(Guid userId, Guid toBlockId)
         {
             if (!await Exists(userId) || !await Exists(toBlockId))
-                throw new UserNotFoundException();
+                throw new UserNotFoundException("User does not exist.");
 
             await UserRepository.Block(userId, toBlockId);
         }
@@ -200,7 +311,7 @@ namespace ICT_151.Services
         public async Task UnBlock(Guid userId, Guid toUnBlockId)
         {
             if (!await Exists(userId) || !await Exists(toUnBlockId))
-                throw new UserNotFoundException();
+                throw new UserNotFoundException("User does not exist.");
 
             await UserRepository.UnBlock(userId, toUnBlockId);
         }
