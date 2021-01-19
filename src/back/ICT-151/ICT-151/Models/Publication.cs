@@ -48,15 +48,15 @@ namespace ICT_151.Models
 
     public enum SubmissionType
     {
-        Text,
+        Text = 0,
 
-        Image,
+        Image = 1,
 
-        Video,
+        Video = 2,
 
         /// <summary>
         /// A reply cannot be of this type.
         /// </summary>
-        Poll
+        Poll = 3
     }
 }

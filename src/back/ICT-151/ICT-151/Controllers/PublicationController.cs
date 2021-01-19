@@ -43,6 +43,21 @@ namespace ICT_151.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            try {
+
+                return Ok();
+            } catch (Exception ex) {
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
+
         [HttpGet("{id}/replies")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PublicationViewModel>))]
@@ -116,11 +131,11 @@ namespace ICT_151.Controllers
             }
         }
 
-        [HttpPost("{id}/retweet")]
+        [HttpPost("{id}/repost")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Retweet([FromRoute] Guid id)
+        public async Task<IActionResult> Repost([FromRoute] Guid id)
         {
             try
             {
@@ -154,11 +169,11 @@ namespace ICT_151.Controllers
             }
         }
 
-        [HttpDelete("{id}/retweet")]
+        [HttpDelete("{id}/repost")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UnRetweet([FromRoute] Guid id)
+        public async Task<IActionResult> UnRepost([FromRoute] Guid id)
         {
             try
             {

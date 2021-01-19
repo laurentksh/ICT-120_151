@@ -44,6 +44,13 @@ namespace ICT_151.Controllers
             }
         }
 
+        [HttpPost("image")]
+        public async Task<IActionResult> PostImage(IFormFile formFile)
+        {
+            
+            return Ok();
+        }
+
         [HttpGet("video/{id}")]
         public async Task<IActionResult> GetVideo([FromRoute] Guid id)
         {
@@ -56,6 +63,13 @@ namespace ICT_151.Controllers
             {
                 return ExceptionHandlerService.Handle(ex, Request);
             }
+        }
+
+        [HttpPost("video")]
+        public async Task<IActionResult> PostVideo(IFormFile formFile)
+        {
+
+            return Ok();
         }
     }
 }

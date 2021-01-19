@@ -19,7 +19,11 @@ namespace ICT_151.Repositories
 
         Task<IEnumerable<UserSessionSummaryViewModel>> GetSessions(Guid userId);
 
+        Task ClearSession(Guid userId, Guid sessionId);
+
         Task ClearSessions(Guid userId);
+
+        Task ClearSessions(Guid userId, IPAddress remoteHost);
 
         Task<User> GetFullUser(Guid userId);
 
@@ -29,7 +33,11 @@ namespace ICT_151.Repositories
 
         Task<UserSummaryViewModel> GetUser(string username);
 
+        Task<bool> PasswordMatches(Guid userId, string passwordHash);
+
         Task<UserSummaryViewModel> CreateNew(CreateUserDto dto);
+
+        Task<UserSummaryViewModel> Update(Guid userId, UpdateUserDto dto);
 
         Task Delete(Guid userId);
 
@@ -63,11 +71,12 @@ namespace ICT_151.Repositories
         {
             var user = DbContext.Users.SingleOrDefault(x => x.Email == dto.Email);
 
+            //The following valiations can't really be done in the service so i'm doing them here.
             if (user == null)
                 throw new DataNotFoundException("Email does not match any account.");
 
             if (user.PasswordHash != dto.Password)
-                throw new WrongCredentialsException("Email and password does not match.");
+                throw new WrongCredentialsException("Email/Password does not match any account.");
 
             UserSession session = new UserSession()
             {
@@ -77,6 +86,8 @@ namespace ICT_151.Repositories
                 ExpiracyDate = dto.ExtendSession ? DateTime.UtcNow.Add(UserSession.ExtendedTokenValidity) : DateTime.UtcNow.Add(UserSession.DefaultTokenValidity),
                 UserId = user.Id
             };
+
+            await ClearSessions(user.Id, remoteHost); //Clear active sessions
 
             await DbContext.UserSessions.AddAsync(session);
             await DbContext.SaveChangesAsync();
@@ -111,9 +122,24 @@ namespace ICT_151.Repositories
             return sessions.AsEnumerable();
         }
 
+        public async Task ClearSession(Guid userId, Guid sessionId)
+        {
+            var sessions = await DbContext.UserSessions
+                .SingleAsync(x => x.Id == sessionId && x.UserId == userId); //Checking the userId so a user can't delete someone else's session.
+
+            DbContext.UserSessions.Remove(sessions);
+            await DbContext.SaveChangesAsync();
+        }
+
         public async Task ClearSessions(Guid userId)
         {
             DbContext.UserSessions.RemoveRange(DbContext.UserSessions.Where(x => x.UserId == userId));
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task ClearSessions(Guid userId, IPAddress remoteHost)
+        {
+            DbContext.UserSessions.RemoveRange(DbContext.UserSessions.Where(x => x.UserId == userId && x.RemoteHost == remoteHost));
             await DbContext.SaveChangesAsync();
         }
 
@@ -141,6 +167,14 @@ namespace ICT_151.Repositories
             return UserSummaryViewModel.FromUser(DbContext.Users.Single(x => x.Username == username));
         }
 
+        public async Task<bool> PasswordMatches(Guid userId, string passwordHash)
+        {
+            var user = DbContext.Users
+                .Single(x => x.Id == userId);
+
+            return user.PasswordHash == passwordHash;
+        }
+
         public async Task<UserSummaryViewModel> CreateNew(CreateUserDto dto)
         {
             var result = await DbContext.Users.AddAsync(new User
@@ -148,6 +182,7 @@ namespace ICT_151.Repositories
                 Username = dto.Username,
                 Email = dto.Email,
                 PasswordHash = dto.Password,
+                Birthday = dto.BirthDay,
                 CreationDate = DateTime.UtcNow,
                 AccountType = AccountType.User
             });
@@ -160,6 +195,28 @@ namespace ICT_151.Repositories
                 Username = result.Entity.Username,
                 CreationDate = result.Entity.CreationDate
             };
+        }
+
+        public async Task<UserSummaryViewModel> Update(Guid userId, UpdateUserDto dto)
+        {
+            var user = DbContext.Users
+                .Single(x => x.Id == userId);
+
+            if (dto.NewPassword != null)
+                user.PasswordHash = dto.NewPassword;
+
+            if (dto.Email != null)
+                user.Email = dto.Email;
+
+            if (dto.Username != null)
+                user.Username = dto.Username;
+
+            if (dto.BirthDay != null)
+                user.Birthday = dto.BirthDay.Value;
+
+            await DbContext.SaveChangesAsync();
+
+            return UserSummaryViewModel.FromUser(user);
         }
 
         public async Task Delete(Guid userId)

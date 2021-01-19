@@ -15,9 +15,9 @@ namespace ICT_151.Validators
         public int MinimumAgeRequired { get; set; } = 13;
 
         /// <summary>
-        /// Maximum age required to be validated. (-1 to ignore, default: -1)
+        /// Maximum age required to be validated. (-1 to ignore, default: 120)
         /// </summary>
-        public int MaximumAgeRequired { get; set; } = -1;
+        public int MaximumAgeRequired { get; set; } = 120;
 
         protected override ValidationResult IsValid(object value, ValidationContext context)
         {

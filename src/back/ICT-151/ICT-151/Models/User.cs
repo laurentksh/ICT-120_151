@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using ICT_151.Validators;
 using Microsoft.AspNetCore.Identity;
 
 namespace ICT_151.Models
@@ -27,6 +28,12 @@ namespace ICT_151.Models
         /// </summary>
         [Required]
         public string PasswordHash { get; set; }
+
+        [StringLength(200, MinimumLength = 0)]
+        public string Biography { get; set; }
+
+        [Required, BirthdayValidator(MinimumAgeRequired = 13)]
+        public DateTime Birthday { get; set; }
 
         [Required]
         public AccountType AccountType { get; set; } = AccountType.User;

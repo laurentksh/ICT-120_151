@@ -186,6 +186,13 @@ namespace ICT_151.Migrations
                     b.Property<int>("AccountType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Biography")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Birthday")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 

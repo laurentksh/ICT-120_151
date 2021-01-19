@@ -3,7 +3,7 @@ cls
 title Run - BackEnd
 
 :run
-dotnet run --project=ICT-151/ICT-151.csproj --configuration=Debug
+dotnet run --project=ICT-151 --configuration=Release
 
 :end
 pause

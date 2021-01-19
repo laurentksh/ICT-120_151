@@ -1,0 +1,26 @@
+<h3>Log in</h3>
+
+<div [hidden]="!errorOccured" class="container alert alert-danger">
+    <p class="" >{{ errorText }}</p>
+</div>
+
+<form name="login-form">
+    <div class="container">
+        <div class="row">
+            <label for="email">Email</label>
+            <input name="email" class="form-control" type="email" [(ngModel)]="login.Email"/>
+        </div>
+        <div class="row">
+            <label for="password">Password</label>
+            <input name="password" class="form-control" type="password" [(ngModel)]="login.Password"/>
+        </div>
+        <div class="row">
+            <label for="rememberme">Remember me ?</label>
+            <input name="rememberme" class="form-control" type="checkbox" [(ngModel)]="login.ExtendSession"/>
+        </div>
+
+        <div class="row">
+            <button (click)="onLogin()" class="btn btn-primary" type="submit">Login</button>
+        </div>
+    </div>
+</form>

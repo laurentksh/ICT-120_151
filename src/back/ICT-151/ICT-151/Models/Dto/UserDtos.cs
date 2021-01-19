@@ -38,6 +38,27 @@ namespace ICT_151.Models.Dto
         public DateTime BirthDay { get; set; }
     }
 
+    public class UpdateUserDto
+    {
+        [Required, StringLength(128, MinimumLength = 6)]
+        public string Password { get; set; }
+
+        [StringLength(128, MinimumLength = 6)]
+        public string NewPassword { get; set; }
+
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [StringLength(24, MinimumLength = 2), RegularExpression("[a-zA-Z0-9-_]*\\w", MatchTimeoutInMilliseconds = 1000)]
+        public string Username { get; set; }
+
+        [StringLength(200, MinimumLength = 0)]
+        public string Biography { get; set; }
+
+        [BirthdayValidator(MinimumAgeRequired = 13)]
+        public DateTime? BirthDay { get; set; }
+    }
+
     public class UserSummaryViewModel
     {
         public Guid Id { get; set; }
@@ -45,6 +66,10 @@ namespace ICT_151.Models.Dto
         public string Username { get; set; }
 
         public string ProfilePictureUrl { get; set; }
+
+        public string Biography { get; set; }
+
+        public DateTime Birthday { get; set; }
 
         public DateTime CreationDate { get; set; }
 
@@ -54,6 +79,8 @@ namespace ICT_151.Models.Dto
             Id = user.Id,
             Username = user.Username,
             ProfilePictureUrl = user.ProfilePictureUrl,
+            Biography = user.Biography,
+            Birthday = user.Birthday,
             CreationDate = user.CreationDate,
         };
     }

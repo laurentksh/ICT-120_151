@@ -1,0 +1,26 @@
+<div class="container alert alert-danger">
+    <p class="" [hidden]="errorOccured">{{ errorText }}</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <label for="email">Email</label>
+        <input type="email" [(ngModel)]="signup.email"/>
+    </div>
+    <div class="row">
+        <label for="username">Username</label>
+        <input name="username" type="text" [(ngModel)]="signup.username"/>
+    </div>
+    <div class="row">
+        <label for="password">Password</label>
+        <input name="password" type="password" [(ngModel)]="signup.password"/>
+    </div>
+    <div class="row">
+        <label for="birthday">Remember me ?</label>
+        <input name="birthday" type="date" [(ngModel)]="signup.birthday"/>
+    </div>
+
+    <div class="row">
+        <button (click)="onSignup()">Sign up</button>
+    </div>
+</div>

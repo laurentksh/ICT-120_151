@@ -91,11 +91,33 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> ClearSessions()
+        public async Task<IActionResult> ClearSessions([FromQuery] bool allSessions = true)
         {
             try {
                 var user = await HttpContext.GetUser();
-                await UserService.ClearSessions(user.Id);
+
+                if (allSessions)
+                    await UserService.ClearSessions(user.Id);
+                else
+                    await UserService.ClearSessions(user.Id, HttpContext.Connection.RemoteIpAddress);
+
+                return Ok();
+            } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
+
+        [HttpDelete("sessions/{sessionId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> ClearSession([FromRoute] string sessionId)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await UserService.ClearSession(user.Id, Guid.Parse(sessionId));
 
                 return Ok();
             } catch (Exception ex) {
@@ -114,6 +136,24 @@ namespace ICT_151.Controllers
                 var result = await UserService.CreateNew(dto, HttpContext.Connection.RemoteIpAddress);
 
                 return Created($"/api/User/{result.Username}", result);
+            } catch (Exception ex) {
+                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
+
+        [HttpPost("update")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Update([FromBody] UpdateUserDto dto)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                var result = await UserService.Update(user.Id, dto, HttpContext.Connection.RemoteIpAddress);
+
+                return Ok(result);
             } catch (Exception ex) {
                 Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
@@ -156,7 +196,7 @@ namespace ICT_151.Controllers
             }
         }
 
-        [HttpPost("{userId}/unfollow")]
+        [HttpDelete("{userId}/follow")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -190,7 +230,7 @@ namespace ICT_151.Controllers
             }
         }
 
-        [HttpPost("{userId}/unblock")]
+        [HttpDelete("{userId}/block")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

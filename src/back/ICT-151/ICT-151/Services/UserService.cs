@@ -35,11 +35,27 @@ namespace ICT_151.Services
         Task<List<UserSessionSummaryViewModel>> GetSessions(Guid userId);
 
         /// <summary>
+        /// Clear a specific session
+        /// </summary>
+        /// <param name="userId">User GUID</param>
+        /// <param name="sessionId">Session ID</param>
+        /// <returns></returns>
+        Task ClearSession(Guid userId, Guid sessionId);
+
+        /// <summary>
         /// Clear sessions for a specified user
         /// </summary>
         /// <param name="userId">User GUID</param>
         /// <returns></returns>
         Task ClearSessions(Guid userId);
+
+        /// <summary>
+        /// Clear sessions for a specified user
+        /// </summary>
+        /// <param name="userId">User GUID</param>
+        /// <param name="remoteHost">Client IPAddress</param>
+        /// <returns></returns>
+        Task ClearSessions(Guid userId, IPAddress remoteHost);
 
         /// <summary>
         /// Returns the full user (Internal use only)
@@ -72,9 +88,18 @@ namespace ICT_151.Services
         /// <summary>
         /// Creates a new user with the specified parameters
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="dto">Create user request payload</param>
         /// <returns>A summary of the user</returns>
         Task<UserSummaryViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost);
+
+        /// <summary>
+        /// Updates the user with the specified parameters
+        /// </summary>
+        /// <param name="userId">User to update</param>
+        /// <param name="dto"></param>
+        /// <param name="remoteHost"></param>
+        /// <returns></returns>
+        Task<UserSummaryViewModel> Update(Guid userId, UpdateUserDto dto, IPAddress remoteHost);
 
         /// <summary>
         /// Delete an user
@@ -161,7 +186,7 @@ namespace ICT_151.Services
         {
             if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
-
+            
             dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
 
             var session = await UserRepository.AuthenticateUser(dto, remoteHost);
@@ -174,11 +199,12 @@ namespace ICT_151.Services
             if (token is null)
                 throw new ArgumentNullException(nameof(token));
 
+#if DEBUG
             if (token.ToLower() == "testtoken")
                 return new UserSession() //Debug code
                 {
                     Id = Guid.NewGuid(),
-                    Token = Utilities.StringUtilities.Random(64, Utilities.StringUtilities.AllowedChars.All),
+                    Token = Utilities.StringUtilities.SecureRandom(64, Utilities.StringUtilities.AllowedChars.All),
                     CreationDate = DateTime.UtcNow.AddDays(-5),
                     ExpiracyDate = DateTime.UtcNow.AddDays(5),
                     UserId = Guid.NewGuid(),
@@ -188,8 +214,10 @@ namespace ICT_151.Services
                         Username = "MOCK_USER123",
                         Email = "abc@123.com",
                         PasswordHash = "testabc",
+                        CreationDate = DateTime.Now.AddDays(-10),
                     }
                 };
+#endif
 
             return await UserRepository.ValidateUserSession(token);
         }
@@ -202,12 +230,28 @@ namespace ICT_151.Services
             return (await UserRepository.GetSessions(userId)).ToList();
         }
 
+        public async Task ClearSession(Guid userId, Guid sessionId)
+        {
+            if (!await Exists(userId))
+                throw new UserNotFoundException("User does not exist.");
+
+            await UserRepository.ClearSession(userId, sessionId);
+        }
+
         public async Task ClearSessions(Guid userId)
         {
             if (!await Exists(userId))
                 throw new UserNotFoundException("User does not exist.");
 
             await UserRepository.ClearSessions(userId);
+        }
+
+        public async Task ClearSessions(Guid userId, IPAddress remoteHost)
+        {
+            if (!await Exists(userId))
+                throw new UserNotFoundException("User does not exist.");
+
+            await UserRepository.ClearSessions(userId, remoteHost);
         }
 
         public async Task<User> GetFullUser(Guid userId)
@@ -250,6 +294,25 @@ namespace ICT_151.Services
             dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
             
             return await UserRepository.CreateNew(dto);
+        }
+
+        public async Task<UserSummaryViewModel> Update(Guid userId, UpdateUserDto dto, IPAddress remoteHost)
+        {
+            if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+                throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
+
+            dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
+            dto.NewPassword = Utilities.StringUtilities.ComputeHash(dto.NewPassword, System.Security.Cryptography.HashAlgorithmName.SHA512);
+
+            if (!await Exists(userId))
+                throw new UserNotFoundException("User does not exist.");
+
+            if (!await UserRepository.PasswordMatches(userId, dto.Password))
+                throw new ForbiddenException("Wrong password.");
+
+            //TODO: Maybe do something with the ip ?
+
+            return await UserRepository.Update(userId, dto);
         }
 
         public async Task Delete(Guid userId, Guid toDeleteUserId)
