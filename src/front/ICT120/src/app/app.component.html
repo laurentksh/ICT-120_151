@@ -1,14 +1,14 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm">
+<div class="container-fluid h-100">
+    <div class="row main-app h-100">
+        <div class="col-sm left-sidebar">
             <app-left-sidebar></app-left-sidebar>
         </div>
         <div class="col-8">
-            <main class="container-xl">
+            <main class="container-xl main-app-inner">
                 <router-outlet></router-outlet>
             </main>
         </div>
-        <div class="col-sm">
+        <div class="col-sm right-sidebar">
             <app-right-sidebar></app-right-sidebar>
         </div>
     </div>

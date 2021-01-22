@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-left-sidebar',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LeftSidebarComponent implements OnInit {
 
-  constructor() { }
+  constructor(public authService: AuthService) { }
 
   ngOnInit(): void {
+    
   }
 
 }

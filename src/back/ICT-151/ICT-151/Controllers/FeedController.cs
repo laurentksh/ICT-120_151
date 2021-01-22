@@ -6,6 +6,7 @@ using ICT_151.Authentication;
 using ICT_151.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ICT_151.Controllers
 {
@@ -13,11 +14,13 @@ namespace ICT_151.Controllers
     [ApiController]
     public class FeedController : ControllerBase
     {
+        private ILogger<FeedController> Logger { get; set; }
         private IFeedService FeedService;
         private IExceptionHandlerService ExceptionHandlerService;
 
-        public FeedController(IFeedService feedService, IExceptionHandlerService exceptionHandlerService)
+        public FeedController(ILogger<FeedController> logger, IFeedService feedService, IExceptionHandlerService exceptionHandlerService)
         {
+            Logger = logger;
             FeedService = feedService;
             ExceptionHandlerService = exceptionHandlerService;
         }
@@ -41,6 +44,7 @@ namespace ICT_151.Controllers
                 return Ok(result);
             } catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
             
@@ -76,6 +80,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }

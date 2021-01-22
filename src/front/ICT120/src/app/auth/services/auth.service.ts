@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { ApiCallResult } from 'src/app/services/api/models/api-call-result';
+import { UserSummary } from 'src/app/user/models/user-summary';
 import { Login } from '../models/login';
 import { UserSession } from '../models/user-session';
 
@@ -20,9 +21,9 @@ export class AuthService {
 
     result.id = json.id;
     result.token = json.token;
-    result.creationdate = new Date(json.creationDate);
-    result.expiracydate = new Date(json.expiracyDate);
-    result.userid = json.userId;
+    result.creationDateUtc = new Date(json.creationDate);
+    result.expiracyDateUtc = new Date(json.expiracyDate);
+    result.userId = json.userId;
 
     return result;
   }
@@ -39,6 +40,31 @@ export class AuthService {
     localStorage.removeItem("session");
   }
 
+  public get LocalUser(): UserSummary {
+    const json = JSON.parse(localStorage.getItem("user"));
+    let result: UserSummary = {} as UserSummary;
+
+    result.Id = json.Id;
+    result.Username = json.Username;
+    result.Biography = json.Biography;
+    result.CreationDate = new Date(json.CreationDate);
+    result.Birthday = new Date(json.Birthday);
+    result.ProfilePictureUrl = json.ProfilePictureUrl;
+
+    return result;
+  }
+
+  private async getLocalUserFromAPI(id: string): Promise<[result: boolean, error: HttpErrorResponse]> {
+    const result = await this.apiService.GetUserSummary(id);
+
+    if (result.Result) {
+      localStorage.setItem("user", JSON.stringify(result.ObjectResult));
+      return [true, null];
+    } else {
+      return [false, result.Exception];
+    }
+  }
+
   constructor(private apiService: ApiService) { }
 
   public async Authenticate(login: Login): Promise<[result: boolean, error: HttpErrorResponse]> {
@@ -48,6 +74,8 @@ export class AuthService {
 
     if (result.Result) {
       this.setSession(result.ObjectResult);
+
+      await this.getLocalUserFromAPI(result.ObjectResult.userId);
       return [true, null];
     } else {
       return [false, result.Exception];
@@ -67,7 +95,7 @@ export class AuthService {
   public ValidateCurrentSession(): boolean {
     const session = this.Session;
     const now = new Date(Date.now());
-    const expiracyDate = session.expiracydate;
+    const expiracyDate = session.expiracyDateUtc;
 
     if (expiracyDate <= now) {
       return false;

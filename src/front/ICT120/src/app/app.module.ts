@@ -16,8 +16,6 @@ import { RightSidebarComponent } from './main-components/right-sidebar/right-sid
 @NgModule({
   declarations: [
     AppComponent,
-    PublicationComponent,
-    ReplyComponent,
     LeftSidebarComponent,
     RightSidebarComponent
   ],

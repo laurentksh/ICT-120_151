@@ -1,6 +1,6 @@
-import { User } from "src/app/user/models/user";
+import { UserSummary } from "src/app/user/models/user-summary";
 
 export interface Repost {
     Id: string;
-    User: User;
+    User: UserSummary;
 }

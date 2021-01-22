@@ -8,7 +8,7 @@ import { Publication } from 'src/app/publication/models/publication';
 import { Repost } from 'src/app/publication/models/repost';
 import { CreateUser } from 'src/app/user/models/create-user';
 import { UpdateUser } from 'src/app/user/models/update-user';
-import { User } from 'src/app/user/models/user';
+import { UserSummary } from 'src/app/user/models/user-summary';
 import { ApiCallResult } from './models/api-call-result';
 
 /**
@@ -58,7 +58,7 @@ export class ApiService {
     result.Result = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get(this.BASE_URL + `Media/image/${mediaId}`, { responseType: "blob" }).toPromise()
+      result.ObjectResult = await this.httpClient.get(this.BASE_URL + `Media/image/${mediaId}`, { responseType: "blob" }).toPromise();
     } catch (error) {
       result.Result = false;
       result.Exception = error;
@@ -72,7 +72,7 @@ export class ApiService {
     result.Result = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get(this.BASE_URL + `Media/video/${mediaId}`, { responseType: "blob" }).toPromise()
+      result.ObjectResult = await this.httpClient.get(this.BASE_URL + `Media/video/${mediaId}`, { responseType: "blob" }).toPromise();
     } catch (error) {
       result.Result = false;
       result.Exception = error;
@@ -225,12 +225,12 @@ export class ApiService {
   //#endregion Publication
 
   //#region User
-  public async GetUser(identifier: string): Promise<ApiCallResult<User>> {
-    let result: ApiCallResult<User> = {} as ApiCallResult<User>;
+  public async GetUserSummary(identifier: string): Promise<ApiCallResult<UserSummary>> {
+    let result: ApiCallResult<UserSummary> = {} as ApiCallResult<UserSummary>;
     result.Result = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get<User>(this.BASE_URL + `User/get/${identifier}`).toPromise();
+      result.ObjectResult = await this.httpClient.get<UserSummary>(this.BASE_URL + `User/get/${identifier}`).toPromise();
     } catch (error) {
       result.Result = false;
       result.Exception = error;
@@ -295,12 +295,12 @@ export class ApiService {
     return result;
   }
 
-  public async CreateNewUser(createDto: CreateUser): Promise<ApiCallResult<User>> {
-    let result: ApiCallResult<User> = {} as ApiCallResult<User>;
+  public async CreateNewUser(createDto: CreateUser): Promise<ApiCallResult<UserSummary>> {
+    let result: ApiCallResult<UserSummary> = {} as ApiCallResult<UserSummary>;
     result.Result = true;
 
     try {
-      result.ObjectResult = await this.httpClient.post<User>(this.BASE_URL + "User/new", createDto).toPromise();
+      result.ObjectResult = await this.httpClient.post<UserSummary>(this.BASE_URL + "User/new", createDto).toPromise();
     } catch (error) {
       result.Result = false;
       result.Exception = error;
@@ -309,12 +309,12 @@ export class ApiService {
     return result;
   }
 
-  public async UpdateUser(userId: string, updateDto: UpdateUser): Promise<ApiCallResult<User>> {
-    let result: ApiCallResult<User> = {} as ApiCallResult<User>;
+  public async UpdateUser(userId: string, updateDto: UpdateUser): Promise<ApiCallResult<UserSummary>> {
+    let result: ApiCallResult<UserSummary> = {} as ApiCallResult<UserSummary>;
     result.Result = true;
 
     try {
-      result.ObjectResult = await this.httpClient.post<User>(this.BASE_URL + "User/update", updateDto).toPromise();
+      result.ObjectResult = await this.httpClient.post<UserSummary>(this.BASE_URL + "User/update", updateDto).toPromise();
     } catch (error) {
       result.Result = false;
       result.Exception = error;

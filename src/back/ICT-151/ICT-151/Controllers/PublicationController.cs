@@ -8,6 +8,7 @@ using ICT_151.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ICT_151.Controllers
 {
@@ -16,11 +17,13 @@ namespace ICT_151.Controllers
     [ApiController]
     public class PublicationController : ControllerBase
     {
+        private ILogger<PublicationController> Logger;
         private IPublicationService PublicationService;
         private IExceptionHandlerService ExceptionHandlerService;
 
-        public PublicationController(IPublicationService publicationService, IExceptionHandlerService exceptionHandlerService)
+        public PublicationController(ILogger<PublicationController> logger, IPublicationService publicationService, IExceptionHandlerService exceptionHandlerService)
         {
+            Logger = logger;
             PublicationService = publicationService;
             ExceptionHandlerService = exceptionHandlerService;
         }
@@ -39,6 +42,7 @@ namespace ICT_151.Controllers
                 return Ok(result);
             } catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -54,6 +58,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -73,6 +78,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -91,6 +97,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -109,6 +116,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -127,6 +135,7 @@ namespace ICT_151.Controllers
                 return Created($"/api/Publication/{result.Id}", result);
             } catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -146,6 +155,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -165,6 +175,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -184,6 +195,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -203,6 +215,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }

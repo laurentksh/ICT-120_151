@@ -1,5 +1,5 @@
 export interface Login {
-    Email: string;
-    Password: string;
-    ExtendSession: boolean;
+    email: string;
+    password: string;
+    extendSession: boolean;
 }

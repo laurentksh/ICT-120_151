@@ -1,7 +1,7 @@
 export interface UserSession {
     id: string;
     token: string;
-    creationdate: Date;
-    expiracydate: Date;
-    userid: string;
+    creationDateUtc: Date;
+    expiracyDateUtc: Date;
+    userId: string;
 }

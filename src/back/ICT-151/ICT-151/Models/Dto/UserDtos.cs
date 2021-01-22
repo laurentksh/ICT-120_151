@@ -91,9 +91,9 @@ namespace ICT_151.Models.Dto
 
         public string Token { get; set; }
 
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationDateUtc { get; set; }
 
-        public DateTime ExpiracyDate { get; set; }
+        public DateTime ExpiracyDateUtc { get; set; }
 
         public Guid UserId { get; set; }
 
@@ -101,8 +101,8 @@ namespace ICT_151.Models.Dto
         {
             Id = session.Id,
             Token = session.Token,
-            CreationDate = session.CreationDate,
-            ExpiracyDate = session.ExpiracyDate,
+            CreationDateUtc = session.CreationDate,
+            ExpiracyDateUtc = session.ExpiracyDate,
             UserId = session.UserId
         };
     }

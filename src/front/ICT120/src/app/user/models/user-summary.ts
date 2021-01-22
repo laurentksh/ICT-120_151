@@ -1,4 +1,4 @@
-export interface User {
+export interface UserSummary {
     Id: string
     Username: string
     ProfilePictureUrl: string

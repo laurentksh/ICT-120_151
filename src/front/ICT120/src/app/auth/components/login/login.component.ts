@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
   }
 
   validateInput(): boolean {
-    if (this.login.Email == null || this.login.Password == null) {
+    if (this.login.email == null || this.login.password == null) {
       this.errorOccured = true;
       this.errorText = "Please fill the required fields.";
       return false;

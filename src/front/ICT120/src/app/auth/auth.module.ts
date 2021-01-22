@@ -6,11 +6,13 @@ import { BrowserModule } from '@angular/platform-browser'
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthRoutingModule } from './auth-routing.module';
+import { LogoutComponent } from './components/logout/logout.component';
 
 @NgModule({
   declarations: [
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    LogoutComponent
   ],
   imports: [
     CommonModule,

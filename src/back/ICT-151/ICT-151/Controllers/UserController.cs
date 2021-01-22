@@ -48,7 +48,7 @@ namespace ICT_151.Controllers
                 return Ok(result);
             } catch (Exception ex)
             {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -65,7 +65,7 @@ namespace ICT_151.Controllers
 
                 return Ok(result);
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -82,7 +82,7 @@ namespace ICT_151.Controllers
 
                 return Ok(result);
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -103,7 +103,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -121,7 +121,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -137,7 +137,7 @@ namespace ICT_151.Controllers
 
                 return Created($"/api/User/{result.Username}", result);
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -155,7 +155,7 @@ namespace ICT_151.Controllers
 
                 return Ok(result);
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -174,7 +174,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -191,7 +191,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -208,7 +208,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -225,7 +225,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -242,7 +242,7 @@ namespace ICT_151.Controllers
 
                 return Ok();
             } catch (Exception ex) {
-                Logger.LogError(ex, "An error occured: " + ex.Message ?? "undefined");
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }

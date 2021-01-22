@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { UserComponent } from './components/user/user.component';
+import { PublicationComponent } from './components/publication/publication.component';
 
 const routes: Routes = [
   {
-    path: "u/:identifier",
-    component: UserComponent
-  }
+    path: 'publication/:id',
+    component: PublicationComponent
+  },
 ];
 
 @NgModule({
@@ -15,4 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class UserRoutingModule { }
+export class PublicationRoutingModule { }

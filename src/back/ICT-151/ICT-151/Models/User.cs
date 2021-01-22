@@ -47,6 +47,12 @@ namespace ICT_151.Models
 
 
         public List<UserSession> UserSessions { get; set; }
+
+        //public List<Publication> Publications { get; set; } //Can't be used since publications also contains replies
+
+        public List<Repost> Reposts { get; set; }
+
+        public List<Like> Likes { get; set; }
     }
 
     public enum AccountType

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ICT_151.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ICT_151.Controllers
 {
@@ -12,10 +13,12 @@ namespace ICT_151.Controllers
     [ApiController]
     public class MediaController : ControllerBase
     {
+        private ILogger<MediaController> Logger;
         private IExceptionHandlerService ExceptionHandlerService;
 
-        public MediaController(IExceptionHandlerService exceptionHandlerService)
+        public MediaController(ILogger<MediaController> logger, IExceptionHandlerService exceptionHandlerService)
         {
+            Logger = logger;
             ExceptionHandlerService = exceptionHandlerService;
         }
 
@@ -27,6 +30,7 @@ namespace ICT_151.Controllers
                 return Ok(/* TODO */);
             } catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -40,6 +44,7 @@ namespace ICT_151.Controllers
                 return Ok();
             } catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -47,8 +52,16 @@ namespace ICT_151.Controllers
         [HttpPost("image")]
         public async Task<IActionResult> PostImage(IFormFile formFile)
         {
-            
-            return Ok();
+            try
+            {
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
         }
 
         [HttpGet("video/{id}")]
@@ -61,6 +74,7 @@ namespace ICT_151.Controllers
             }
             catch (Exception ex)
             {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
@@ -68,8 +82,16 @@ namespace ICT_151.Controllers
         [HttpPost("video")]
         public async Task<IActionResult> PostVideo(IFormFile formFile)
         {
+            try
+            {
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
         }
     }
 }
