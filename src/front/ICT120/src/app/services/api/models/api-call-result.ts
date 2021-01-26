@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 
 export interface ApiCallResult<TResult> {
-    Result: boolean;
-    Exception: HttpErrorResponse;
+    Success: boolean;
+    Error: HttpErrorResponse;
     ObjectResult: TResult;
 }

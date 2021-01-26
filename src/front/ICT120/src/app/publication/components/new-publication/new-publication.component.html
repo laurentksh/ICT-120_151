@@ -1,0 +1,28 @@
+<h3>New publication</h3>
+
+<div [hidden]="!errorOccured" class="container alert alert-danger">
+    <p class="" >{{ errorText }}</p>
+</div>
+
+<form name="publication-form" onsubmit="return false;">
+    <div class="container">
+        <label for="text">Text</label>
+        <div class="input-group mb-3">
+            <textarea name="text" id="text" class="form-control" placeholder="An interesting post..." [(ngModel)]="publication.TextContent"></textarea>
+        </div>
+
+        <label for="type">Publication type</label>
+        <div class="input-group mb-3">
+            <select id="type" name="type" [(ngModel)]="publication.SubmissionType">
+                <option value="0">Text</option>
+                <option value="1">Image</option>
+                <option value="2">Video</option>
+                <option value="3">Poll</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <button (click)="onSubmit()" class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </div>
+</form>

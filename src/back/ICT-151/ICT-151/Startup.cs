@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ICT_151
@@ -36,6 +38,7 @@ namespace ICT_151
                 .AddJsonOptions(x =>
                 {
                     x.JsonSerializerOptions.Converters.Add(new IPAddressJsonConverter());
+                    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
             services.AddSwaggerGen(c =>
@@ -85,7 +88,12 @@ namespace ICT_151
                 });
             });
 
-            services.AddDbContext<ApplicationDbContext>(x => x.UseSqlite("DataSource=AppDb.db"), ServiceLifetime.Scoped);
+            services.AddDbContext<ApplicationDbContext>(x => 
+            {
+                x
+                .UseSqlite("DataSource=AppDb.db")
+                .ConfigureWarnings(y => y.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
+            }, ServiceLifetime.Scoped);
 
             services
                 .AddAuthentication(options =>

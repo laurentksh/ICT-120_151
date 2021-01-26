@@ -1,1 +1,5 @@
-<p>home works!</p>
+<div [hidden]="!errorOccured" class="container alert alert-danger">
+    <p class="" >{{ errorText }}</p>
+</div>
+
+<app-feed [publications]="this.publications"></app-feed>

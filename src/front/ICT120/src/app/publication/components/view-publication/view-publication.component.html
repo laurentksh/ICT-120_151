@@ -1,0 +1,7 @@
+<div [hidden]="!error" class="container alert alert-danger">
+    <p class="" >{{ errorMsg }}</p>
+</div>
+
+<app-publication [Publication]="this.Publication"></app-publication>
+
+<app-feed [publications]="this.Replies"></app-feed>

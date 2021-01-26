@@ -12,4 +12,7 @@ export class RightSidebarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  search(input: string): void {
+    console.log(input);
+  }
 }

@@ -34,14 +34,12 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetPublication([FromRoute] Guid id)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 var result = await PublicationService.GetPublication(id, user?.Id);
 
                 return Ok(result);
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -69,15 +67,12 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetReplies([FromRoute] Guid id)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 var result = await PublicationService.GetReplies(id, user?.Id);
 
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -89,14 +84,11 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetReposts([FromRoute] Guid id)
         {
-            try
-            {
+            try {
                 var result = await PublicationService.GetReposts(id);
 
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -108,14 +100,11 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetLikes([FromRoute] Guid id)
         {
-            try
-            {
+            try {
                 var result = await PublicationService.GetLikes(id);
 
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -127,14 +116,12 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateNew([FromBody] PublicationCreateDto dto)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 var result = await PublicationService.CreateNew(user.Id, dto);
 
                 return Created($"/api/Publication/{result.Id}", result);
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -146,15 +133,12 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Repost([FromRoute] Guid id)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 await PublicationService.Repost(user.Id, id);
 
                 return Ok();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -166,15 +150,12 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Like([FromRoute] Guid id)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 await PublicationService.Like(user.Id, id);
 
                 return Ok();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -186,15 +167,12 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UnRepost([FromRoute] Guid id)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 await PublicationService.UnRepost(user.Id, id);
 
                 return Ok();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -206,15 +184,12 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UnLike([FromRoute] Guid id)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 await PublicationService.UnLike(user.Id, id);
 
                 return Ok();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }

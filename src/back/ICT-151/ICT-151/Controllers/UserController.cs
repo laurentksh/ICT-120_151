@@ -35,8 +35,7 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetUser([FromRoute] string identifier)
         {
-            try
-            {
+            try {
                 UserSummaryViewModel result = null;
 
                 if (Guid.TryParse(identifier, out Guid id)) {
@@ -44,10 +43,9 @@ namespace ICT_151.Controllers
                 } else {
                     result = await UserService.GetUser(identifier);
                 }
-
+                
                 return Ok(result);
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
@@ -71,7 +69,7 @@ namespace ICT_151.Controllers
         }
 
         [HttpGet("sessions")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserSessionSummaryViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetSessions()
@@ -135,7 +133,7 @@ namespace ICT_151.Controllers
             try {
                 var result = await UserService.CreateNew(dto, HttpContext.Connection.RemoteIpAddress);
 
-                return Created($"/api/User/{result.Username}", result);
+                return Created($"/api/User/{result.User.Username}", result);
             } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);

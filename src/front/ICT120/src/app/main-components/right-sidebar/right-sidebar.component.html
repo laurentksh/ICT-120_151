@@ -1,1 +1,8 @@
-<p>right-sidebar works!</p>
+<div class="d-grid justify-content-center gap-2 btn-list">
+    <form name="search-form" onsubmit="return false;">
+        <input name="search" type="search" class="form-control" #searchinput>
+        <button type="submit" (click)="search(searchinput.value)">Search</button>
+    </form>
+    <a class="btn btn-primary btn-lg" routerLink="home">Search</a>
+    <a class="btn btn-primary btn-lg" routerLink="notifications">Notifications</a>
+</div>

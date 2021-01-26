@@ -2,8 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { ApiCallResult } from 'src/app/services/api/models/api-call-result';
+import { OperationResult } from 'src/app/services/models/operation-result';
 import { UserSummary } from 'src/app/user/models/user-summary';
+import { CreatedUserViewModel } from '../models/created-user-view-model';
 import { Login } from '../models/login';
+import { Signup } from '../models/signup';
 import { UserSession } from '../models/user-session';
 
 @Injectable({
@@ -28,6 +31,20 @@ export class AuthService {
     return result;
   }
 
+  public get LocalUser(): UserSummary {
+    const json = JSON.parse(localStorage.getItem("user"));
+    let result: UserSummary = {} as UserSummary;
+
+    result.id = json.id;
+    result.username = json.username;
+    result.biography = json.biography;
+    result.creationDate = new Date(json.creationDate);
+    result.birthday = new Date(json.birthday);
+    result.profilePictureUrl = json.profilePictureUrl;
+
+    return result;
+  }
+
   public get SessionToken(): string {
     return this.Session.token;
   }
@@ -36,60 +53,76 @@ export class AuthService {
     localStorage.setItem("session", JSON.stringify(session));
   }
 
+  private setUser(user: UserSummary): void {
+    localStorage.setItem("user", JSON.stringify(user));
+  }
+
   public DeleteSession(): void {
     localStorage.removeItem("session");
   }
 
-  public get LocalUser(): UserSummary {
-    const json = JSON.parse(localStorage.getItem("user"));
-    let result: UserSummary = {} as UserSummary;
+  public DeleteUser(): void {
+    localStorage.removeItem("user");
+  }
 
-    result.Id = json.Id;
-    result.Username = json.Username;
-    result.Biography = json.Biography;
-    result.CreationDate = new Date(json.CreationDate);
-    result.Birthday = new Date(json.Birthday);
-    result.ProfilePictureUrl = json.ProfilePictureUrl;
+  private async getLocalUserFromAPI(id: string): Promise<OperationResult<void>> {
+    let result: OperationResult<void> = {} as OperationResult<void>;
+    const request = await this.apiService.GetUserSummary(id);
+
+    result.Success = request.Success;
+    result.Error = request.Error;
+
+    if (request.Success) {
+      this.setUser(request.ObjectResult);
+    }
 
     return result;
   }
 
-  private async getLocalUserFromAPI(id: string): Promise<[result: boolean, error: HttpErrorResponse]> {
-    const result = await this.apiService.GetUserSummary(id);
-
-    if (result.Result) {
-      localStorage.setItem("user", JSON.stringify(result.ObjectResult));
-      return [true, null];
-    } else {
-      return [false, result.Exception];
-    }
-  }
-
   constructor(private apiService: ApiService) { }
 
-  public async Authenticate(login: Login): Promise<[result: boolean, error: HttpErrorResponse]> {
-    let result: ApiCallResult<UserSession>;
+  public async Signup(signup: Signup): Promise<OperationResult<UserSummary>> {
+    let result: OperationResult<UserSummary> = {} as OperationResult<UserSummary>;
+    const request = await this.apiService.CreateNewUser(signup);
 
-    result = await this.apiService.Authenticate(login);
+    result.Success = request.Success;
+    result.Error = request.Error;
+    if (request.Success) {
+      this.setSession(request.ObjectResult.session);
+      this.setUser(request.ObjectResult.user);
 
-    if (result.Result) {
-      this.setSession(result.ObjectResult);
-
-      await this.getLocalUserFromAPI(result.ObjectResult.userId);
-      return [true, null];
-    } else {
-      return [false, result.Exception];
+      result.Content = request.ObjectResult.user;
     }
+
+    return result;
   }
 
-  public async Logout(): Promise<[result: boolean, error: HttpErrorResponse]> {
-    let result: ApiCallResult<void>;
+  public async Authenticate(login: Login): Promise<OperationResult<void>> {
+    let result: OperationResult<void> = {} as OperationResult<void>;
+    let request: ApiCallResult<UserSession>;
 
-    result = await this.apiService.DeleteSession(this.Session.id);
+    request = await this.apiService.Authenticate(login);
+
+    result.Success = request.Success;
+    result.Error = request.Error;
+    if (request.Success) {
+      this.setSession(request.ObjectResult);
+
+      await this.getLocalUserFromAPI(request.ObjectResult.userId);
+    }
+
+    return result;
+  }
+
+  public async Logout(): Promise<OperationResult<void>> {
+    let result: OperationResult<void> = {} as OperationResult<void>;
+    const request = await this.apiService.DeleteSession(this.Session.id);
 
     this.DeleteSession();
 
-    return [result.Result, result.Exception];
+    result.Success = request.Success;
+    result.Error = request.Error;
+    return result;
   }
 
   public ValidateCurrentSession(): boolean {

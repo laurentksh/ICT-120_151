@@ -23,29 +23,27 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(): void {
+    this.errorOccured = false;
     if (!this.validateInput())
       return;
     
     this.authService.Authenticate(this.login).then((x) => {
-      const result = x[0];
-      const error = x[1];
-
-      if (result) {
+      if (x.Success) {
         //Go to /home
-        this.routeService.navigate(["home"])
+        this.routeService.navigate(["home"]);
       } else {
         this.errorOccured = true;
 
-        switch (error.status) {
+        switch (x.Error.status) {
           case 400:
-            this.errorText = "Invalid email or password."
+            this.errorText = "Invalid email or password.";
             break;
           case 401:
           case 404:
             this.errorText = "Email/Password does not match any account.";
             break;
           default:
-            this.errorText = "An unexpected error occured, please try again later.";
+            this.errorText = `An unexpected error occured, please try again later. (${x.Error.status} ${x.Error.statusText})`;
             break;
         }
       }

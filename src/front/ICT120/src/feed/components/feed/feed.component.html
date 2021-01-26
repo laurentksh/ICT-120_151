@@ -1,0 +1,11 @@
+<div [hidden]="publications != null"> <!-- Rework this -->
+    <loading-animation></loading-animation>
+</div>
+
+<div (scroll)="onWindowScroll($event)" *ngFor="let publication of publications">
+    <app-publication [Publication]="publication"></app-publication>
+</div>
+
+<div *ngIf="!publications?.length">
+    <div>No publications found !</div>
+</div>

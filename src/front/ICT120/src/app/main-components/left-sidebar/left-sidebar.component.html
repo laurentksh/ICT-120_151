@@ -1,13 +1,14 @@
 <div class="d-grid justify-content-center gap-2 btn-list">
     <a class="btn btn-primary btn-lg" routerLink="home">Home</a>
-    <a class="btn btn-primary btn-lg" routerLink="notifications">Notifications</a>
-    <a class="btn btn-primary btn-lg" routerLink="messages">Messages</a>
-    <ng-template [ngIf]="this.authService.IsAuthenticated" [ngIfElse="unlogged"]>
-        <a class="btn btn-primary btn-lg" [routerLink]="['/u', this.authService.LocalUser.Id]">Profile</a>
-    <a class="btn btn-primary btn-lg" routerLink="logout">Log out</a>
-    <a class="btn btn-primary btn-lg" routerLink="publication/new">New publication</a>
-    </ng-template>
+    <a class="btn btn-primary btn-lg" routerLink="notifications">Notifications <span class="badge bg-secondary">0</span></a>
+    <a class="btn btn-primary btn-lg" routerLink="messages">Messages <span class="badge bg-secondary">0</span></a>
+    <div class="d-grid justify-content-center gap-2" *ngIf="this.authService.IsAuthenticated; else unlogged">
+        <a class="btn btn-primary btn-lg" [routerLink]="['/u', this.authService.LocalUser.username]">Profile</a>
+        <a class="btn btn-primary btn-lg" routerLink="logout">Log out</a>
+        <a class="btn btn-primary btn-lg" routerLink="publication/new">New publication</a>
+    </div>
     <ng-template #unlogged>
         <a class="btn btn-primary btn-lg" routerLink="login">Login</a>
+        <a class="btn btn-primary btn-lg" routerLink="signup">Sign up</a>
     </ng-template>
 </div>

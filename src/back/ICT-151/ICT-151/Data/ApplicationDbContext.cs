@@ -36,12 +36,7 @@ namespace ICT_151.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            /*modelBuilder
-                .Ignore<Publication>()
-                .Ignore<Like>()
-                .Ignore<Repost>()
-                .Ignore<UserSession>()
-                .Ignore<User>();*/
+            
         }
 
     }

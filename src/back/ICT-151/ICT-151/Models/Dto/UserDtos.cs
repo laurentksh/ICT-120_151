@@ -85,6 +85,13 @@ namespace ICT_151.Models.Dto
         };
     }
 
+    public class CreatedUserViewModel
+    {
+        public UserSummaryViewModel User { get; set; }
+
+        public UserSessionViewModel Session { get; set; }
+    }
+
     public class UserSessionViewModel
     {
         public Guid Id { get; set; }

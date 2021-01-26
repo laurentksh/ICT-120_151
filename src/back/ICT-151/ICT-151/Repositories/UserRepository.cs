@@ -35,7 +35,7 @@ namespace ICT_151.Repositories
 
         Task<bool> PasswordMatches(Guid userId, string passwordHash);
 
-        Task<UserSummaryViewModel> CreateNew(CreateUserDto dto);
+        Task<CreatedUserViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost);
 
         Task<UserSummaryViewModel> Update(Guid userId, UpdateUserDto dto);
 
@@ -84,6 +84,31 @@ namespace ICT_151.Repositories
                 RemoteHost = remoteHost,
                 CreationDate = DateTime.UtcNow,
                 ExpiracyDate = dto.ExtendSession ? DateTime.UtcNow.Add(UserSession.ExtendedTokenValidity) : DateTime.UtcNow.Add(UserSession.DefaultTokenValidity),
+                UserId = user.Id
+            };
+
+            await ClearSessions(user.Id, remoteHost); //Clear active sessions
+
+            await DbContext.UserSessions.AddAsync(session);
+            await DbContext.SaveChangesAsync();
+
+            return session;
+        }
+
+        public async Task<UserSession> InternalAuthenticateUser(Guid userId, IPAddress remoteHost)
+        {
+            var user = DbContext.Users.SingleOrDefault(x => x.Id == userId);
+
+            //The following valiations can't really be done in the service so i'm doing them here.
+            if (user == null)
+                throw new DataNotFoundException("Email does not match any account.");
+
+            UserSession session = new UserSession()
+            {
+                Token = Utilities.StringUtilities.SecureRandom(64, Utilities.StringUtilities.AllowedChars.AlphabetNumbers),
+                RemoteHost = remoteHost,
+                CreationDate = DateTime.UtcNow,
+                ExpiracyDate = DateTime.UtcNow.Add(UserSession.DefaultTokenValidity),
                 UserId = user.Id
             };
 
@@ -175,7 +200,7 @@ namespace ICT_151.Repositories
             return user.PasswordHash == passwordHash;
         }
 
-        public async Task<UserSummaryViewModel> CreateNew(CreateUserDto dto)
+        public async Task<CreatedUserViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost)
         {
             var result = await DbContext.Users.AddAsync(new User
             {
@@ -189,11 +214,17 @@ namespace ICT_151.Repositories
 
             await DbContext.SaveChangesAsync();
 
-            return new UserSummaryViewModel
+            var session = await InternalAuthenticateUser(result.Entity.Id, remoteHost);
+
+            return new CreatedUserViewModel()
             {
-                Id = result.Entity.Id,
-                Username = result.Entity.Username,
-                CreationDate = result.Entity.CreationDate
+                User = new UserSummaryViewModel
+                {
+                    Id = result.Entity.Id,
+                    Username = result.Entity.Username,
+                    CreationDate = result.Entity.CreationDate
+                },
+                Session = UserSessionViewModel.FromUserSession(session)
             };
         }
 
@@ -210,6 +241,9 @@ namespace ICT_151.Repositories
 
             if (dto.Username != null)
                 user.Username = dto.Username;
+
+            if (dto.Biography != null)
+                user.Biography = dto.Biography;
 
             if (dto.BirthDay != null)
                 user.Birthday = dto.BirthDay.Value;

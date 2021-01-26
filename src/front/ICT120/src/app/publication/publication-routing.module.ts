@@ -1,13 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { PublicationComponent } from './components/publication/publication.component';
+import { NewPublicationComponent } from './components/new-publication/new-publication.component';
+import { AuthenticationGuard } from '../guards/authentication.guard';
+import { ViewPublicationComponent } from './components/view-publication/view-publication.component';
 
 const routes: Routes = [
   {
-    path: 'publication/:id',
-    component: PublicationComponent
+    path: 'publication/id/:id',
+    component: ViewPublicationComponent
   },
+  {
+    path: 'publication/new',
+    component: NewPublicationComponent,
+    canActivate: [AuthenticationGuard]
+  }
 ];
 
 @NgModule({

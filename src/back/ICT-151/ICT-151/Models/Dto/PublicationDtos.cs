@@ -20,7 +20,7 @@ namespace ICT_151.Models.Dto
 
         public int RepliesAmount { get; set; }
 
-        public int RetweetsAmount { get; set; }
+        public int RepostsAmount { get; set; }
 
         public int LikesAmount { get; set; }
 
@@ -48,7 +48,7 @@ namespace ICT_151.Models.Dto
                 User = UserSummaryViewModel.FromUser(publication.User),
 
                 RepliesAmount = publication.Replies != null ? publication.Replies.Count : -1,
-                RetweetsAmount = publication.Reposts != null ? publication.Reposts.Count : -1,
+                RepostsAmount = publication.Reposts != null ? publication.Reposts.Count : -1,
                 LikesAmount = publication.Likes != null ? publication.Likes.Count : -1,
 
                 Reposted = userId.HasValue && publication.Reposts.Any(x => x.UserId == userId),

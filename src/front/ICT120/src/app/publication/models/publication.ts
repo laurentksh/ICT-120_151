@@ -1,25 +1,27 @@
+import { UserSummary } from "src/app/user/models/user-summary";
+
 export interface Publication {
-    Id: string;
+    id: string;
 
-    CreationDate: Date;
+    creationDate: Date;
 
-    SubmissionType: string;
+    submissionType: string;
 
-    TextContent: string;
+    textContent: string;
 
-    MediaUrl: string;
+    mediaUrl: string;
 
-    RepliesAmount: number;
+    repliesAmount: number;
 
-    RetweetsAmount: number;
+    repostsAmount: number;
 
-    LikesAmount: number;
+    likesAmount: number;
 
-    Liked: boolean;
+    liked: boolean;
 
-    Reposted: boolean;
+    reposted: boolean;
 
-    User: string;
+    user: UserSummary;
 
-    ReplyPublicationId: string;
+    replyPublicationId: string;
 }

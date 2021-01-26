@@ -36,18 +36,16 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetMainFeed([FromQuery] int amount, [FromQuery] Guid? positionId)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 var result = await FeedService.GetMainFeed(amount, positionId, user?.Id);
 
                 return Ok(result);
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }
-            
+
         }
 
         /// <summary>
@@ -62,24 +60,18 @@ namespace ICT_151.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetUserFeed([FromRoute] string identifier, [FromQuery] int amount, [FromQuery] Guid? positionId)
         {
-            try
-            {
+            try {
                 var user = await HttpContext.GetUser();
                 List<Models.Dto.PublicationViewModel> result = null;
 
-                if (Guid.TryParse(identifier, out Guid id))
-                {
+                if (Guid.TryParse(identifier, out Guid id)) {
                     result = await FeedService.GetFeed(id, amount, positionId, user?.Id);
-                }
-                else
-                {
+                } else {
                     result = await FeedService.GetFeed(identifier, amount, positionId, user?.Id);
                 }
 
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
                 return ExceptionHandlerService.Handle(ex, Request);
             }

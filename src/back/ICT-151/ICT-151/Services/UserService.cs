@@ -90,7 +90,7 @@ namespace ICT_151.Services
         /// </summary>
         /// <param name="dto">Create user request payload</param>
         /// <returns>A summary of the user</returns>
-        Task<UserSummaryViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost);
+        Task<CreatedUserViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost);
 
         /// <summary>
         /// Updates the user with the specified parameters
@@ -286,14 +286,16 @@ namespace ICT_151.Services
             return await UserRepository.GetUser(username);
         }
 
-        public async Task<UserSummaryViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost)
+        public async Task<CreatedUserViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost)
         {
             if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
+            if (await Exists(dto.Username))
+                throw new ArgumentException("Username already taken.", nameof(dto));
 
             dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
             
-            return await UserRepository.CreateNew(dto);
+            return await UserRepository.CreateNew(dto, remoteHost);
         }
 
         public async Task<UserSummaryViewModel> Update(Guid userId, UpdateUserDto dto, IPAddress remoteHost)
@@ -302,7 +304,9 @@ namespace ICT_151.Services
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
 
             dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
-            dto.NewPassword = Utilities.StringUtilities.ComputeHash(dto.NewPassword, System.Security.Cryptography.HashAlgorithmName.SHA512);
+
+            if (dto.NewPassword != null)
+                dto.NewPassword = Utilities.StringUtilities.ComputeHash(dto.NewPassword, System.Security.Cryptography.HashAlgorithmName.SHA512);
 
             if (!await Exists(userId))
                 throw new UserNotFoundException("User does not exist.");

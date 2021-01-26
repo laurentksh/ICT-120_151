@@ -1,1 +1,20 @@
-<p>user works!</p>
+<div *ngIf="error; else elseBlock">
+    <div class="container alert alert-danger">
+        <p class="">{{ errorMsg }}</p>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <div class="container-fluid"> <!-- Profile header block -->
+        <div class="card mb-3">
+            <img class="card-img-top" src="{{ User.profilePictureUrl }}" alt="{{ User.username}}'s profile picture"/>
+            <div class="card-body">
+                <h5 class="card-title">{{ User.username }}</h5>
+                <p class="card-text">{{ User.biography }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid"> <!-- Feed -->
+        <app-feed [publications]="Publications"></app-feed>
+    </div>
+</ng-template>

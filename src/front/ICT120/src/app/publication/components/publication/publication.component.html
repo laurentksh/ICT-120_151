@@ -1,1 +1,30 @@
-<p>publication works!</p>
+<div class="card publication" (click)="doViewPublication()">
+    <div class="card-header">
+        <h5 class="card-title">{{ Publication.user.username }}</h5>
+        <small class="text-muted">{{ Publication.creationDate }}</small>
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{ Publication.textContent }}</p>
+
+        <div class="text-end">
+            <div *ngIf="this.Publication.reposted; else unreposted">
+                <button (click)="doRepost()"><i class="bi bi-megaphone-fill"></i> {{ Publication.repostsAmount }}</button>
+            </div>
+            <div #unreposted>
+                <button (click)="doRepost()"><i class="bi bi-megaphone"></i> {{ Publication.repostsAmount }}</button>
+            </div>
+    
+            <div *ngIf="this.Publication.liked; else unliked">
+                <button (click)="doLike()"><i class="bi bi-heart-fill"></i> {{ Publication.likesAmount }}</button>
+            </div>
+            <div #unliked>
+                <button (click)="doLike()"><i class="bi bi-heart"></i> {{ Publication.likesAmount }}</button>
+            </div>
+    
+            <div>
+                <i class="bi bi-chat-dots"></i>
+                <p>{{ Publication.repliesAmount }}</p>
+            </div>
+        </div>
+    </div>
+</div>
