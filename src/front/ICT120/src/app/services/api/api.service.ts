@@ -35,6 +35,7 @@ export class ApiService {
       params = {'amount': amount};
     else
       params = {'amount': amount, 'positionId': positionId};
+    
     try {
       result.ObjectResult = await this.httpClient.get<Publication[]>(this.BASE_URL + "Feed", { params: params}).toPromise();
     } catch (error) {
@@ -49,7 +50,12 @@ export class ApiService {
     let result: ApiCallResult<Publication[]> = {} as ApiCallResult<Publication[]>;
     result.Success = true;
 
-    const params: any = {'amount': amount, 'positionId': positionId};
+    let params: any;
+
+    if (positionId == null)
+      params = {'amount': amount};
+    else
+      params = {'amount': amount, 'positionId': positionId};
     
     try {
       result.ObjectResult = await this.httpClient.get<Publication[]>(this.BASE_URL + `Feed/${userId}`, { params: params}).toPromise();

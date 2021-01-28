@@ -184,6 +184,8 @@ namespace ICT_151.Services
 
         public async Task<UserSessionViewModel> AuthenticateUser(AuthUserDto dto, IPAddress remoteHost)
         {
+            if (dto is null)
+                throw new ArgumentNullException(nameof(dto));
             if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
             
@@ -264,7 +266,7 @@ namespace ICT_151.Services
 
         public async Task<User> GetFullUser(string username)
         {
-            if (!await Exists(username))
+            if (username is null || !await Exists(username))
                 throw new UserNotFoundException("User does not exist.");
 
             return await UserRepository.GetFullUser(username);
@@ -280,7 +282,7 @@ namespace ICT_151.Services
 
         public async Task<UserSummaryViewModel> GetUser(string username)
         {
-            if (!await Exists(username))
+            if (username is null || !await Exists(username))
                 throw new UserNotFoundException("User does not exist.");
 
             return await UserRepository.GetUser(username);
@@ -288,6 +290,8 @@ namespace ICT_151.Services
 
         public async Task<CreatedUserViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost)
         {
+            if (dto is null)
+                throw new ArgumentNullException(nameof(dto));
             if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
             if (await Exists(dto.Username))
@@ -300,6 +304,8 @@ namespace ICT_151.Services
 
         public async Task<UserSummaryViewModel> Update(Guid userId, UpdateUserDto dto, IPAddress remoteHost)
         {
+            if (dto is null)
+                throw new ArgumentNullException(nameof(dto));
             if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
 
@@ -353,6 +359,8 @@ namespace ICT_151.Services
 
         public async Task SendPrivateMessage(Guid userId, Guid recipientId, string message)
         {
+            if (message is null)
+                throw new ArgumentNullException(nameof(message));
             if (!await Exists(userId) || !await Exists(recipientId))
                 throw new UserNotFoundException("User does not exist.");
 

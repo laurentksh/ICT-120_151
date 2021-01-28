@@ -7,7 +7,10 @@ import { FeedModule } from 'src/feed/feed.module';
 
 
 @NgModule({
-  declarations: [UserComponent, UserSummaryComponent],
+  declarations: [
+    UserComponent,
+    UserSummaryComponent
+  ],
   imports: [
     CommonModule,
     UserRoutingModule,

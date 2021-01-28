@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Publication } from 'src/app/publication/models/publication';
 import { HostListener } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { PublicationService } from 'src/app/publication/services/publication.ser
 })
 export class FeedComponent implements OnInit {
   @Input() publications: Publication[];
+  @Output() loadMore = new EventEmitter<void>();
 
   constructor(private routerService: Router, private publicationService: PublicationService) { }
 
@@ -29,12 +30,14 @@ export class FeedComponent implements OnInit {
     this.publicationService.Like(publication.id, !publication.liked);
   }
 
-  @HostListener("window:scroll", ['$event']) onWindowScroll() {
+  /*@HostListener("window:scroll", ['$event'])*/ onWindowScroll(event: any) {
     // do some stuff here when the window is scrolled
     const verticalOffset = window.pageYOffset
       || document.documentElement.scrollTop
       || document.body.scrollTop || 0;
 
     console.log(verticalOffset);
+    console.log(event);
+    this.loadMore.emit()
   }
 }

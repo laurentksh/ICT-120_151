@@ -7,7 +7,7 @@ import { NewPublicationComponent } from './components/new-publication/new-public
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { ViewPublicationComponent } from './components/view-publication/view-publication.component';
-import { FeedModule } from 'src/feed/feed.module';
+//import { FeedModule } from 'src/feed/feed.module';
 
 
 
@@ -23,8 +23,10 @@ import { FeedModule } from 'src/feed/feed.module';
     FormsModule,
     CommonModule,
     BrowserModule,
-    FeedModule
+    //FeedModule
   ],
-  exports: [PublicationComponent]
+  exports: [
+    PublicationComponent
+  ]
 })
 export class PublicationModule { }
