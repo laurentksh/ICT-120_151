@@ -1,6 +1,7 @@
 # ICT-120_151
 
-![.NET Back-End](https://github.com/laurentksh/ICT-120_151/workflows/.NET/badge.svg?branch=master)
+![.NET Build - Test - Deploy](https://github.com/laurentksh/ICT-120_151/workflows/.NET%20Build%20-%20Test%20-%20Deploy/badge.svg)
+![Angular: Build - Deploy](https://github.com/laurentksh/ICT-120_151/workflows/Angular:%20Build%20-%20Deploy/badge.svg)
 
 Epsic ICT-120 &amp; 151 Exam projects (front-end &amp; back-end) written in C# and TS, using ASP.NET Core and Angular.
 
