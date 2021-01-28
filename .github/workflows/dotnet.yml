@@ -1,4 +1,4 @@
-name: .NET
+name: .NET Build - Test - Deploy
 
 on:
   push:
@@ -29,7 +29,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.100
+        dotnet-version: '5.0.x'
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -37,3 +37,12 @@ jobs:
     - name: Test
       # ${{ env.GITHUB_WORKSPACE }}/src/back/ICT-151/ICT-151.sln
       run: dotnet test --no-build --verbosity normal
+    - name: dotnet publish
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'ICT-151-Back'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c1d904916e184b4397136612b3161bc3 }}
+        package: ${{env.DOTNET_ROOT}}/myapp
