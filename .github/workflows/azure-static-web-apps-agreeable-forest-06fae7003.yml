@@ -22,10 +22,9 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match you app requirements. ######
-          #app_build_command: 'ng build --prod --base-href /'
+          app_build_command: 'npm run build -- --prod --base-href /'
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/src/front/ICT120" # App source code path
           #api_location: "/src/front/ICT120/api" # Api source code path - optional
-          base_href: /
           output_location: "dist/ICT120/" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
