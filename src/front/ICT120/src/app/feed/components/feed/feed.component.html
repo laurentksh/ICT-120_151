@@ -2,7 +2,7 @@
     <loading-animation></loading-animation>
 </div>
 
-<div class="publications-container" (scroll)="onWindowScroll($event)" *ngIf="!publications?.length; else noPublications">
+<div class="publications-container" (scroll)="onWindowScroll($event)" *ngIf="publications?.length; else noPublications">
     <app-publication [Publication]="publication" *ngFor="let publication of publications"></app-publication>
 </div>
 

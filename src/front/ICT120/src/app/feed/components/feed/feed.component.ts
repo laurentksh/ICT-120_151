@@ -30,7 +30,8 @@ export class FeedComponent implements OnInit {
     this.publicationService.Like(publication.id, !publication.liked);
   }
 
-  /*@HostListener("window:scroll", ['$event'])*/ onWindowScroll(event: any) {
+  /*@HostListener("window:scroll", ['$event'])*/
+  public onWindowScroll(event: any) {
     // do some stuff here when the window is scrolled
     const verticalOffset = window.pageYOffset
       || document.documentElement.scrollTop

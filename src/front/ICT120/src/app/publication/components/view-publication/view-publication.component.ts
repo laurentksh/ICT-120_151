@@ -58,4 +58,15 @@ export class ViewPublicationComponent implements OnInit {
       this.errorMsg = "Could not load replies.";
     }
   }
+
+  /*@HostListener("window:scroll", ['$event'])*/
+  public onWindowScroll(event: any) {
+    // do some stuff here when the window is scrolled
+    const verticalOffset = window.pageYOffset
+      || document.documentElement.scrollTop
+      || document.body.scrollTop || 0;
+
+    console.log(verticalOffset);
+    console.log(event);
+  }
 }

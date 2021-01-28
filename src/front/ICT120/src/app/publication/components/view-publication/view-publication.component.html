@@ -6,5 +6,11 @@
 
 <!--<app-feed [publications]="this.Replies"></app-feed>-->
 <div class="replies">
+    <div class="publications-container" (scroll)="onWindowScroll($event)" *ngIf="Replies?.length; else noPublications">
+        <app-publication [Publication]="reply" *ngFor="let reply of Replies"></app-publication>
+    </div>
     
+    <ng-template #noPublications>
+        <div>No publications found !</div>
+    </ng-template>
 </div>

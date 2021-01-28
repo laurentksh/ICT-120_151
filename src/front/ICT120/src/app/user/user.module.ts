@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './components/user/user.component';
 import { UserSummaryComponent } from './components/user-summary/user-summary.component'
-import { FeedModule } from 'src/feed/feed.module';
+import { FeedModule } from '../feed/feed.module';
 
 
 @NgModule({

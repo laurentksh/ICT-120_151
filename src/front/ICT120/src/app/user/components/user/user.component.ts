@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Publication } from 'src/app/publication/models/publication';
-import { FeedService } from 'src/feed/services/feed.service';
+import { FeedService } from '../../../feed/services/feed.service';
 import { UserSummary } from '../../models/user-summary';
 import { UserService } from '../../services/user.service';
 

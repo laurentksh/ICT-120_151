@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Publication } from 'src/app/publication/models/publication';
 import { ApiService } from 'src/app/services/api/api.service';
 import { OperationResult } from 'src/app/services/models/operation-result';
-import { FeedService } from 'src/feed/services/feed.service';
+import { FeedService } from '../../../feed/services/feed.service';
 
 @Component({
   selector: 'app-home',

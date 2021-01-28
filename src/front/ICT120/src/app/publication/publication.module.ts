@@ -7,8 +7,6 @@ import { NewPublicationComponent } from './components/new-publication/new-public
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { ViewPublicationComponent } from './components/view-publication/view-publication.component';
-//import { FeedModule } from 'src/feed/feed.module';
-
 
 
 @NgModule({
@@ -18,12 +16,11 @@ import { ViewPublicationComponent } from './components/view-publication/view-pub
     NewPublicationComponent,
     ViewPublicationComponent
   ],
-  imports: [
+  imports: [ //WARNING: Importing FeedModule from here causes a "Maximum call stack size exceeded" exception !
     PublicationRoutingModule,
     FormsModule,
     CommonModule,
     BrowserModule,
-    //FeedModule
   ],
   exports: [
     PublicationComponent
