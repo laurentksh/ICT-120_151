@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: .NET Back-End CI
+    name: .NET Back-End CI/CD
     defaults:
       run:
         working-directory: ./src/back/ICT-151/
