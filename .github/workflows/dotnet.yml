@@ -3,11 +3,7 @@ name: .NET Build - Test - Deploy
 on:
   push:
     branches: [ master ]
-    paths: [ "src/**", ".github/workflows/**" ]
-  pull_request:
-    paths: [ "src/**", ".github/workflows/**" ]
-    branches:
-      - "*"
+    paths: [ "src/**", ".github/workflows/dotnet.yml" ]
 
 jobs:
   build:
