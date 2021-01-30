@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,19 @@ namespace ICT_151
             {
                 x.AddConsole();
                 x.SetMinimumLevel(LogLevel.Debug);
+                x.AddAzureWebAppDiagnostics();
+            });
+
+            services.Configure<AzureFileLoggerOptions>(x =>
+            {
+                x.FileName = "azure-diags";
+                x.FileSizeLimit = 50 * 1024;
+                x.RetainedFileCountLimit = 5;
+            });
+
+            services.Configure<AzureBlobLoggerOptions>(x =>
+            {
+                x.BlobName = "app-log.txt";
             });
 
             services.AddHealthChecks();
