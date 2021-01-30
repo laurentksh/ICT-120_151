@@ -1,9 +1,9 @@
-name: .NET Build - Test - Deploy
+name: ".NET Back-End: Build - Test - Deploy"
 
 on:
   push:
     branches: [ master ]
-    paths: [ "src/**", ".github/workflows/dotnet.yml" ]
+    paths: [ "src/back/**", ".github/workflows/dotnet.yml" ]
 
 jobs:
   build:

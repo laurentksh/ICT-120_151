@@ -1,9 +1,9 @@
-name: "Angular: Build - Deploy"
+name: "Angular Front-End: Build - Deploy"
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
+    paths: [ "src/front/**", ".github/workflows/azure-static-web-apps-agreeable-forest-06fae7003.yml" ]
 
 jobs:
   build_and_deploy_job:
