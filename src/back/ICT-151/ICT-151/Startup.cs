@@ -71,12 +71,14 @@ namespace ICT_151
                     }
                 });
             });
-
+            
             services.AddLogging(x =>
             {
                 x.AddConsole();
                 x.SetMinimumLevel(LogLevel.Debug);
             });
+
+            services.AddHealthChecks();
 
             services.AddCors(x =>
             {
@@ -131,6 +133,12 @@ namespace ICT_151
                 app.UseCors();
             }
             
+            if (env.IsProduction()) {
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
+                app.UseCors();
+            }
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
@@ -139,6 +147,10 @@ namespace ICT_151
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                if (env.IsProduction()) {
+                    endpoints.MapHealthChecks("/api/Health");
+                }
             });
         }
     }
