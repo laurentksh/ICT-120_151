@@ -3,66 +3,20 @@ using System;
 using ICT_151.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ICT_151.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210115105620_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.1");
-
-            modelBuilder.Entity("ICT_151.Models.Block", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("BlockTargetId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("BlockerId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlockTargetId");
-
-                    b.HasIndex("BlockerId");
-
-                    b.ToTable("Blocks");
-                });
-
-            modelBuilder.Entity("ICT_151.Models.Follow", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("FollowTargetId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("FollowerId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FollowTargetId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("Follows");
-                });
 
             modelBuilder.Entity("ICT_151.Models.Like", b =>
                 {
@@ -86,33 +40,6 @@ namespace ICT_151.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Likes");
-                });
-
-            modelBuilder.Entity("ICT_151.Models.PrivateMessage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MessageContent")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("RecipientId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipientId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("PrivateMessages");
                 });
 
             modelBuilder.Entity("ICT_151.Models.Publication", b =>
@@ -186,13 +113,6 @@ namespace ICT_151.Migrations
                     b.Property<int>("AccountType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Biography")
-                        .HasMaxLength(200)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Birthday")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 
@@ -246,44 +166,6 @@ namespace ICT_151.Migrations
                     b.ToTable("UserSessions");
                 });
 
-            modelBuilder.Entity("ICT_151.Models.Block", b =>
-                {
-                    b.HasOne("ICT_151.Models.User", "BlockTarget")
-                        .WithMany()
-                        .HasForeignKey("BlockTargetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ICT_151.Models.User", "Blocker")
-                        .WithMany()
-                        .HasForeignKey("BlockerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Blocker");
-
-                    b.Navigation("BlockTarget");
-                });
-
-            modelBuilder.Entity("ICT_151.Models.Follow", b =>
-                {
-                    b.HasOne("ICT_151.Models.User", "FollowTarget")
-                        .WithMany()
-                        .HasForeignKey("FollowTargetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ICT_151.Models.User", "Follower")
-                        .WithMany()
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Follower");
-
-                    b.Navigation("FollowTarget");
-                });
-
             modelBuilder.Entity("ICT_151.Models.Like", b =>
                 {
                     b.HasOne("ICT_151.Models.Publication", "Publication")
@@ -301,25 +183,6 @@ namespace ICT_151.Migrations
                     b.Navigation("Publication");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ICT_151.Models.PrivateMessage", b =>
-                {
-                    b.HasOne("ICT_151.Models.User", "Recipient")
-                        .WithMany()
-                        .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ICT_151.Models.User", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Recipient");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("ICT_151.Models.Publication", b =>

@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICT_151.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210131194511_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20210118160350_Biography")]
+    partial class Biography
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.1");
 
             modelBuilder.Entity("ICT_151.Models.Block", b =>
                 {
@@ -295,7 +295,7 @@ namespace ICT_151.Migrations
                         .IsRequired();
 
                     b.HasOne("ICT_151.Models.User", "User")
-                        .WithMany("Likes")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -350,7 +350,7 @@ namespace ICT_151.Migrations
                         .IsRequired();
 
                     b.HasOne("ICT_151.Models.User", "User")
-                        .WithMany("Reposts")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -382,10 +382,6 @@ namespace ICT_151.Migrations
 
             modelBuilder.Entity("ICT_151.Models.User", b =>
                 {
-                    b.Navigation("Likes");
-
-                    b.Navigation("Reposts");
-
                     b.Navigation("UserSessions");
                 });
 #pragma warning restore 612, 618

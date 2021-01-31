@@ -9,7 +9,6 @@ namespace ICT_151.Models
 {
     public class Like
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         public DateTime CreationDate { get; set; }

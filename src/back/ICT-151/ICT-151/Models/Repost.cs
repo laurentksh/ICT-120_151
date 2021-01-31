@@ -12,7 +12,6 @@ namespace ICT_151.Models
     /// </summary>
     public class Repost
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         public DateTime CreationDate { get; set; }

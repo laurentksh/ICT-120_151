@@ -12,7 +12,6 @@ namespace ICT_151.Models
     /// </summary>
     public class Publication
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         [Required]
