@@ -30,9 +30,10 @@ namespace ICT_151.Services
         private IPublicationService PublicationService;
         private IFeedRepository FeedRepository;
 
-        public FeedService(IUserService userService, IFeedRepository feedRepository)
+        public FeedService(IUserService userService, IPublicationService publicationService, IFeedRepository feedRepository)
         {
             UserService = userService;
+            PublicationService = publicationService;
             FeedRepository = feedRepository;
         }
 
