@@ -6,17 +6,17 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace ICT_151.Migrations
+namespace ICT_151.Migrations.SQLiteMigrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210117032833_ModelUpdate1")]
-    partial class ModelUpdate1
+    [DbContext(typeof(SQLiteApplicationDbContext))]
+    [Migration("20210131230525_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.1");
+                .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("ICT_151.Models.Block", b =>
                 {
@@ -188,6 +188,13 @@ namespace ICT_151.Migrations
                     b.Property<int>("AccountType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Biography")
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Birthday")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 
@@ -288,7 +295,7 @@ namespace ICT_151.Migrations
                         .IsRequired();
 
                     b.HasOne("ICT_151.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -343,7 +350,7 @@ namespace ICT_151.Migrations
                         .IsRequired();
 
                     b.HasOne("ICT_151.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Reposts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -375,6 +382,10 @@ namespace ICT_151.Migrations
 
             modelBuilder.Entity("ICT_151.Models.User", b =>
                 {
+                    b.Navigation("Likes");
+
+                    b.Navigation("Reposts");
+
                     b.Navigation("UserSessions");
                 });
 #pragma warning restore 612, 618

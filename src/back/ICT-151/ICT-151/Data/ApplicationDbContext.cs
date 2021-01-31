@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ICT_151.Data
 {
-    public class ApplicationDbContext : DbContext
+    public abstract class ApplicationDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
 
@@ -29,7 +29,7 @@ namespace ICT_151.Data
         public DbSet<PrivateMessage> PrivateMessages { get; set; }
 
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
         }

@@ -108,7 +108,7 @@ namespace ICT_151
             });
 
             if (Environment.IsProduction()) {
-                services.AddDbContext<ApplicationDbContext>(x =>
+                services.AddDbContext<ApplicationDbContext, SQLServerApplicationDbContext>(x =>
                 {
                     x.UseSqlServer(Configuration.GetConnectionString("ICT151_MSSQL_PROD"), y =>
                     {
@@ -118,7 +118,7 @@ namespace ICT_151
                     });
                 }, ServiceLifetime.Scoped);
             } else {
-                services.AddDbContext<ApplicationDbContext>(x =>
+                services.AddDbContext<ApplicationDbContext, SQLiteApplicationDbContext>(x =>
                 {
                     x.UseSqlite("DataSource=AppDb.db", y =>
                     {
@@ -169,7 +169,7 @@ namespace ICT_151
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
 
                 using (var scope = app.ApplicationServices.CreateScope()) {
-                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    var db = scope.ServiceProvider.GetRequiredService<SQLServerApplicationDbContext>();
                     db.Database.Migrate();
                 }
             }
