@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using ICT_151.Models.Dto;
@@ -8,6 +9,7 @@ namespace ICT_151.Models
 {
     public class PrivateMessage
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         public string MessageContent { get; set; }

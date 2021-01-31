@@ -12,6 +12,7 @@ namespace ICT_151.Models
 {
     public class User //I was going to use IdentityUser<Guid> in the first place but I realised it was too much work implementing it.
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         /// <summary>
@@ -84,6 +85,7 @@ namespace ICT_151.Models
         public static readonly TimeSpan DefaultTokenValidity = TimeSpan.FromHours(4);
         public static readonly TimeSpan ExtendedTokenValidity = TimeSpan.FromDays(30);
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
         [Required]
