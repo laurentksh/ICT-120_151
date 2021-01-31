@@ -25,12 +25,15 @@ namespace ICT_151
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -72,7 +75,7 @@ namespace ICT_151
                     }
                 });
             });
-            
+
             services.AddLogging(x =>
             {
                 x.AddConsole();
@@ -104,12 +107,27 @@ namespace ICT_151
                 });
             });
 
-            services.AddDbContext<ApplicationDbContext>(x => 
-            {
-                x
-                .UseSqlite("DataSource=AppDb.db")
-                .ConfigureWarnings(y => y.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
-            }, ServiceLifetime.Scoped);
+            if (Environment.IsProduction()) {
+                services.AddDbContext<ApplicationDbContext>(x =>
+                {
+                    x.UseSqlServer(Configuration.GetConnectionString("ICT151_MSSQL_PROD"), y =>
+                    {
+                        y.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                        y.EnableRetryOnFailure(5);
+                        y.CommandTimeout(5);
+                    });
+                }, ServiceLifetime.Scoped);
+            } else {
+                services.AddDbContext<ApplicationDbContext>(x =>
+                {
+                    x.UseSqlite("DataSource=AppDb.db", y =>
+                    {
+                        y.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                        y.CommandTimeout(5);
+                    })
+                    .ConfigureWarnings(y => y.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
+                }, ServiceLifetime.Scoped);
+            }
 
             services
                 .AddAuthentication(options =>
@@ -144,13 +162,16 @@ namespace ICT_151
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
-                app.UseCors();
             }
-            
+
             if (env.IsProduction()) {
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
-                app.UseCors();
+
+                using (var scope = app.ApplicationServices.CreateScope()) {
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    db.Database.Migrate();
+                }
             }
 
             app.UseHttpsRedirection();
@@ -162,9 +183,7 @@ namespace ICT_151
             {
                 endpoints.MapControllers();
 
-                if (env.IsProduction()) {
-                    endpoints.MapHealthChecks("/api/Health");
-                }
+                endpoints.MapHealthChecks("/api/Health");
             });
         }
     }
