@@ -122,7 +122,7 @@ namespace ICT_151
                 });
             }, ServiceLifetime.Scoped);*/
 
-            services.AddDbContext<ApplicationDbContext, SQLiteApplicationDbContext>(x =>
+            services.AddDbContext<ApplicationDbContext>(x =>
             {
                 x.UseSqlite("DataSource=AppDb.db", y =>
                 {
@@ -155,6 +155,9 @@ namespace ICT_151
 
             services.AddTransient<IPublicationRepository, PublicationRepository>();
             services.AddTransient<IPublicationService, PublicationService>();
+
+            services.AddTransient<IMediaRepository, MediaRepository>();
+            services.AddTransient<IMediaService, MediaService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -171,7 +174,7 @@ namespace ICT_151
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
 
                 using (var scope = app.ApplicationServices.CreateScope()) {
-                    var db = scope.ServiceProvider.GetRequiredService<SQLServerApplicationDbContext>();
+                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                     db.Database.Migrate();
                 }
             }

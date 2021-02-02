@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ICT_151.Data
 {
-    public abstract class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
 
@@ -30,7 +30,7 @@ namespace ICT_151.Data
 
         public DbSet<Media> Medias { get; set; }
 
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
