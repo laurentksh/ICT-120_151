@@ -175,7 +175,12 @@ namespace ICT_151
 
                 using (var scope = app.ApplicationServices.CreateScope()) {
                     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    db.Database.Migrate();
+
+                    if (db.Database.GetPendingMigrations().Any()) {
+                        using (var tx = db.Database.BeginTransaction()) {
+                            db.Database.Migrate();
+                        }
+                    }
                 }
             }
 
