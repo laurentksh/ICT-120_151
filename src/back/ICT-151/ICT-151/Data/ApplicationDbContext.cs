@@ -28,6 +28,7 @@ namespace ICT_151.Data
 
         public DbSet<PrivateMessage> PrivateMessages { get; set; }
 
+        public DbSet<Media> Medias { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using ICT_151.Authentication;
 using ICT_151.Data;
 using ICT_151.Repositories;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -107,27 +109,27 @@ namespace ICT_151
                 });
             });
 
-            if (Environment.IsProduction()) {
-                services.AddDbContext<ApplicationDbContext, SQLServerApplicationDbContext>(x =>
+            services.AddScoped(x => new BlobServiceClient(Configuration.GetConnectionString("AZ_BLOB_STORAGE")));
+
+
+            /*services.AddDbContext<ApplicationDbContext, SQLServerApplicationDbContext>(x =>
+            {
+                x.UseSqlServer(Configuration.GetConnectionString("ICT151_MSSQL"), y =>
                 {
-                    x.UseSqlServer(Configuration.GetConnectionString("ICT151_MSSQL_PROD"), y =>
-                    {
-                        y.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
-                        y.EnableRetryOnFailure(5);
-                        y.CommandTimeout(5);
-                    });
-                }, ServiceLifetime.Scoped);
-            } else {
-                services.AddDbContext<ApplicationDbContext, SQLiteApplicationDbContext>(x =>
+                    y.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                    y.EnableRetryOnFailure(5);
+                    y.CommandTimeout(5);
+                });
+            }, ServiceLifetime.Scoped);*/
+
+            services.AddDbContext<ApplicationDbContext, SQLiteApplicationDbContext>(x =>
+            {
+                x.UseSqlite("DataSource=AppDb.db", y =>
                 {
-                    x.UseSqlite("DataSource=AppDb.db", y =>
-                    {
-                        y.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
-                        y.CommandTimeout(5);
-                    })
-                    .ConfigureWarnings(y => y.Ignore(RelationalEventId.MultipleCollectionIncludeWarning));
-                }, ServiceLifetime.Scoped);
-            }
+                    y.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                    y.CommandTimeout(5);
+                });
+            }, ServiceLifetime.Scoped);
 
             services
                 .AddAuthentication(options =>

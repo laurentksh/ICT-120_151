@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using ICT_151.Models.Dto;
@@ -17,10 +18,12 @@ namespace ICT_151.Models
 
         public User Sender { get; set; }
 
+        [ForeignKey(nameof(Sender))]
         public Guid SenderId { get; set; }
 
         public User Recipient { get; set; }
 
+        [ForeignKey(nameof(Recipient))]
         public Guid RecipientId { get; set; }
     }
 

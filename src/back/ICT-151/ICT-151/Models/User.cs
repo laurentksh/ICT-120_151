@@ -50,9 +50,29 @@ namespace ICT_151.Models
 
         //public List<Publication> Publications { get; set; } //Can't be used since publications also contains replies
 
+        [InverseProperty(nameof(Repost.User))]
         public List<Repost> Reposts { get; set; }
 
+        [InverseProperty(nameof(Like.User))]
         public List<Like> Likes { get; set; }
+
+        [InverseProperty(nameof(Block.Blocker))]
+        public List<Block> Blocking { get; set; }
+
+        [InverseProperty(nameof(Block.BlockTarget))]
+        public List<Block> Blocked { get; set; }
+
+        [InverseProperty(nameof(Follow.Follower))]
+        public List<Follow> Following { get; set; }
+
+        [InverseProperty(nameof(Follow.FollowTarget))]
+        public List<Follow> Followed { get; set; }
+
+        [InverseProperty(nameof(PrivateMessage.Recipient))]
+        public List<PrivateMessage> Sending { get; set; }
+
+        [InverseProperty(nameof(PrivateMessage.Sender))]
+        public List<PrivateMessage> Receiving { get; set; }
     }
 
     public enum AccountType

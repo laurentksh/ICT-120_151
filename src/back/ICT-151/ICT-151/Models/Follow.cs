@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +21,8 @@ namespace ICT_151.Models
         /// <summary>
         /// The user following another user
         /// </summary>
+        [ForeignKey(nameof(Follower))]
+        [Required]
         public Guid FollowerId { get; set; }
 
         /// <summary>
@@ -29,6 +33,8 @@ namespace ICT_151.Models
         /// <summary>
         /// The user being followed
         /// </summary>
+        [ForeignKey(nameof(FollowTarget))]
+        [Required]
         public Guid FollowTargetId { get; set; }
     }
 }

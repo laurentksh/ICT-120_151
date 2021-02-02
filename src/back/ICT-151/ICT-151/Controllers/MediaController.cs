@@ -15,6 +15,7 @@ namespace ICT_151.Controllers
     {
         private ILogger<MediaController> Logger;
         private IExceptionHandlerService ExceptionHandlerService;
+        private IMediaService MediaService;
 
         public MediaController(ILogger<MediaController> logger, IExceptionHandlerService exceptionHandlerService)
         {
@@ -22,7 +23,7 @@ namespace ICT_151.Controllers
             ExceptionHandlerService = exceptionHandlerService;
         }
 
-        [HttpGet("image/default_pp")]
+        [HttpGet("default_pp")]
         public async Task<IActionResult> GetDefaultProfilePictureImage()
         {
             try {
@@ -33,8 +34,8 @@ namespace ICT_151.Controllers
             }
         }
 
-        [HttpGet("image/{id}")]
-        public async Task<IActionResult> GetImage([FromRoute] Guid id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMedia([FromRoute] Guid id)
         {
             try {
 
@@ -45,32 +46,8 @@ namespace ICT_151.Controllers
             }
         }
 
-        [HttpPost("image")]
-        public async Task<IActionResult> PostImage(IFormFile formFile)
-        {
-            try {
-
-                return Ok();
-            } catch (Exception ex) {
-                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
-                return ExceptionHandlerService.Handle(ex, Request);
-            }
-        }
-
-        [HttpGet("video/{id}")]
-        public async Task<IActionResult> GetVideo([FromRoute] Guid id)
-        {
-            try {
-
-                return Ok();
-            } catch (Exception ex) {
-                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
-                return ExceptionHandlerService.Handle(ex, Request);
-            }
-        }
-
-        [HttpPost("video")]
-        public async Task<IActionResult> PostVideo(IFormFile formFile)
+        [HttpPost]
+        public async Task<IActionResult> PostMedia(IFormFile formFile)
         {
             try {
 
