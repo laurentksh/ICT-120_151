@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ICT_151.Utilities;
+using ICT_151.Data;
 
 namespace ICT_151
 {
@@ -13,7 +15,10 @@ namespace ICT_151
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args)
+                .Build()
+                .CreateDatabase<ApplicationDbContext>()
+                .Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

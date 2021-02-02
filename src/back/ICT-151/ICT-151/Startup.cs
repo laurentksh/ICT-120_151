@@ -173,7 +173,7 @@ namespace ICT_151
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
 
-                using (var scope = app.ApplicationServices.CreateScope()) {
+                /*using (var scope = app.ApplicationServices.CreateScope()) {
                     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                     if (db.Database.GetPendingMigrations().Any()) {
@@ -181,7 +181,7 @@ namespace ICT_151
                             db.Database.Migrate();
                         }
                     }
-                }
+                }*/
             }
 
             app.UseHttpsRedirection();
