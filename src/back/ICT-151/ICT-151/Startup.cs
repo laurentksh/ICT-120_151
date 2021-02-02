@@ -99,6 +99,8 @@ namespace ICT_151
 
             services.AddHealthChecks();
 
+            services.AddApplicationInsightsTelemetry();
+
             services.AddCors(x =>
             {
                 x.AddDefaultPolicy(y =>
@@ -110,7 +112,6 @@ namespace ICT_151
             });
 
             services.AddScoped(x => new BlobServiceClient(Configuration.GetConnectionString("AZ_BLOB_STORAGE")));
-
 
             /*services.AddDbContext<ApplicationDbContext, SQLServerApplicationDbContext>(x =>
             {
@@ -158,6 +159,8 @@ namespace ICT_151
 
             services.AddTransient<IMediaRepository, MediaRepository>();
             services.AddTransient<IMediaService, MediaService>();
+
+            services.AddTransient<IAzureBlobStorageService, AzureBlobStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

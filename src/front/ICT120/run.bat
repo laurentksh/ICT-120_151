@@ -1,4 +1,3 @@
-cls
 @ECHO OFF
 
 :update

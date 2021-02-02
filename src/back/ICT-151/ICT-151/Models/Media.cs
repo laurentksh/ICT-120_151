@@ -15,6 +15,8 @@ namespace ICT_151.Models
 
         public long FileSize { get; set; }
 
+        public string BlobName { get; set; }
+
 
         public Guid OwnerId { get; set; }
 

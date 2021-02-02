@@ -11,6 +11,7 @@ import { Publication } from 'src/app/publication/models/publication';
 import { Repost } from 'src/app/publication/models/repost';
 import { UpdateUser } from 'src/app/user/models/update-user';
 import { UserSummary } from 'src/app/user/models/user-summary';
+import { EnvironmentService } from 'src/environments/service/environment.service';
 import { ApiCallResult } from './models/api-call-result';
 
 /**
@@ -22,7 +23,9 @@ import { ApiCallResult } from './models/api-call-result';
 export class ApiService {
   private readonly BASE_URL: string = "https://localhost:5001/api/";
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private envService: EnvironmentService) {
+    this.BASE_URL = envService.apiBaseUrl;
+  }
 
   //#region Feed
   public async GetMainFeed(amount: number, positionId: string): Promise<ApiCallResult<Publication[]>> {
