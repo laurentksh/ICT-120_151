@@ -23,9 +23,10 @@ namespace ICT_151.Utilities
             using (var scope = host.Services.CreateScope()) {
                 var services = scope.ServiceProvider;
 
-                if (services.GetRequiredService<IWebHostEnvironment>().IsProduction()) {
+                var env = services.GetRequiredService<IHostEnvironment>();
+                if (!env.IsProduction()) {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogWarning("Not running in production, skipped DB Migrations");
+                    logger.LogWarning("Not running in production, skipped DB Migrations. Current Environment: " + env.EnvironmentName);
                     return host;
                 }
 
