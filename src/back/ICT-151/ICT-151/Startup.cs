@@ -124,7 +124,7 @@ namespace ICT_151
 
             services.AddDbContext<ApplicationDbContext>(x =>
             {
-                x.UseSqlite("DataSource=AppDb.db", y =>
+                x.UseSqlite(Configuration.GetConnectionString("APPDB"), y =>
                 {
                     y.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
                     y.CommandTimeout(30);
