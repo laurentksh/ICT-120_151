@@ -127,7 +127,7 @@ namespace ICT_151
                 x.UseSqlite("DataSource=AppDb.db", y =>
                 {
                     y.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
-                    y.CommandTimeout(5);
+                    y.CommandTimeout(30);
                 });
             }, ServiceLifetime.Scoped);
 
