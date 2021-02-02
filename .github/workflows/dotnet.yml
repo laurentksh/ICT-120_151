@@ -40,5 +40,5 @@ jobs:
       with:
         app-name: 'ICT-151-Back'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c1d904916e184b4397136612b3161bc3 }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C1D904916E184B4397136612B3161BC3 }}
         package: ${{env.DOTNET_ROOT}}/myapp
