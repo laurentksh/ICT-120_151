@@ -10,16 +10,16 @@
             <div *ngIf="this.Publication.reposted; else unreposted">
                 <button (click)="doRepost()"><i class="bi bi-megaphone-fill"></i> {{ Publication.repostsAmount }}</button>
             </div>
-            <div #unreposted>
+            <ng-template #unreposted>
                 <button (click)="doRepost()"><i class="bi bi-megaphone"></i> {{ Publication.repostsAmount }}</button>
-            </div>
+            </ng-template>
     
             <div *ngIf="this.Publication.liked; else unliked">
                 <button (click)="doLike()"><i class="bi bi-heart-fill"></i> {{ Publication.likesAmount }}</button>
             </div>
-            <div #unliked>
+            <ng-template #unliked>
                 <button (click)="doLike()"><i class="bi bi-heart"></i> {{ Publication.likesAmount }}</button>
-            </div>
+            </ng-template>
     
             <div>
                 <i class="bi bi-chat-dots"></i>
