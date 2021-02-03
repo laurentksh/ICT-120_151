@@ -85,8 +85,10 @@ namespace ICT_151.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     MediaType = table.Column<int>(type: "INTEGER", nullable: false),
+                    Container = table.Column<int>(type: "INTEGER", nullable: false),
                     MimeType = table.Column<string>(type: "TEXT", nullable: true),
                     FileSize = table.Column<long>(type: "INTEGER", nullable: false),
+                    BlobName = table.Column<string>(type: "TEXT", nullable: true),
                     OwnerId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -101,18 +103,47 @@ namespace ICT_151.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserSessions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Token = table.Column<string>(type: "TEXT", nullable: false),
+                    RemoteHost = table.Column<string>(type: "TEXT", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ExpiracyDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSessions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserSessions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PrivateMessages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     MessageContent = table.Column<string>(type: "TEXT", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    MediaId = table.Column<Guid>(type: "TEXT", nullable: false),
                     SenderId = table.Column<Guid>(type: "TEXT", nullable: false),
                     RecipientId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PrivateMessages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PrivateMessages_Medias_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Medias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PrivateMessages_Users_RecipientId",
                         column: x => x.RecipientId,
@@ -135,13 +166,19 @@ namespace ICT_151.Migrations
                     CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     SubmissionType = table.Column<int>(type: "INTEGER", nullable: false),
                     TextContent = table.Column<string>(type: "TEXT", maxLength: 280, nullable: false),
-                    MediaUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    MediaId = table.Column<Guid>(type: "TEXT", nullable: true),
                     UserId = table.Column<Guid>(type: "TEXT", nullable: false),
                     ReplyPublicationId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Publications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Publications_Medias_MediaId",
+                        column: x => x.MediaId,
+                        principalTable: "Medias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Publications_Publications_ReplyPublicationId",
                         column: x => x.ReplyPublicationId,
@@ -150,28 +187,6 @@ namespace ICT_151.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Publications_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserSessions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Token = table.Column<string>(type: "TEXT", nullable: false),
-                    RemoteHost = table.Column<string>(type: "TEXT", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ExpiracyDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserSessions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserSessions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -266,6 +281,12 @@ namespace ICT_151.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PrivateMessages_MediaId",
+                table: "PrivateMessages",
+                column: "MediaId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PrivateMessages_RecipientId",
                 table: "PrivateMessages",
                 column: "RecipientId");
@@ -274,6 +295,12 @@ namespace ICT_151.Migrations
                 name: "IX_PrivateMessages_SenderId",
                 table: "PrivateMessages",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Publications_MediaId",
+                table: "Publications",
+                column: "MediaId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Publications_ReplyPublicationId",
@@ -313,9 +340,6 @@ namespace ICT_151.Migrations
                 name: "Likes");
 
             migrationBuilder.DropTable(
-                name: "Medias");
-
-            migrationBuilder.DropTable(
                 name: "PrivateMessages");
 
             migrationBuilder.DropTable(
@@ -326,6 +350,9 @@ namespace ICT_151.Migrations
 
             migrationBuilder.DropTable(
                 name: "Publications");
+
+            migrationBuilder.DropTable(
+                name: "Medias");
 
             migrationBuilder.DropTable(
                 name: "Users");

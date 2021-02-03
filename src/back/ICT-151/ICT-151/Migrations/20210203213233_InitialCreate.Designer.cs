@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ICT_151.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210202012954_InitialCreate")]
+    [Migration("20210203213233_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,6 +96,12 @@ namespace ICT_151.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("BlobName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Container")
+                        .HasColumnType("INTEGER");
+
                     b.Property<long>("FileSize")
                         .HasColumnType("INTEGER");
 
@@ -124,6 +130,9 @@ namespace ICT_151.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("MediaId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("MessageContent")
                         .HasColumnType("TEXT");
 
@@ -134,6 +143,9 @@ namespace ICT_151.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MediaId")
+                        .IsUnique();
 
                     b.HasIndex("RecipientId");
 
@@ -151,7 +163,7 @@ namespace ICT_151.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("MediaUrl")
+                    b.Property<Guid?>("MediaId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("ReplyPublicationId")
@@ -169,6 +181,9 @@ namespace ICT_151.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MediaId")
+                        .IsUnique();
 
                     b.HasIndex("ReplyPublicationId");
 
@@ -343,6 +358,12 @@ namespace ICT_151.Migrations
 
             modelBuilder.Entity("ICT_151.Models.PrivateMessage", b =>
                 {
+                    b.HasOne("ICT_151.Models.Media", "Media")
+                        .WithOne("PrivateMessage")
+                        .HasForeignKey("ICT_151.Models.PrivateMessage", "MediaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ICT_151.Models.User", "Recipient")
                         .WithMany("Sending")
                         .HasForeignKey("RecipientId")
@@ -355,6 +376,8 @@ namespace ICT_151.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Media");
+
                     b.Navigation("Recipient");
 
                     b.Navigation("Sender");
@@ -362,6 +385,10 @@ namespace ICT_151.Migrations
 
             modelBuilder.Entity("ICT_151.Models.Publication", b =>
                 {
+                    b.HasOne("ICT_151.Models.Media", "Media")
+                        .WithOne("Publication")
+                        .HasForeignKey("ICT_151.Models.Publication", "MediaId");
+
                     b.HasOne("ICT_151.Models.Publication", "ReplyPublication")
                         .WithMany("Replies")
                         .HasForeignKey("ReplyPublicationId");
@@ -371,6 +398,8 @@ namespace ICT_151.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Media");
 
                     b.Navigation("ReplyPublication");
 
@@ -405,6 +434,13 @@ namespace ICT_151.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ICT_151.Models.Media", b =>
+                {
+                    b.Navigation("PrivateMessage");
+
+                    b.Navigation("Publication");
                 });
 
             modelBuilder.Entity("ICT_151.Models.Publication", b =>

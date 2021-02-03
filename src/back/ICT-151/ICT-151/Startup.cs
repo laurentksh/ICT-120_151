@@ -160,7 +160,7 @@ namespace ICT_151
             services.AddTransient<IMediaRepository, MediaRepository>();
             services.AddTransient<IMediaService, MediaService>();
 
-            services.AddTransient<IAzureBlobStorageService, AzureBlobStorageService>();
+            services.AddTransient<IAzureBlobStorageRepository, AzureBlobStorageRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

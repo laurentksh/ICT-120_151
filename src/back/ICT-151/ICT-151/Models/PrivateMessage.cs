@@ -16,6 +16,11 @@ namespace ICT_151.Models
         public DateTime CreationDate { get; set; }
 
 
+        public Media Media { get; set; }
+
+        [ForeignKey(nameof(Media))]
+        public Guid MediaId { get; set; }
+
         public User Sender { get; set; }
 
         [ForeignKey(nameof(Sender))]
@@ -36,6 +41,8 @@ namespace ICT_151.Models
         public DateTime CreationDateUtc { get; set; }
 
 
+        public MediaViewModel Media { get; set; }
+
         public UserSummaryViewModel Sender { get; set; }
 
         public UserSummaryViewModel Recipient { get; set; }
@@ -45,6 +52,7 @@ namespace ICT_151.Models
             Id = msg.Id,
             MessageContent = msg.MessageContent,
             CreationDateUtc = msg.CreationDate,
+            Media = msg.Media == null ? null : MediaViewModel.FromMedia(msg.Media),
             Sender = UserSummaryViewModel.FromUser(msg.Sender),
             Recipient = UserSummaryViewModel.FromUser(msg.Recipient)
         };

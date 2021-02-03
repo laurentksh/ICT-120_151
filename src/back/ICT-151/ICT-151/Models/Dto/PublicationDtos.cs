@@ -16,7 +16,7 @@ namespace ICT_151.Models.Dto
 
         public string TextContent { get; set; }
 
-        public string MediaUrl { get; set; }
+        public Guid? MediaId { get; set; }
 
         public int RepliesAmount { get; set; }
 
@@ -42,7 +42,7 @@ namespace ICT_151.Models.Dto
                 CreationDate = publication.CreationDate,
                 SubmissionType = publication.SubmissionType,
                 TextContent = publication.TextContent,
-                MediaUrl = publication.MediaUrl,
+                MediaId = publication.Media == null ? null : publication.Media.Id,
 
                 ReplyPublicationId = publication.ReplyPublicationId,
                 User = UserSummaryViewModel.FromUser(publication.User),
@@ -65,7 +65,7 @@ namespace ICT_151.Models.Dto
         [Required, StringLength(280, MinimumLength = 1)]
         public string TextContent { get; set; }
 
-        public string MediaUrl { get; set; }
+        public Guid? MediaId { get; set; }
 
         public Guid? ReplyPublicationId { get; set; }
     }

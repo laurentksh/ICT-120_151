@@ -23,7 +23,10 @@ namespace ICT_151.Models
         [Required, StringLength(280, MinimumLength = 1)]
         public string TextContent { get; set; }
 
-        public string MediaUrl { get; set; } //I could have made a media table in my DB but it would take too much time so i'm only sending the url (%domain%/api/Media/image/%guid%) which returns the media from the file manager.
+        [ForeignKey(nameof(Media))]
+        public Guid? MediaId { get; set; }
+
+        public Media Media { get; set; }
 
         [Required]
         [ForeignKey(nameof(User))]

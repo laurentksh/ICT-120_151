@@ -93,7 +93,7 @@ namespace ICT_151.Repositories
             {
                 SubmissionType = publication.SubmissionType,
                 TextContent = publication.TextContent,
-                MediaUrl = publication.MediaUrl,
+                MediaId = publication.MediaId,
                 ReplyPublicationId = publication.ReplyPublicationId,
 
                 CreationDate = DateTime.UtcNow,
