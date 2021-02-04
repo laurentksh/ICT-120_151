@@ -27,7 +27,7 @@ namespace ICT_151.Repositories
         public async Task<IEnumerable<PublicationViewModel>> GetMainFeed(int amount, Guid? positionId, Guid? requestUserId)
         {
             var publications = DbContext.Publications
-                .OrderBy(x => x.CreationDate)
+                .OrderByDescending(x => x.CreationDate)
                 .Include(x => x.User)
                 .Include(x => x.Replies)
                 .Include(x => x.Reposts)

@@ -244,5 +244,40 @@ namespace ICT_151.Controllers
                 return ExceptionHandlerService.Handle(ex, Request);
             }
         }
+
+        [HttpPost("profilepicture")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> SetProfilePicture([FromQuery] Guid mediaId)
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await UserService.SetProfilePicture(user.Id, mediaId);
+
+                return Ok();
+            } catch (Exception ex) {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
+
+        [HttpDelete("profilepicture")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> RemoveProfilePicture()
+        {
+            try {
+                var user = await HttpContext.GetUser();
+                await UserService.RemoveProfilePicture(user.Id);
+
+                return Ok();
+            } catch (Exception ex) {
+                Logger.LogWarning(ex, "An error occured: " + ex.Message ?? "undefined");
+                return ExceptionHandlerService.Handle(ex, Request);
+            }
+        }
     }
 }

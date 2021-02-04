@@ -53,6 +53,10 @@ namespace ICT_151.Repositories
 
         Task UnBlock(Guid userId, Guid targetId);
 
+        Task SetProfilePicture(Guid userId, Guid mediaId);
+
+        Task RemoveProfilePicture(Guid userId);
+
         Task<bool> Exists(Guid id);
 
         Task<bool> Exists(string username);
@@ -309,6 +313,22 @@ namespace ICT_151.Repositories
         public async Task UnBlock(Guid userId, Guid targetId)
         {
             DbContext.Blocks.Remove(await DbContext.Blocks.SingleAsync(x => x.BlockerId == userId && x.BlockTargetId == targetId));
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task SetProfilePicture(Guid userId, Guid mediaId)
+        {
+            var user = DbContext.Users.Single(x => x.Id == userId);
+            user.ProfilePictureMediaId = mediaId;
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveProfilePicture(Guid userId)
+        {
+            var user = DbContext.Users.Single(x => x.Id == userId);
+            user.ProfilePictureMediaId = null;
+
             await DbContext.SaveChangesAsync();
         }
 

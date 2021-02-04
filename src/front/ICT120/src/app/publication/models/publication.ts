@@ -9,7 +9,7 @@ export interface Publication {
 
     textContent: string;
 
-    mediaUrl: string;
+    mediaId: string;
 
     repliesAmount: number;
 

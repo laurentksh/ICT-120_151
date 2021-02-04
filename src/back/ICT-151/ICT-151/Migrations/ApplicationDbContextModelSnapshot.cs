@@ -114,8 +114,6 @@ namespace ICT_151.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
-
                     b.ToTable("Medias");
                 });
 
@@ -244,7 +242,7 @@ namespace ICT_151.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfilePictureUrl")
+                    b.Property<Guid?>("ProfilePictureMediaId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Username")
@@ -253,6 +251,9 @@ namespace ICT_151.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProfilePictureMediaId")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -343,17 +344,6 @@ namespace ICT_151.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ICT_151.Models.Media", b =>
-                {
-                    b.HasOne("ICT_151.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
             modelBuilder.Entity("ICT_151.Models.PrivateMessage", b =>
                 {
                     b.HasOne("ICT_151.Models.Media", "Media")
@@ -423,6 +413,15 @@ namespace ICT_151.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ICT_151.Models.User", b =>
+                {
+                    b.HasOne("ICT_151.Models.Media", "ProfilePictureMedia")
+                        .WithOne("Owner")
+                        .HasForeignKey("ICT_151.Models.User", "ProfilePictureMediaId");
+
+                    b.Navigation("ProfilePictureMedia");
+                });
+
             modelBuilder.Entity("ICT_151.Models.UserSession", b =>
                 {
                     b.HasOne("ICT_151.Models.User", "User")
@@ -436,6 +435,8 @@ namespace ICT_151.Migrations
 
             modelBuilder.Entity("ICT_151.Models.Media", b =>
                 {
+                    b.Navigation("Owner");
+
                     b.Navigation("PrivateMessage");
 
                     b.Navigation("Publication");

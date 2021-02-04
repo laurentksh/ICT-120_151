@@ -1,30 +1,43 @@
-<div class="card publication" (click)="doViewPublication()">
-    <div class="card-header">
+<mat-card class="publication-card" (click)="doViewPublication()">
+    <mat-card-header>
         <h5 class="card-title">{{ Publication.user.username }}</h5>
-        <small class="text-muted">{{ Publication.creationDate }}</small>
-    </div>
-    <div class="card-body">
+        <small class="text-muted">{{ Publication.creationDate }}</small> <!-- Format date -->
+    </mat-card-header>
+    <mat-card-content>
         <p class="card-text">{{ Publication.textContent }}</p>
-
-        <div class="text-end">
-            <div *ngIf="this.Publication.reposted; else unreposted">
-                <button (click)="doRepost()"><i class="bi bi-megaphone-fill"></i> {{ Publication.repostsAmount }}</button>
-            </div>
-            <ng-template #unreposted>
-                <button (click)="doRepost()"><i class="bi bi-megaphone"></i> {{ Publication.repostsAmount }}</button>
-            </ng-template>
-    
-            <div *ngIf="this.Publication.liked; else unliked">
-                <button (click)="doLike()"><i class="bi bi-heart-fill"></i> {{ Publication.likesAmount }}</button>
-            </div>
-            <ng-template #unliked>
-                <button (click)="doLike()"><i class="bi bi-heart"></i> {{ Publication.likesAmount }}</button>
-            </ng-template>
-    
-            <div>
-                <i class="bi bi-chat-dots"></i>
-                <p>{{ Publication.repliesAmount }}</p>
-            </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <div *ngIf="this.Publication.reposted; else unreposted">
+            <button mat-icon-button (click)="doRepost()"><i class="bi bi-megaphone-fill"></i> {{ Publication.repostsAmount }}</button>
         </div>
-    </div>
-</div>
+        <ng-template #unreposted>
+            <button mat-icon-button (click)="doRepost()"><i class="bi bi-megaphone"></i> {{ Publication.repostsAmount }}</button>
+        </ng-template>
+
+        <div *ngIf="this.Publication.liked; else unliked">
+            <button mat-icon-button (click)="doLike()"><i class="bi bi-heart-fill"></i> {{ Publication.likesAmount }}</button>
+        </div>
+        <ng-template #unliked>
+            <button mat-icon-button (click)="doLike()"><i class="bi bi-heart"></i> {{ Publication.likesAmount }}</button>
+        </ng-template>
+
+        <button mat-icon-button>
+            <i class="bi bi-chat-dots"></i>
+            <span>{{ Publication.repliesAmount }}</span>
+        </button>
+
+        <a mat-icon-button [matMenuTriggerFor]="pubMenu"><i class="bi bi-three-dots-vertical"></i></a>
+        <mat-menu #pubMenu="matMenu" xPosition="before" yPosition="below">
+            <button mat-menu-item [cdkCopyToClipboard]="getPath()">
+                <i class="bi bi-share-fill"></i>
+                <span>Copy link</span>
+            </button>
+            <ng-template [ngIf]="isOwner()">
+                <button mat-menu-item>
+                    <i class="bi bi-trash-fill"></i>
+                    <span>Delete</span>
+                </button>
+            </ng-template>
+        </mat-menu>
+    </mat-card-actions>
+</mat-card>

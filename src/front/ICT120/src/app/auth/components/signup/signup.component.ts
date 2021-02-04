@@ -28,7 +28,7 @@ export class SignupComponent implements OnInit {
       if (x.Success) {
         //Go to /u/{username}
         debugger;
-        this.routeService.navigate(["/u", { identifier: x.Content.username}]);
+        this.routeService.navigate(["u/", x.Content.username]);
       } else {
         this.errorOccured = true;
 

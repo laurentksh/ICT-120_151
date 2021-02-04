@@ -11,6 +11,7 @@ import { PublicationService } from 'src/app/publication/services/publication.ser
 })
 export class FeedComponent implements OnInit {
   @Input() publications: Publication[];
+  @Input() hasError: boolean;
   @Output() loadMore = new EventEmitter<void>();
 
   constructor(private routerService: Router, private publicationService: PublicationService) { }

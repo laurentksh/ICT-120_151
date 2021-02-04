@@ -16,7 +16,11 @@ namespace ICT_151.Services
 
         Task<MediaViewModel> GetDefaultProfilePicture();
 
+        Task<bool> HasAccess(Guid? userId, Guid mediaId);
+
         Task<MediaViewModel> UploadMedia(Guid userId, CreateMediaDTO dto, MediaContainer container);
+
+        Task<bool> Exists(Guid mediaId);
     }
 
     public class MediaService : IMediaService
@@ -54,6 +58,11 @@ namespace ICT_151.Services
             };
         }
 
+        public async Task<bool> HasAccess(Guid? userId, Guid mediaId)
+        {
+            return await Repository.HasAccess(userId, mediaId);
+        }
+
         public async Task<MediaViewModel> UploadMedia(Guid userId, CreateMediaDTO dto, MediaContainer container)
         {
             if (dto.Media.ContentType.ToMediaType() == MediaType.Unknown)
@@ -62,6 +71,11 @@ namespace ICT_151.Services
                 throw new ArgumentException("Media container not found/must have a value.", nameof(container));
 
             return await Repository.UploadMedia(userId, dto, container);
+        }
+
+        public async Task<bool> Exists(Guid mediaId)
+        {
+            return await Repository.Exists(mediaId);
         }
     }
 }

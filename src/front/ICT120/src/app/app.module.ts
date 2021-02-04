@@ -14,6 +14,7 @@ import { SessionTokenInterceptor } from './http-interceptors/session-token.inter
 import { HtmlAddonsModule } from './html-addons/html-addons.module';
 import { EnvironmentService } from 'src/environments/service/environment.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material/button';
 
 
 
@@ -32,9 +33,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     
     CommonModule,
     BrowserModule,
-    BrowserAnimationsModule, //Angular Browser Animations
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+
+    //Angular
+    BrowserAnimationsModule, //Angular Browser Animations
+    MatButtonModule
   ],
   bootstrap: [AppComponent],
   providers: [

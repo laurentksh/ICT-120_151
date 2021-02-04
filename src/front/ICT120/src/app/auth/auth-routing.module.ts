@@ -18,11 +18,6 @@ const routes: Routes = [
     path: "logout",
     component: LogoutComponent,
     canActivate: [AuthenticationGuard]
-  },
-  {
-    path: "test",
-    component: LoginComponent,
-    canActivate: [AuthenticationGuard]
   }
 ];
 

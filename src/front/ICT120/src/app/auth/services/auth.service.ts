@@ -40,7 +40,7 @@ export class AuthService {
     result.biography = json.biography;
     result.creationDate = new Date(json.creationDate);
     result.birthday = new Date(json.birthday);
-    result.profilePictureUrl = json.profilePictureUrl;
+    result.profilePictureId = json.profilePictureId;
 
     return result;
   }

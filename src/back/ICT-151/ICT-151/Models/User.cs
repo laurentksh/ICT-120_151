@@ -43,8 +43,10 @@ namespace ICT_151.Models
         [Required]
         public DateTime CreationDate { get; set; }
 
-        public string ProfilePictureUrl { get; set; } = "/api/Media/image/default_pp";
+        [ForeignKey(nameof(ProfilePictureMedia))]
+        public Guid? ProfilePictureMediaId { get; set; } = null; //Will be set to default_pp when returning to client.
 
+        public Media ProfilePictureMedia { get; set; }
 
         public List<UserSession> UserSessions { get; set; }
 

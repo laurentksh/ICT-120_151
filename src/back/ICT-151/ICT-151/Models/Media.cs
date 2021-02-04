@@ -20,6 +20,8 @@ namespace ICT_151.Models
 
         public string BlobName { get; set; }
 
+        [InverseProperty(nameof(Models.User.ProfilePictureMedia))]
+        public User User { get; set; }
 
         [InverseProperty(nameof(Models.Publication.Media))]
         public Publication Publication { get; set; }
@@ -28,6 +30,7 @@ namespace ICT_151.Models
         public PrivateMessage PrivateMessage { get; set; }
 
 
+        [ForeignKey(nameof(Owner))]
         public Guid OwnerId { get; set; }
 
         public User Owner { get; set; }
@@ -35,16 +38,16 @@ namespace ICT_151.Models
 
     public enum MediaType
     {
-        Unknown,
-        Image,
-        Video
+        Unknown = 0,
+        Image = 1,
+        Video = 2
     }
 
     public enum MediaContainer
     {
-        Unknown,
-        Publication,
-        ProfilePicture,
-        PrivateMessage
+        Unknown = 0,
+        Publication = 1,
+        ProfilePicture = 2,
+        PrivateMessage = 3
     }
 }

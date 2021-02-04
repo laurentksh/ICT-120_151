@@ -7,6 +7,10 @@ import { NewPublicationComponent } from './components/new-publication/new-public
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { ViewPublicationComponent } from './components/view-publication/view-publication.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 
 @NgModule({
@@ -21,6 +25,10 @@ import { ViewPublicationComponent } from './components/view-publication/view-pub
     FormsModule,
     CommonModule,
     BrowserModule,
+    ClipboardModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatCardModule
   ],
   exports: [
     PublicationComponent

@@ -158,6 +158,17 @@ namespace ICT_151.Services
         /// <returns></returns>
         Task UnBlock(Guid userId, Guid toUnBlockId);
 
+        /// <summary>Set profile picture for a specified user.</summary>
+        /// <param name="userId">User Id</param>
+        /// <param name="mediaId">Media Id</param>
+        /// <returns></returns>
+        Task SetProfilePicture(Guid userId, Guid mediaId);
+
+        /// <summary>Remove the profile picture of a specified user.</summary>
+        /// <param name="userId">User Id</param>
+        /// <returns></returns>
+        Task RemoveProfilePicture(Guid userId);
+
         /// <summary>
         /// Check if a user with the specified GUID exists
         /// </summary>
@@ -176,10 +187,12 @@ namespace ICT_151.Services
     public class UserService : IUserService
     {
         private IUserRepository UserRepository;
+        private IMediaService MediaService;
 
-        public UserService(IUserRepository repository)
+        public UserService(IUserRepository repository, IMediaService mediaService)
         {
             UserRepository = repository;
+            MediaService = mediaService;
         }
 
         public async Task<UserSessionViewModel> AuthenticateUser(AuthUserDto dto, IPAddress remoteHost)
@@ -389,6 +402,25 @@ namespace ICT_151.Services
                 throw new UserNotFoundException("User does not exist.");
 
             await UserRepository.UnBlock(userId, toUnBlockId);
+        }
+
+        public async Task SetProfilePicture(Guid userId, Guid mediaId)
+        {
+            if (!await Exists(userId) || !await MediaService.Exists(mediaId))
+                throw new UserNotFoundException("User does not exist.");
+
+            if (!await MediaService.HasAccess(userId, mediaId))
+                throw new ForbiddenException($"User {userId} does not have access to resource {mediaId}");
+
+            await UserRepository.SetProfilePicture(userId, mediaId);
+        }
+
+        public async Task RemoveProfilePicture(Guid userId)
+        {
+            if (!await Exists(userId))
+                throw new UserNotFoundException("User does not exist.");
+
+            await UserRepository.RemoveProfilePicture(userId);
         }
 
         public async Task<bool> Exists(Guid id)

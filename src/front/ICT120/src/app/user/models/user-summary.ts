@@ -1,7 +1,7 @@
 export interface UserSummary {
     id: string
     username: string
-    profilePictureUrl: string
+    profilePictureId: string
     biography: string
     birthday: Date
     creationDate: Date

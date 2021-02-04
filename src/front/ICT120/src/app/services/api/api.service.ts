@@ -5,6 +5,7 @@ import { CreatedUserViewModel } from 'src/app/auth/models/created-user-view-mode
 import { Login } from 'src/app/auth/models/login';
 import { Signup } from 'src/app/auth/models/signup';
 import { UserSession } from 'src/app/auth/models/user-session';
+import { MediaViewModel } from 'src/app/media/models/media-view-model';
 import { CreatePublication } from 'src/app/publication/models/create-publication';
 import { Like } from 'src/app/publication/models/like';
 import { Publication } from 'src/app/publication/models/publication';
@@ -21,7 +22,7 @@ import { ApiCallResult } from './models/api-call-result';
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly BASE_URL: string = "https://localhost:5001/api/";
+  public readonly BASE_URL: string = "https://localhost:5001/api/";
 
   constructor(private httpClient: HttpClient, private envService: EnvironmentService) {
     this.BASE_URL = envService.apiBaseUrl;
@@ -72,12 +73,12 @@ export class ApiService {
   //#endregion Feed
 
   //#region Media
-  public async GetImage(mediaId: string): Promise<ApiCallResult<Blob>> {
-    let result: ApiCallResult<Blob> = {} as ApiCallResult<Blob>;
+  public async GetMedia(mediaId: string): Promise<ApiCallResult<MediaViewModel>> {
+    let result: ApiCallResult<MediaViewModel> = {} as ApiCallResult<MediaViewModel>;
     result.Success = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get(this.BASE_URL + `Media/image/${mediaId}`, { responseType: "blob" }).toPromise();
+      result.ObjectResult = await this.httpClient.get<MediaViewModel>(this.BASE_URL + `Media/${mediaId}`).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -86,12 +87,12 @@ export class ApiService {
     return result;
   }
 
-  public async GetVideo(mediaId: string): Promise<ApiCallResult<Blob>> {
+  public async GetBlob(url: string): Promise<ApiCallResult<Blob>> {
     let result: ApiCallResult<Blob> = {} as ApiCallResult<Blob>;
     result.Success = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get(this.BASE_URL + `Media/video/${mediaId}`, { responseType: "blob" }).toPromise();
+      result.ObjectResult = await this.httpClient.get(url, { responseType: "blob" }).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;

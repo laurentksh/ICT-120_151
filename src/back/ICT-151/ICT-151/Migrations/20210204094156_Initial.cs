@@ -3,10 +3,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ICT_151.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Medias",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    MediaType = table.Column<int>(type: "INTEGER", nullable: false),
+                    Container = table.Column<int>(type: "INTEGER", nullable: false),
+                    MimeType = table.Column<string>(type: "TEXT", nullable: true),
+                    FileSize = table.Column<long>(type: "INTEGER", nullable: false),
+                    BlobName = table.Column<string>(type: "TEXT", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medias", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -20,11 +37,17 @@ namespace ICT_151.Migrations
                     AccountType = table.Column<int>(type: "INTEGER", nullable: false),
                     AccountDeactivationType = table.Column<int>(type: "INTEGER", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ProfilePictureUrl = table.Column<string>(type: "TEXT", nullable: true)
+                    ProfilePictureMediaId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Medias_ProfilePictureMediaId",
+                        column: x => x.ProfilePictureMediaId,
+                        principalTable: "Medias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,51 +97,6 @@ namespace ICT_151.Migrations
                     table.ForeignKey(
                         name: "FK_Follows_Users_FollowTargetId",
                         column: x => x.FollowTargetId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Medias",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    MediaType = table.Column<int>(type: "INTEGER", nullable: false),
-                    Container = table.Column<int>(type: "INTEGER", nullable: false),
-                    MimeType = table.Column<string>(type: "TEXT", nullable: true),
-                    FileSize = table.Column<long>(type: "INTEGER", nullable: false),
-                    BlobName = table.Column<string>(type: "TEXT", nullable: true),
-                    OwnerId = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Medias", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Medias_Users_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserSessions",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Token = table.Column<string>(type: "TEXT", nullable: false),
-                    RemoteHost = table.Column<string>(type: "TEXT", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ExpiracyDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserSessions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserSessions_Users_UserId",
-                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -187,6 +165,28 @@ namespace ICT_151.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Publications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserSessions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Token = table.Column<string>(type: "TEXT", nullable: false),
+                    RemoteHost = table.Column<string>(type: "TEXT", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ExpiracyDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSessions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserSessions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -276,11 +276,6 @@ namespace ICT_151.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Medias_OwnerId",
-                table: "Medias",
-                column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PrivateMessages_MediaId",
                 table: "PrivateMessages",
                 column: "MediaId",
@@ -323,6 +318,12 @@ namespace ICT_151.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_ProfilePictureMediaId",
+                table: "Users",
+                column: "ProfilePictureMediaId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserSessions_UserId",
                 table: "UserSessions",
                 column: "UserId");
@@ -352,10 +353,10 @@ namespace ICT_151.Migrations
                 name: "Publications");
 
             migrationBuilder.DropTable(
-                name: "Medias");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Medias");
         }
     }
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FeedComponent } from './components/feed/feed.component';
 import { PublicationModule } from 'src/app/publication/publication.module';
 import { HtmlAddonsModule } from 'src/app/html-addons/html-addons.module';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 
@@ -13,7 +14,8 @@ import { HtmlAddonsModule } from 'src/app/html-addons/html-addons.module';
   imports: [
     CommonModule,
     PublicationModule,
-    HtmlAddonsModule
+    HtmlAddonsModule,
+    MatProgressBarModule
   ],
   exports: [
     FeedComponent

@@ -103,7 +103,7 @@ namespace ICT_151
 
             services.AddCors(x =>
             {
-                x.AddDefaultPolicy(y =>
+                x.AddPolicy("DevPolicy", y =>
                 {
                     y.AllowAnyOrigin();
                     y.AllowAnyHeader();
@@ -170,6 +170,7 @@ namespace ICT_151
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
+                app.UseCors("DevPolicy");
             }
 
             if (env.IsProduction()) {

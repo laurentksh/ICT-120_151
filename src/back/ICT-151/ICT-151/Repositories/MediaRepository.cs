@@ -82,16 +82,21 @@ namespace ICT_151.Repositories
         public async Task<bool> HasAccess(Guid? userId, Guid mediaId)
         {
             var media = DbContext.Medias
-                .Include(x => x.PrivateMessage)
+                //.Include(x => x.PrivateMessage)
                 .Single(x => x.Id == mediaId);
 
-            if (media.Container != MediaContainer.PrivateMessage)
+            if (userId == null)
+                return false;
+
+            return media.OwnerId == userId;
+
+            /*if (media.Container != MediaContainer.PrivateMessage)
                 return true;
 
             if (userId == null || media.PrivateMessage.RecipientId == userId || media.PrivateMessage.SenderId == userId)
                 return true;
             else
-                return false;
+                return false;*/
         }
 
         public async Task<bool> Exists(Guid mediaId)

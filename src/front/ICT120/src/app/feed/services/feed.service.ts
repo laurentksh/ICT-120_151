@@ -27,7 +27,7 @@ export class FeedService {
   }
 
   public async GetFeed(amount: number, positionId: string, userId: string): Promise<OperationResult<Publication[]>> {
-    let request: OperationResult<Publication[]>;
+    let request: OperationResult<Publication[]> = {} as OperationResult<Publication[]>;
     const apiResult: ApiCallResult<Publication[]> = await this.apiService.GetFeed(amount, positionId, userId);
 
     request.Success = apiResult.Success;

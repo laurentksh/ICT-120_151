@@ -27,10 +27,14 @@ export class HomeComponent implements OnInit {
     if (result.Success) {
       this.errorOccured = false;
       this.publications = result.Content;
-      this.lastPublication = result.Content[result.Content.length - 1].id;
+
+      if (this.publications.length == 0)
+        this.lastPublication = null;
+      else
+        this.lastPublication = result.Content[result.Content.length - 1].id;
     } else {
       this.errorOccured = true;
-      this.publications = null;
+      this.publications = new Array<Publication>();
       
       switch (result.Error?.status) {
         default:

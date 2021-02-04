@@ -65,7 +65,7 @@ namespace ICT_151.Models.Dto
 
         public string Username { get; set; }
 
-        public string ProfilePictureUrl { get; set; }
+        public string ProfilePictureId { get; set; }
 
         public string Biography { get; set; }
 
@@ -78,7 +78,7 @@ namespace ICT_151.Models.Dto
         {
             Id = user.Id,
             Username = user.Username,
-            ProfilePictureUrl = user.ProfilePictureUrl,
+            ProfilePictureId = user.ProfilePictureMediaId == null ? "default_pp" : user.ProfilePictureMediaId.ToString(),
             Biography = user.Biography,
             Birthday = user.Birthday,
             CreationDate = user.CreationDate,
