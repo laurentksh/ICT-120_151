@@ -148,6 +148,9 @@ namespace ICT_151
             //Custom services
             services.AddSingleton<IExceptionHandlerService, DefaultExceptionHandlerService>();
 
+            services.AddTransient<IMediaRepository, MediaRepository>();
+            services.AddTransient<IMediaService, MediaService>();
+
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
 
@@ -156,9 +159,6 @@ namespace ICT_151
 
             services.AddTransient<IPublicationRepository, PublicationRepository>();
             services.AddTransient<IPublicationService, PublicationService>();
-
-            services.AddTransient<IMediaRepository, MediaRepository>();
-            services.AddTransient<IMediaService, MediaService>();
 
             services.AddTransient<IAzureBlobStorageRepository, AzureBlobStorageRepository>();
         }
