@@ -1,11 +1,11 @@
-# ICT-120_151 {#title}
+# ICT-120_151
 ![.NET Back-End: Build - Test - Deploy](https://github.com/laurentksh/ICT-120_151/workflows/.NET%20Back-End:%20Build%20-%20Test%20-%20Deploy/badge.svg)
 ![Angular Front-End: Build - Deploy](https://github.com/laurentksh/ICT-120_151/workflows/Angular%20Front-End:%20Build%20-%20Deploy/badge.svg)
 
 [Epsic](https://www.epsic.ch/) ICT-120 &amp; 151 Exam projects (front-end &amp; back-end) written in C# and TS, using ASP.NET Core and Angular.
 
 
-## Installation & Testing {#installation}
+## Installation & Testing
 A "production" application instance hosted on Azure is available here:
 
 - Back-End  : https://ict-151-back.azurewebsites.net
@@ -15,14 +15,14 @@ However, if you still want to run a local instance, there are quite a few steps 
 
 Running the back-end server first is recommended.
 
-## Back-End {#backend}
+## Back-End
 
-### Dependencies {#backend-dep}
+### Dependencies
 To run this project you will need to install the .NET 5 SDK from [Microsoft](https://dotnet.microsoft.com/download).
 
 If you want to use medias (publication images, profile pictures, etc), you will need to install Azurite, a server clone of Azure.
 
-### (Optional) Installing Azurite {#azurite-install}
+### (Optional) Installing Azurite
 To install Azurite, you will need NPM (i.e >= Node.JS 8.0). (For more information see section [Front-End > Dependencies](#front-dependencies))
 
 Run the following command to install Azurite:
@@ -33,7 +33,7 @@ npm install -g azurite
 
 This command will install Azurite globally.
 
-### (Optional) Running Azurite {#azurite-run}
+### (Optional) Running Azurite
 
 To start Azurite, use the following command:
 
@@ -44,14 +44,14 @@ azurite --silent --location c:\azurite --debug c:\azurite\debug.log
 You can freely change the location as it will contain the files uploaded using the application.
 
 
-### Running {#backend-run}
+### Running
 Go to /src/back/ICT-151/ICT-151/ and use:
 
 ```bash
 dotnet run --configuration=Release
 ```
 
-### Testing {#backend-test}
+### Testing
 To run tests, go to /src/back/ICT-151/ and use:
 
 ```bash
@@ -59,21 +59,21 @@ dotnet test
 ```
 
 
-## Front-End {#frontend}
+## Front-End
 
-### Dependencies {#frontend-dependencies}
+### Dependencies
 The Front-End application requires NPM (and thus Node.JS) to be installed.
 
 Download: https://nodejs.org/en/download/
 
-### Installation {#frontend-installation}
+### Installation
 After installing Node.JS, go to /src/front/ICT120/ and run:
 
 ```bash
 npm install
 ```
 
-### Running {#frontend-run}
+### Running
 Open a terminal and run the front-end part with NPM:
 
 ```bash
@@ -88,11 +88,11 @@ ng serve
 
 You can also add the --prod attribute to use the public back-end API.
 
-### Testing {#frontend-test}
+### Testing
 There are no front-end tests.
 
 
-## Usage {#frontend-usage}
+## Usage
 Open your favorite browser (must not be IE, non-Chromium Edge, or any similarly outdated browser),
 and go to [localhost:4200](http://localhost:4200/)
 
@@ -103,8 +103,8 @@ The public instances hosted on Azure are also available:
 - Back-End  : https://ict-151-back.azurewebsites.net
 - Front-End : https://agreeable-forest-06fae7003.azurestaticapps.net
 
-## Contributing {#contributing}
+## Contributing
 Contributions are not welcome as this is a school project.
 
-## License {#license}
+## License
 None (i.e Copyright)
