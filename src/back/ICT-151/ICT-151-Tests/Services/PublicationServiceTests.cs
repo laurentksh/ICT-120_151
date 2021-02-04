@@ -17,8 +17,10 @@ namespace ICT_151_Tests.Services
     {
         private Mock<IPublicationRepository> repo;
         private Mock<IUserRepository> userRepo;
+        private Mock<IMediaRepository> mediaRepo;
         private IPublicationService service;
         private IUserService userService;
+        private IMediaService mediaService;
 
         private Guid ExistingPublication;
         private Guid EmptyExistingPublication;
@@ -31,7 +33,9 @@ namespace ICT_151_Tests.Services
         {
             repo = new Mock<IPublicationRepository>();
             userRepo = new Mock<IUserRepository>();
-            userService = new UserService(userRepo.Object);
+            mediaRepo = new Mock<IMediaRepository>();
+            mediaService = new MediaService(mediaRepo.Object);
+            userService = new UserService(userRepo.Object, mediaService);
             service = new PublicationService(repo.Object, userService);
 
             ExistingUser = Guid.NewGuid();

@@ -18,6 +18,8 @@ namespace ICT_151_Tests.Services
     public class UserServiceTests
     {
         private Mock<IUserRepository> repo;
+        private Mock<IMediaRepository> mediaRepo;
+        private IMediaService mediaService;
         private IUserService service;
 
         private Guid ExistingUser;
@@ -26,8 +28,11 @@ namespace ICT_151_Tests.Services
         [TestInitialize]
         public void Initialize()
         {
+            mediaRepo = new Mock<IMediaRepository>();
+            mediaService = new MediaService(mediaRepo.Object);
+
             repo = new Mock<IUserRepository>();
-            service = new UserService(repo.Object);
+            service = new UserService(repo.Object, mediaService);
 
             ExistingUser = Guid.NewGuid();
             ExistingUsername = "Abcdef1234";
