@@ -1,13 +1,22 @@
-.publication-card {
-    margin-top: 25px;
-    margin-right: 25px;
-}
-
 .publication-image {
+    margin-left: 5px;
     width: 35%;
     height: 50%;
 }
 
+.publication-date {
+    /* margin-left: 10px; */
+}
+
 .username {
     color: black;
+}
+
+.publication-card-content {
+    min-height: 40px;
+}
+
+.publication-card-text {
+    overflow: hidden;
+    word-wrap: break-word;
 }

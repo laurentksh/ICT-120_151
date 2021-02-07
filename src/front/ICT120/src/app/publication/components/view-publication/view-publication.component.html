@@ -1,11 +1,52 @@
-<app-publication [Publication]="this.Publication"></app-publication>
+<div *ngIf="Publication == null">
+    <mat-card class="publication-card">
+        <content-loader viewBox="0 0 1158 156" speed="2">
+            <svg:circle cx="25" cy="22" r="20" />
+            <svg:rect x="65" y="12" rx="3" ry="3" width="88" height="6" />
+            <svg:rect x="65" y="27" rx="3" ry="3" width="120" height="6" />
+            <svg:rect x="5" y="51" rx="3" ry="3" width="410" height="6" />
+            <svg:rect x="5" y="85" rx="3" ry="3" width="178" height="6" />
+            <svg:circle cx="15" cy="137" r="12" />
+            <svg:circle cx="49" cy="137" r="12" />
+            <svg:circle cx="83" cy="137" r="12" />
+            <svg:circle cx="117" cy="137" r="12" />
+            <svg:rect x="4" y="68" rx="3" ry="3" width="410" height="6" />
+        </content-loader>
+    </mat-card>
+</div>
 
-<div class="replies">
+<app-publication *ngIf="Publication != null" [Publication]="this.Publication"></app-publication>
+
+<mat-divider inset="false"></mat-divider>
+
+<div *ngIf="Replies != null; else loader" class="replies">
     <div class="publications-container" (scroll)="onWindowScroll($event)" *ngIf="Replies?.length; else noPublications">
-        <app-publication [Publication]="reply" *ngFor="let reply of Replies"></app-publication>
+        <app-publication
+        [Publication]="reply"
+        *ngFor="let reply of Replies"
+        (Like)="like()"
+        (Repost)="repost()"
+        (Delete)="delete()">></app-publication>
     </div>
     
     <ng-template #noPublications>
         <div>No reply found !</div>
     </ng-template>
 </div>
+
+<ng-template #loader>
+    <mat-card class="publication-card" *ngFor="let i of [1, 2]">
+        <content-loader viewBox="0 0 1158 156" speed="2">
+            <svg:circle cx="25" cy="22" r="20" />
+            <svg:rect x="65" y="12" rx="3" ry="3" width="88" height="6" />
+            <svg:rect x="65" y="27" rx="3" ry="3" width="120" height="6" />
+            <svg:rect x="5" y="51" rx="3" ry="3" width="410" height="6" />
+            <svg:rect x="5" y="85" rx="3" ry="3" width="178" height="6" />
+            <svg:circle cx="15" cy="137" r="12" />
+            <svg:circle cx="49" cy="137" r="12" />
+            <svg:circle cx="83" cy="137" r="12" />
+            <svg:circle cx="117" cy="137" r="12" />
+            <svg:rect x="4" y="68" rx="3" ry="3" width="410" height="6" />
+        </content-loader>
+    </mat-card>
+</ng-template>

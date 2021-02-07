@@ -1,1 +1,18 @@
-<app-feed [publications]="this.publications" (LoadMore)="$event" (RefreshPublication)="updatePublication($event)"></app-feed>
+<app-feed *ngIf="publications != null; else loader" [publications]="this.publications" (LoadMore)="$event" (RefreshPublication)="updatePublication($event)"></app-feed>
+
+<ng-template #loader>
+    <mat-card class="publication-card" *ngFor="let i of [1, 2, 3, 4]">
+        <content-loader viewBox="0 0 1158 156" speed="2">
+            <svg:circle cx="25" cy="22" r="20" />
+            <svg:rect x="65" y="12" rx="3" ry="3" width="88" height="6" />
+            <svg:rect x="65" y="27" rx="3" ry="3" width="120" height="6" />
+            <svg:rect x="5" y="51" rx="3" ry="3" width="410" height="6" />
+            <svg:rect x="5" y="85" rx="3" ry="3" width="178" height="6" />
+            <svg:circle cx="15" cy="137" r="12" />
+            <svg:circle cx="49" cy="137" r="12" />
+            <svg:circle cx="83" cy="137" r="12" />
+            <svg:circle cx="117" cy="137" r="12" />
+            <svg:rect x="4" y="68" rx="3" ry="3" width="410" height="6" />
+        </content-loader>
+    </mat-card>
+</ng-template>

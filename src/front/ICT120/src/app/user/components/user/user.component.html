@@ -1,21 +1,81 @@
 <div *ngIf="User == null; else content">
-    <button mat-raised-button [routerLink]="['/home']">Return home</button>
+    <!-- User skeleton -->
+    <mat-card class="user-card">
+        <content-loader viewBox="0 0 1012 455" speed="2">
+            <svg:circle cx="150" cy="134" r="133" />
+            <svg:rect x="20" y="355" rx="3" ry="3" width="148" height="12" />
+            <svg:rect x="20" y="298" rx="3" ry="3" width="145" height="20" />
+            <svg:rect x="20" y="377" rx="3" ry="3" width="400" height="10" />
+            <svg:rect x="20" y="397" rx="3" ry="3" width="400" height="10" />
+            <svg:rect x="20" y="417" rx="3" ry="3" width="300" height="10" />
+            <svg:rect x="20" y="438" rx="3" ry="3" width="117" height="30" />
+            <svg:rect x="151" y="438" rx="3" ry="3" width="117" height="30" />
+        </content-loader>
+    </mat-card>
+
+    <!-- Publications skeleton-->
+    <mat-card class="publication-card" *ngFor="let i of [1, 2]">
+        <content-loader viewBox="0 0 1158 156" speed="2">
+            <svg:circle cx="25" cy="22" r="20" />
+            <svg:rect x="65" y="12" rx="3" ry="3" width="88" height="6" />
+            <svg:rect x="65" y="27" rx="3" ry="3" width="120" height="6" />
+            <svg:rect x="5" y="51" rx="3" ry="3" width="410" height="6" />
+            <svg:rect x="5" y="85" rx="3" ry="3" width="178" height="6" />
+            <svg:circle cx="15" cy="137" r="12" />
+            <svg:circle cx="49" cy="137" r="12" />
+            <svg:circle cx="83" cy="137" r="12" />
+            <svg:circle cx="117" cy="137" r="12" />
+            <svg:rect x="4" y="68" rx="3" ry="3" width="410" height="6" />
+        </content-loader>
+    </mat-card>
 </div>
 
 <ng-template #content>
-    <div class="container-fluid"> <!-- Profile header block -->
-        <div class="card mb-3">
-            <img class="card-img-top profile-picture" src="{{ UserProfilePictureUrl }}" alt="{{ User.username}}'s profile picture"/>
+    <mat-card class="user-card"> <!-- Profile header block -->
+        <mat-card-content>
+            <div class="profile-picture">
+                <img *ngIf="UserProfilePicture != null" class="card-img-top profile-picture-content" src="{{ UserProfilePicture.blobFullUrl }}" alt="{{ User.username}}'s profile picture"/>
+            </div>
+
             <div class="card-body">
                 <h1 class="card-title username">{{ User.username }}</h1>
-                <p class="card-text" *ngIf="User.biography != null; else noBio">{{ User.biography }}</p>
+                <div class="info-bar">
+                    <mat-icon class="vertcentered-icon" aria-hidden="true">cake</mat-icon>
+                    {{ User.birthday.toLocaleDateString() }}
+                    
+                    <b *ngIf="User.followsMe">Follows you</b>
+                    <b *ngIf="User.blocksMe">Blocked you</b>
+                </div>
+
+                <p class="biography" *ngIf="User.biography != null; else noBio">{{ User.biography }}</p>
                 <ng-template #noBio>
                     <i>This user does not have a biography.</i>
                 </ng-template>
             </div>
-        </div>
-    </div>
-    <div class="container-fluid"> <!-- Feed -->
+            <mat-card-actions class="actions">
+                <button mat-raised-button color="primary" (click)="doFollow()"><mat-icon>add</mat-icon> {{ User.following ? 'Unfollow' : 'Follow'}}</button>
+                <button mat-raised-button color="warn" (click)="doBlock()"><mat-icon>block</mat-icon> {{ User.blocking ? 'Unblock' : 'Block'}}</button>
+                <button *ngIf="isSelf()" [routerLink]="['/u/edit']" mat-raised-button color="accent">Edit</button>
+            </mat-card-actions>
+        </mat-card-content>
+    </mat-card>
+    <div *ngIf="Publications != null; else loader" class="container-fluid"> <!-- Feed -->
         <app-feed [publications]="Publications" (LoadMore)="$event" (RefreshPublication)="updatePublication($event)"></app-feed>
     </div>
+    <ng-template #loader>
+        <mat-card class="publication-card" *ngFor="let i of [1, 2]">
+            <content-loader viewBox="0 0 1158 156" speed="2">
+                <svg:circle cx="25" cy="22" r="20" />
+                <svg:rect x="65" y="12" rx="3" ry="3" width="88" height="6" />
+                <svg:rect x="65" y="27" rx="3" ry="3" width="120" height="6" />
+                <svg:rect x="5" y="51" rx="3" ry="3" width="410" height="6" />
+                <svg:rect x="5" y="85" rx="3" ry="3" width="178" height="6" />
+                <svg:circle cx="15" cy="137" r="12" />
+                <svg:circle cx="49" cy="137" r="12" />
+                <svg:circle cx="83" cy="137" r="12" />
+                <svg:circle cx="117" cy="137" r="12" />
+                <svg:rect x="4" y="68" rx="3" ry="3" width="410" height="6" />
+            </content-loader>
+        </mat-card>
+    </ng-template>
 </ng-template>

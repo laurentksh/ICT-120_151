@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -36,7 +34,7 @@ namespace ICT_151.Authentication
             Logger.LogTrace($"Token: {token}; SessionId: {session?.Id}");
 
             var claims = new List<Claim> {
-                new Claim(ClaimTypes.NameIdentifier, session.User.Username),
+                new Claim(ClaimTypes.NameIdentifier, session.User.Id.ToString()),
                 new Claim(ClaimTypes.Name, session.User.Username),
                 new Claim(ClaimTypes.Email, session.User.Email)
             };

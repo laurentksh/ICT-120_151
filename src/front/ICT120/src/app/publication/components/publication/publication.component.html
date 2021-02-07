@@ -1,33 +1,31 @@
-<mat-card class="publication-card">
+<mat-card *ngIf="Publication != null" class="publication-card">
     <mat-card-header (click)="doViewUser()">
-        <h4 class="card-title username">{{ Publication.user?.username }}</h4>
-        <small class="text-muted">{{ getDate().toLocaleString() }}</small> <!-- Format date -->
+        <img mat-card-avatar *ngIf="profilePicture != null" src="{{ profilePicture.blobFullUrl }}"/>
+        <mat-card-title class="card-title username">{{ Publication.user.username }}</mat-card-title>
+
+        <mat-card-subtitle class="text-muted publication-date">{{ getDate().toLocaleString() }}</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content (click)="doViewPublication()">
-        <p class="card-text">{{ Publication.textContent }}</p>
+    <mat-card-content class="publication-card-content" (click)="doViewPublication()">
+        <p class="publication-card-text">{{ Publication.textContent }}</p>
         
-        <img *ngIf="Publication.mediaId != null" mat-card-image class="publication-image" src="{{ mediaUrl }}" (error)="mediaUrl = '/assets/media-load-error.png'"/>
+        <img *ngIf="Publication.mediaId != null && media != null" mat-card-image class="publication-image" src="{{ media.blobFullUrl }}" (error)="mediaUrl = '/assets/media-load-error.png'"/>
     </mat-card-content>
     <mat-card-actions>
-        <div *ngIf="this.Publication.reposted; else unreposted">
-            <button mat-icon-button (click)="doRepost()">
-                <mat-icon color="accent">autorenew</mat-icon>
-                <span>{{ Publication.repostsAmount }}</span>
-            </button>
-        </div>
+        <button mat-icon-button *ngIf="this.Publication.reposted; else unreposted" (click)="doRepost()">
+            <mat-icon color="accent">autorenew</mat-icon>
+            <span>{{ Publication.repostsAmount }}</span>
+        </button>
         <ng-template #unreposted>
             <button mat-icon-button (click)="doRepost()">
                 <mat-icon>autorenew</mat-icon>
                 <span>{{ Publication.repostsAmount }}</span>
             </button>
         </ng-template>
-
-        <div *ngIf="this.Publication.liked; else unliked">
-            <button mat-icon-button (click)="doLike()">
-                <mat-icon color="accent">favorite</mat-icon>
-                <span>{{ Publication.likesAmount }}</span>
-            </button>
-        </div>
+        
+        <button mat-icon-button *ngIf="this.Publication.liked; else unliked" (click)="doLike()">
+            <mat-icon color="accent">favorite</mat-icon>
+            <span>{{ Publication.likesAmount }}</span>
+        </button>
         <ng-template #unliked>
             <button mat-icon-button (click)="doLike()">
                 <mat-icon>favorite_border</mat-icon>

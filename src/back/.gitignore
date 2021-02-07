@@ -1,5 +1,5 @@
-# SQLite Local DB File
-*.db
+# SQLite Local DB File & DB Browser for SQL temporary files
+*.db*
 
 # Created by https://www.toptal.com/developers/gitignore/api/csharp,visualstudio,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=csharp,visualstudio,visualstudiocode

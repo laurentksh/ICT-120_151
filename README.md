@@ -45,6 +45,15 @@ or run the azurite.bat script present at the root foolder.
 
 You can freely change the location as it will contain the files uploaded using the application.
 
+### Migrating the database
+As the application uses a database, you will need to apply the migrations first.
+To do so, run the following command in /src/back/ICT-151/ICT-151/ :
+
+```bash
+dotnet ef database update
+```
+
+This command should create (if it doesn't exist) a AppDb.db file, which will be our database.
 
 ### Running
 Go to /src/back/ICT-151/ICT-151/ and use:

@@ -5,6 +5,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Location } from '@angular/common';
 import { MediaService } from 'src/app/media/services/media.service';
+import { MediaViewModel } from 'src/app/media/models/media-view-model';
 
 @Component({
   selector: 'app-publication',
@@ -17,17 +18,35 @@ export class PublicationComponent implements OnInit {
   @Output() Like = new EventEmitter<Publication>();
   @Output() Delete = new EventEmitter<Publication>();
   
-  mediaUrl: string = null;
+  profilePicture: MediaViewModel = null;
+  media: MediaViewModel = null;
 
   constructor(private authService: AuthService, private mediaService: MediaService, private Router: Router) { }
 
   ngOnInit(): void {
-    if (this.Publication.mediaId != null)
-      this.LoadMedia().then();
+    this.LoadMedia().then();
   }
 
   public async LoadMedia(): Promise<void> {
-    this.mediaService.GetMedia(this.Publication.mediaId);
+    this.mediaService.GetMedia(this.Publication.user.profilePictureId).then(x => {
+      if (x.Success) {
+        this.profilePicture = x.Content;
+      } else {
+        this.profilePicture = {} as MediaViewModel;
+        this.profilePicture.blobFullUrl = "/assets/media-load-error.png";
+      }
+    });
+
+    if (this.Publication.mediaId != null) {
+      this.mediaService.GetMedia(this.Publication.mediaId).then(x => {
+        if (x.Success) {
+          this.media = x.Content;
+        } else {
+          this.media = {} as MediaViewModel;
+          this.media.blobFullUrl = "/assets/media-load-error.png";
+        }
+      });
+    }
   }
 
   public getPath(): string {

@@ -15,6 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { UploadMediaComponent } from '../media/components/upload-media/upload-media.component';
+import { ContentLoaderModule } from '@ngneat/content-loader';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
@@ -36,7 +38,10 @@ import { UploadMediaComponent } from '../media/components/upload-media/upload-me
     MatCardModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatDividerModule,
+
+    ContentLoaderModule
   ],
   exports: [
     PublicationComponent

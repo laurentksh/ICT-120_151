@@ -66,6 +66,7 @@ export class NewPublicationComponent implements OnInit {
   }
 
   mediaUploaded(media: OperationResult<MediaViewModel>): void {
+    debugger;
     if (media.Success) {
       if (media.Content.mediaType == MediaType.Image) {
         this.publication.submissionType = SubmissionType.Image;

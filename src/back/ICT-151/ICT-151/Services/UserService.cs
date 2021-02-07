@@ -65,25 +65,18 @@ namespace ICT_151.Services
         Task<User> GetFullUser(Guid userId);
 
         /// <summary>
-        /// Returns the full user (Internal use only)
-        /// </summary>
-        /// <param name="username">Username</param>
-        /// <returns>Full user</returns>
-        Task<User> GetFullUser(string username);
-
-        /// <summary>
         /// Returns a summary of the user
         /// </summary>
         /// <param name="userId">User GUID</param>
         /// <returns>A summary of the user</returns>
-        Task<UserSummaryViewModel> GetUser(Guid userId);
+        Task<UserSummaryViewModel> GetUser(Guid userId, Guid? requestingUser = null);
 
         /// <summary>
         /// Returns a summary of the user
         /// </summary>
         /// <param name="username">Username</param>
         /// <returns>A summary of the user</returns>
-        Task<UserSummaryViewModel> GetUser(string username);
+        Task<UserSummaryViewModel> GetUser(string username, Guid? requestingUser = null);
 
         /// <summary>
         /// Creates a new user with the specified parameters
@@ -277,28 +270,20 @@ namespace ICT_151.Services
             return await UserRepository.GetFullUser(userId);
         }
 
-        public async Task<User> GetFullUser(string username)
-        {
-            if (username is null || !await Exists(username))
-                throw new UserNotFoundException("User does not exist.");
-
-            return await UserRepository.GetFullUser(username);
-        }
-
-        public async Task<UserSummaryViewModel> GetUser(Guid userId)
+        public async Task<UserSummaryViewModel> GetUser(Guid userId, Guid? requestingUser = null)
         {
             if (!await Exists(userId))
                 throw new UserNotFoundException("User does not exist.");
 
-            return await UserRepository.GetUser(userId);
+            return await UserRepository.GetUser(userId, requestingUser);
         }
 
-        public async Task<UserSummaryViewModel> GetUser(string username)
+        public async Task<UserSummaryViewModel> GetUser(string username, Guid? requestingUser = null)
         {
             if (username is null || !await Exists(username))
                 throw new UserNotFoundException("User does not exist.");
 
-            return await UserRepository.GetUser(username);
+            return await UserRepository.GetUser(username, requestingUser);
         }
 
         public async Task<CreatedUserViewModel> CreateNew(CreateUserDto dto, IPAddress remoteHost)
@@ -358,6 +343,11 @@ namespace ICT_151.Services
         {
             if (!await Exists(userId) || !await Exists(toFollowUserId))
                 throw new UserNotFoundException("User does not exist.");
+            if (await UserRepository.FollowExists(userId, toFollowUserId))
+                throw new DataAlreadyExistsException("You already follow this user.");
+
+            if (await UserRepository.BlockExists(userId, toFollowUserId) || await UserRepository.BlockExists(toFollowUserId, userId))
+                throw new ForbiddenException("You are blocking this user or this user blocked you.");
 
             await UserRepository.Follow(userId, toFollowUserId);
         }
@@ -366,8 +356,33 @@ namespace ICT_151.Services
         {
             if (!await Exists(userId) || !await Exists(toUnFollowUserId))
                 throw new UserNotFoundException("User does not exist.");
+            if (!await UserRepository.FollowExists(userId, toUnFollowUserId))
+                throw new DataAlreadyExistsException("You are not following this user.");
 
             await UserRepository.UnFollow(userId, toUnFollowUserId);
+        }
+
+        public async Task Block(Guid userId, Guid toBlockId)
+        {
+            if (!await Exists(userId) || !await Exists(toBlockId))
+                throw new UserNotFoundException("User does not exist.");
+            if (await UserRepository.BlockExists(userId, toBlockId))
+                throw new DataAlreadyExistsException("You are already blocking this user.");
+
+            if (await UserRepository.FollowExists(userId, toBlockId))
+                await UserRepository.UnFollow(userId, toBlockId);
+
+            await UserRepository.Block(userId, toBlockId);
+        }
+
+        public async Task UnBlock(Guid userId, Guid toUnBlockId)
+        {
+            if (!await Exists(userId) || !await Exists(toUnBlockId))
+                throw new UserNotFoundException("User does not exist.");
+            if (!await UserRepository.BlockExists(userId, toUnBlockId))
+                throw new DataAlreadyExistsException("You are not blocking this user.");
+
+            await UserRepository.UnBlock(userId, toUnBlockId);
         }
 
         public async Task SendPrivateMessage(Guid userId, Guid recipientId, string message)
@@ -386,22 +401,6 @@ namespace ICT_151.Services
                 throw new UserNotFoundException("User does not exist.");
 
             return (await UserRepository.GetPrivateMessages(userId, recipientId)).ToList();
-        }
-
-        public async Task Block(Guid userId, Guid toBlockId)
-        {
-            if (!await Exists(userId) || !await Exists(toBlockId))
-                throw new UserNotFoundException("User does not exist.");
-
-            await UserRepository.Block(userId, toBlockId);
-        }
-
-        public async Task UnBlock(Guid userId, Guid toUnBlockId)
-        {
-            if (!await Exists(userId) || !await Exists(toUnBlockId))
-                throw new UserNotFoundException("User does not exist.");
-
-            await UserRepository.UnBlock(userId, toUnBlockId);
         }
 
         public async Task SetProfilePicture(Guid userId, Guid mediaId)

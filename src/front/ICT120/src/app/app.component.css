@@ -4,6 +4,7 @@
 
 .main-app-inner {
     background-color: #4E668D;
+
     height: 100%;
     padding-left: 0px;
     padding-right: 0px;
@@ -35,7 +36,7 @@
     height: max-content;
     padding-top: 25px;
     padding-left: 25px;
-    padding-right: 5px;
+    padding-right: 25px;
 }
 
 .message {

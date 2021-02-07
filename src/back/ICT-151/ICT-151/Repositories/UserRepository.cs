@@ -27,11 +27,11 @@ namespace ICT_151.Repositories
 
         Task<User> GetFullUser(Guid userId);
 
-        Task<User> GetFullUser(string username);
+        Task<User> GetBaseUser(Guid userId);
 
-        Task<UserSummaryViewModel> GetUser(Guid userId);
+        Task<UserSummaryViewModel> GetUser(Guid userId, Guid? requestingUser = null);
 
-        Task<UserSummaryViewModel> GetUser(string username);
+        Task<UserSummaryViewModel> GetUser(string username, Guid? requestingUser = null);
 
         Task<bool> PasswordMatches(Guid userId, string passwordHash);
 
@@ -60,6 +60,10 @@ namespace ICT_151.Repositories
         Task<bool> Exists(Guid id);
 
         Task<bool> Exists(string username);
+
+        Task<bool> FollowExists(Guid followerId, Guid followedId);
+
+        Task<bool> BlockExists(Guid blockerId, Guid blockedId);
     }
 
     public class UserRepository : IUserRepository
@@ -176,24 +180,42 @@ namespace ICT_151.Repositories
         {
             return DbContext.Users
                 .Include(x => x.UserSessions)
+                .Include(x => x.ProfilePictureMedia)
+                .Include(x => x.Reposts)
+                .Include(x => x.Likes)
+                .Include(x => x.Blocking)
+                .Include(x => x.Blocked)
+                .Include(x => x.Following)
+                .Include(x => x.Followed)
+                .Include(x => x.Sending)
+                .Include(x => x.Receiving)
                 .Single(x => x.Id == userId);
         }
 
-        public async Task<User> GetFullUser(string username)
+        public async Task<User> GetBaseUser(Guid userId)
         {
             return DbContext.Users
-                .Include(x => x.UserSessions)
-                .Single(x => x.Username == username);
+                .Single(x => x.Id == userId);
         }
 
-        public async Task<UserSummaryViewModel> GetUser(Guid userId)
+        public async Task<UserSummaryViewModel> GetUser(Guid userId, Guid? requestingUser = null)
         {
-            return UserSummaryViewModel.FromUser(DbContext.Users.Single(x => x.Id == userId));
+            return UserSummaryViewModel.FromUser(DbContext.Users
+                .Include(x => x.Following)
+                .Include(x => x.Followed)
+                .Include(x => x.Blocking)
+                .Include(x => x.Blocked)
+                .Single(x => x.Id == userId), requestingUser);
         }
 
-        public async Task<UserSummaryViewModel> GetUser(string username)
+        public async Task<UserSummaryViewModel> GetUser(string username, Guid? requestingUser = null)
         {
-            return UserSummaryViewModel.FromUser(DbContext.Users.Single(x => x.Username == username));
+            return UserSummaryViewModel.FromUser(DbContext.Users
+                .Include(x => x.Following)
+                .Include(x => x.Followed)
+                .Include(x => x.Blocking)
+                .Include(x => x.Blocked)
+                .Single(x => x.Username == username), requestingUser);
         }
 
         public async Task<bool> PasswordMatches(Guid userId, string passwordHash)
@@ -280,6 +302,23 @@ namespace ICT_151.Repositories
             await DbContext.SaveChangesAsync();
         }
 
+        public async Task Block(Guid userId, Guid targetId)
+        {
+            await DbContext.Blocks.AddAsync(new Block
+            {
+                CreationDate = DateTime.UtcNow,
+                BlockerId = userId,
+                BlockTargetId = targetId
+            });
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task UnBlock(Guid userId, Guid targetId)
+        {
+            DbContext.Blocks.Remove(await DbContext.Blocks.SingleAsync(x => x.BlockerId == userId && x.BlockTargetId == targetId));
+            await DbContext.SaveChangesAsync();
+        }
+
         public async Task SendPrivateMessage(Guid userId, Guid recipientId, string message)
         {
             await DbContext.PrivateMessages.AddAsync(new PrivateMessage
@@ -297,23 +336,6 @@ namespace ICT_151.Repositories
                 .Where(x => x.SenderId == userId && x.RecipientId == recipientId)
                 .Select(y => PrivateMessageViewModel.FromPrivateMessage(y))
                 .AsEnumerable();
-        }
-
-        public async Task Block(Guid userId, Guid targetId)
-        {
-            await DbContext.Blocks.AddAsync(new Block
-            {
-                CreationDate = DateTime.UtcNow,
-                BlockerId = userId,
-                BlockTargetId = targetId
-            });
-            await DbContext.SaveChangesAsync();
-        }
-
-        public async Task UnBlock(Guid userId, Guid targetId)
-        {
-            DbContext.Blocks.Remove(await DbContext.Blocks.SingleAsync(x => x.BlockerId == userId && x.BlockTargetId == targetId));
-            await DbContext.SaveChangesAsync();
         }
 
         public async Task SetProfilePicture(Guid userId, Guid mediaId)
@@ -340,6 +362,16 @@ namespace ICT_151.Repositories
         public async Task<bool> Exists(string username)
         {
             return await DbContext.Users.AnyAsync(x => x.Username == username);
+        }
+
+        public async Task<bool> FollowExists(Guid followerId, Guid followedId)
+        {
+            return await DbContext.Follows.AnyAsync(x => x.FollowerId == followerId && x.FollowTargetId == followedId);
+        }
+
+        public async Task<bool> BlockExists(Guid blockerId, Guid blockedId)
+        {
+            return await DbContext.Blocks.AnyAsync(x => x.BlockerId == blockerId && x.BlockTargetId == blockedId);
         }
     }
 }

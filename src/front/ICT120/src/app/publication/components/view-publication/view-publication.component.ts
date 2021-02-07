@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { GlobalAppEventsService, MessageType } from 'src/app/services/global-app-events/global-app-events.service';
 import { Publication } from '../../models/publication';
 import { PublicationService } from '../../services/publication.service';
@@ -10,10 +10,10 @@ import { PublicationService } from '../../services/publication.service';
   styleUrls: ['./view-publication.component.css']
 })
 export class ViewPublicationComponent implements OnInit {
-  Publication: Publication = {} as Publication;
-  Replies: Publication[] = new Array<Publication>();
+  Publication: Publication = null;
+  Replies: Publication[] = null;
 
-  constructor(private route: ActivatedRoute, private publicationService: PublicationService, private appEvents: GlobalAppEventsService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private publicationService: PublicationService, private appEvents: GlobalAppEventsService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(async params => await this.Load(params));
@@ -56,6 +56,64 @@ export class ViewPublicationComponent implements OnInit {
     }
   }
 
+  public updatePublication(): void {
+    this.UpdatePublication().then();
+  }
+
+  private async UpdatePublication(): Promise<void> {
+    console.log("updated");
+    const updatedPublication = await this.publicationService.GetPublication(this.Publication.id);
+
+    if (updatedPublication.Success) {
+      this.Publication = updatedPublication.Content;
+    } else {
+      if (updatedPublication.Error.status == 404) {
+        this.appEvents.ShowSnackBarMessage("This publication has been deleted.");
+        this.router.navigate(["/login"], { queryParams: { "redirect": this.router.url } });
+        return;
+      }
+
+      this.appEvents.ShowSnackBarMessage(`Could not update publication '${this.Publication.id}.'`);
+    }
+  }
+
+  public repost(): void {
+    console.log(this.Publication.reposted);
+    this.publicationService.Repost(this.Publication.id, !this.Publication.reposted).then(x => {
+      if (x.Success) {
+        this.appEvents.ShowSnackBarMessage(`You ${this.Publication.reposted ? "unreposted" : "reposted"} ${this.Publication.user.username}'s publication.`);
+
+        this.updatePublication();
+      } else {
+        this.appEvents.ShowSnackBarMessage(`An error occured while trying to ${this.Publication.reposted ? "unrepost" : "repost"} publication '${this.Publication.id}' (${x.Error.status})`);
+      }
+    });
+  }
+
+  public like(): void {
+    this.publicationService.Like(this.Publication.id, !this.Publication.liked).then(x => {
+      if (x.Success) {
+        this.appEvents.ShowSnackBarMessage(`You ${this.Publication.liked ? "unliked" : "liked"} ${this.Publication.user.username}'s publication.`);
+
+        this.updatePublication();
+      } else {
+        this.appEvents.ShowSnackBarMessage(`An error occured while trying to ${this.Publication.liked ? "unlike" : "like"} publication '${this.Publication.id}' (${x.Error.status})`);
+      }
+    });
+  }
+
+  public delete(): void {
+    this.publicationService.Delete(this.Publication.id).then(x => {
+      if (x.Success) {
+        this.appEvents.ShowSnackBarMessage("You deleted your publication :(");
+
+        this.updatePublication();
+      } else {
+        this.appEvents.ShowSnackBarMessage(`An error occured while trying to delete publication '${this.Publication.id}' (${x.Error.status})`);
+      }
+    });
+  }
+  
   /*@HostListener("window:scroll", ['$event'])*/
   public onWindowScroll(event: any) {
     // do some stuff here when the window is scrolled

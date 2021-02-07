@@ -5,4 +5,8 @@ export interface UserSummary {
     biography: string
     birthday: Date
     creationDate: Date
+    following: boolean;
+    followsMe: boolean;
+    blocking: boolean;
+    blocksMe: boolean;
 }

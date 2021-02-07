@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { GlobalAppEventsService } from 'src/app/services/global-app-events/global-app-events.service';
 import { OperationResult } from 'src/app/services/models/operation-result';
-import { MediaContainer, MediaViewModel } from '../../models/media-view-model';
+import { MediaContainer, MediaType, MediaViewModel } from '../../models/media-view-model';
 import { MediaService } from '../../services/media.service';
 
 @Component({
@@ -13,6 +13,10 @@ export class UploadMediaComponent implements OnInit {
   @Input() Container: MediaContainer;
   @Output() UploadResult = new EventEmitter<OperationResult<MediaViewModel>>();
   @ViewChild("fileInput") FileInput: ElementRef;
+  @ViewChild("previewImg") PreviewImg: ElementRef;
+  @ViewChild("previewVid") PreviewVid: ElementRef;
+  showImgPreview = false;
+  showVidPreview = false;
 
   constructor(private mediaService: MediaService, private appEvents: GlobalAppEventsService) { }
 
@@ -21,10 +25,20 @@ export class UploadMediaComponent implements OnInit {
 
   doUpload(): void {
     const dom = this.FileInput.nativeElement as HTMLInputElement;
+    const previewImgDom = this.PreviewImg.nativeElement as HTMLImageElement;
+    const previewVidDom = this.PreviewVid.nativeElement as HTMLSourceElement;
     const file = dom.files[0];
     
     this.mediaService.UploadMedia(file, this.Container).then(x => {
       this.UploadResult.emit(x);
+
+      //previewDom.src = URL.createObjectURL(file);
+      if (x.Content.mediaType == MediaType.Image)
+        previewImgDom.src = x.Content.blobFullUrl;
+      else {
+        previewVidDom.src = x.Content.blobFullUrl;
+        previewVidDom.type = x.Content.mimeType;
+      }
     });
   }
 

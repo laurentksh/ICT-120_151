@@ -154,7 +154,7 @@ export class ApiService {
     result.Success = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get<Publication[]>(this.BASE_URL + `Publication/${publicationId}`).toPromise();
+      result.ObjectResult = await this.httpClient.get<Publication[]>(this.BASE_URL + `Publication/${publicationId}/replies`).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -168,7 +168,7 @@ export class ApiService {
     result.Success = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get<Repost[]>(this.BASE_URL + `Publication/${publicationId}`).toPromise();
+      result.ObjectResult = await this.httpClient.get<Repost[]>(this.BASE_URL + `Publication/${publicationId}/reposts`).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -182,7 +182,7 @@ export class ApiService {
     result.Success = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get<Like[]>(this.BASE_URL + `Publication/${publicationId}`).toPromise();
+      result.ObjectResult = await this.httpClient.get<Like[]>(this.BASE_URL + `Publication/${publicationId}/likes`).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -269,6 +269,8 @@ export class ApiService {
 
     try {
       result.ObjectResult = await this.httpClient.get<UserSummary>(this.BASE_URL + `User/get/${identifier}`).toPromise();
+      result.ObjectResult.creationDate = new Date(result.ObjectResult.creationDate);
+      result.ObjectResult.birthday = new Date(result.ObjectResult.birthday);
     } catch (error) {
       result.Success = false;
       result.Error = error;

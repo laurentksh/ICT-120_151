@@ -73,8 +73,15 @@ namespace ICT_151.Models.Dto
 
         public DateTime CreationDateUtc { get; set; }
 
+        public bool Following { get; set; }
 
-        public static UserSummaryViewModel FromUser(User user) => new UserSummaryViewModel
+        public bool FollowsMe { get; set; }
+
+        public bool Blocking { get; set; }
+
+        public bool BlocksMe { get; set; }
+
+        public static UserSummaryViewModel FromUser(User user, Guid? userId = null) => new UserSummaryViewModel
         {
             Id = user.Id,
             Username = user.Username,
@@ -82,6 +89,10 @@ namespace ICT_151.Models.Dto
             Biography = user.Biography,
             Birthday = user.Birthday,
             CreationDateUtc = user.CreationDate,
+            Following = userId.HasValue && user.Followed.Any(x => x.FollowerId == userId),
+            FollowsMe = userId.HasValue && user.Following.Any(x => x.FollowTargetId == userId),
+            Blocking = userId.HasValue && user.Blocked.Any(x => x.BlockerId == userId),
+            BlocksMe = userId.HasValue && user.Blocking.Any(x => x.BlockTargetId == userId)
         };
     }
 

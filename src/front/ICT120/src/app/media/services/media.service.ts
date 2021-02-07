@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { OperationResult } from 'src/app/services/models/operation-result';
-import { MediaContainer, MediaViewModel } from '../models/media-view-model';
+import { MediaContainer, MediaType, MediaViewModel } from '../models/media-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +48,7 @@ export class MediaService {
     result.Success = request.Success;
     if (request.Success) {
       result.Content = request.ObjectResult;
+      result.Content.mediaType = MediaType[result.Content.mediaType.toString()];
     } else {
       result.Error = request.Error;
     }

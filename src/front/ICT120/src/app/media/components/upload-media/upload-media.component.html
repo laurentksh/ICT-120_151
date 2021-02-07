@@ -4,5 +4,13 @@
     <mat-card-content>
         <label for="file-input"></label>
         <input #fileInput id="fileInput" name="fileInput" type="file" (change)="doUpload()"/>
+
+        
     </mat-card-content>
+    <mat-card-footer>
+        <img *ngIf="showImgPreview" mat-card-image class="preview-image" #previewImg />
+        <video *ngIf="showVidPreview" mat-card-image class="preview-image">
+            <source #previewVid/>
+        </video>
+    </mat-card-footer>
 </mat-card>

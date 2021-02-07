@@ -36,12 +36,13 @@ namespace ICT_151.Controllers
         public async Task<IActionResult> GetUser([FromRoute] string identifier)
         {
             try {
+                var user = await HttpContext.GetUser();
                 UserSummaryViewModel result = null;
 
                 if (Guid.TryParse(identifier, out Guid id)) {
-                    result = await UserService.GetUser(id);
+                    result = await UserService.GetUser(id, user?.Id);
                 } else {
-                    result = await UserService.GetUser(identifier);
+                    result = await UserService.GetUser(identifier, user?.Id);
                 }
                 
                 return Ok(result);

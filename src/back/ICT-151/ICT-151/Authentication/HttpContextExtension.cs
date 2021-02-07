@@ -1,9 +1,7 @@
 ﻿using ICT_151.Models;
 using ICT_151.Repositories;
-using ICT_151.Services;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -20,7 +18,7 @@ namespace ICT_151.Authentication
                 throw new NullReferenceException("Couldn't get repository from Service Provider");
 
             if (httpContext.User.Identity.IsAuthenticated)
-                return await repository.GetFullUser(httpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
+                return await repository.GetBaseUser(Guid.Parse(httpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value));
             else
                 return null;
         }

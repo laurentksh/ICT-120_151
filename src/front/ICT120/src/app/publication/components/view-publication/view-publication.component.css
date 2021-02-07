@@ -1,3 +1,9 @@
 .replies {
     margin-top: 50px;
 }
+
+mat-divider {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}

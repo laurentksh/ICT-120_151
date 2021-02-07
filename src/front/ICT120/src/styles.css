@@ -11,3 +11,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 h1, h2, h3, h4, h5, h6 {
     color: white;
 }
+
+.vertcentered-icon {
+    display: inline-flex;
+    vertical-align: text-bottom;
+}
+
+.publication-card { /* Must be available everywhere as I'm creating <content-loader>s on the fly. */
+    margin-top: 25px;
+    /* margin-right: 25px; */
+    margin-bottom: 25px;
+}

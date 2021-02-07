@@ -58,15 +58,19 @@ namespace ICT_151.Models
         [InverseProperty(nameof(Like.User))]
         public List<Like> Likes { get; set; }
 
+        /// <summary>Users I'm blocking (<see cref="Block.Blocker"/>)</summary>
         [InverseProperty(nameof(Block.Blocker))]
         public List<Block> Blocking { get; set; }
 
+        /// <summary>Users blocking me (<see cref="Block.BlockTarget"/>)</summary>
         [InverseProperty(nameof(Block.BlockTarget))]
         public List<Block> Blocked { get; set; }
 
+        /// <summary>Users I'm following (<see cref="Follow.Follower"/>)</summary>
         [InverseProperty(nameof(Follow.Follower))]
         public List<Follow> Following { get; set; }
 
+        /// <summary>Users following me (<see cref="Follow.FollowTarget"/>)</summary>
         [InverseProperty(nameof(Follow.FollowTarget))]
         public List<Follow> Followed { get; set; }
 
