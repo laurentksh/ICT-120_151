@@ -10,14 +10,13 @@
             </div>
             <div class="card-body">
                 <h1 class="card-title username">{{ User.username }}</h1>
+                <label for="input-username">Username</label>
                 <input matInput name="input-username" type="text" [(ngModel)]="UserChange.Username"/>
-                <div >
-                    <mat-icon style="display: inline-flex; vertical-align: text-bottom;" aria-hidden="true">cake</mat-icon>
-                    {{ User.birthday.toLocaleDateString() }}
-                </div>
 
+                <label for="input-biography">Biography</label>
                 <textarea name="input-biography" [(ngModel)]="UserChange.Biography"></textarea>
             </div>
+            <button mat-raised-button color="primary" (click)="submit()">Edit</button>
         </div>
     </div>
     <div class="container-fluid"> <!-- Feed -->

@@ -4,13 +4,11 @@
     <mat-card-content>
         <label for="file-input"></label>
         <input #fileInput id="fileInput" name="fileInput" type="file" (change)="doUpload()"/>
-
-        
     </mat-card-content>
     <mat-card-footer>
-        <img *ngIf="showImgPreview" mat-card-image class="preview-image" #previewImg />
-        <video *ngIf="showVidPreview" mat-card-image class="preview-image">
-            <source #previewVid/>
+        <img [ngStyle]="{'display': (showImgPreview) ? 'block' : 'none'}" mat-card-image class="preview-image" id="previewImg" name="previewImg" #previewImg />
+        <video [ngStyle]="{'display': (showVidPreview) ? 'block' : 'none'}" controls mat-card-image class="preview-image" id="previewVid" name="previewVid" #previewVid>
+            <source #previewVidSrc/>
         </video>
     </mat-card-footer>
 </mat-card>

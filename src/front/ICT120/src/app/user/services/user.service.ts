@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { ApiCallResult } from 'src/app/services/api/models/api-call-result';
 import { OperationResult } from 'src/app/services/models/operation-result';
+import { UpdateUser } from '../models/update-user';
 import { UserSummary } from '../models/user-summary';
 
 @Injectable({
@@ -53,6 +54,20 @@ export class UserService {
       request = await this.apiService.Block(id);
     else
       request = await this.apiService.UnBlock(id);
+
+    result.Success = request.Success;
+    if (request.Success) {
+      result.Content = request.ObjectResult;
+    } else {
+      result.Error = request.Error;
+    }
+
+    return result;
+  }
+
+  public async Edit(editDto: UpdateUser): Promise<OperationResult<UserSummary>> {
+    const result: OperationResult<UserSummary> = {} as OperationResult<UserSummary>;
+    const request = await this.apiService.UpdateUser(editDto);
 
     result.Success = request.Success;
     if (request.Success) {
