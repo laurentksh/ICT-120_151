@@ -6,7 +6,7 @@
     <mat-card-content (click)="doViewPublication()">
         <p class="card-text">{{ Publication.textContent }}</p>
         
-        <img *ngIf="Publication.mediaId != null" mat-card-image class="publication-image" src="{{ mediaUrl }}" (error)="mediaUrl = 'http://localhost:4200/assets/default_pp.svg'"/>
+        <img *ngIf="Publication.mediaId != null" mat-card-image class="publication-image" src="{{ mediaUrl }}" (error)="mediaUrl = '/assets/media-load-error.png'"/>
     </mat-card-content>
     <mat-card-actions>
         <div *ngIf="this.Publication.reposted; else unreposted">
