@@ -1,20 +1,21 @@
-<div *ngIf="error; else elseBlock">
-    <div class="container alert alert-danger">
-        <p class="">{{ errorMsg }}</p>
-    </div>
+<div *ngIf="User == null; else content">
+    <button mat-raised-button [routerLink]="['/home']">Return home</button>
 </div>
 
-<ng-template #elseBlock>
+<ng-template #content>
     <div class="container-fluid"> <!-- Profile header block -->
         <div class="card mb-3">
             <img class="card-img-top profile-picture" src="{{ UserProfilePictureUrl }}" alt="{{ User.username}}'s profile picture"/>
             <div class="card-body">
-                <h5 class="card-title">{{ User.username }}</h5>
-                <p class="card-text">{{ User.biography }}</p>
+                <h1 class="card-title username">{{ User.username }}</h1>
+                <p class="card-text" *ngIf="User.biography != null; else noBio">{{ User.biography }}</p>
+                <ng-template #noBio>
+                    <i>This user does not have a biography.</i>
+                </ng-template>
             </div>
         </div>
     </div>
     <div class="container-fluid"> <!-- Feed -->
-        <app-feed [publications]="Publications"></app-feed>
+        <app-feed [publications]="Publications" (LoadMore)="$event" (RefreshPublication)="updatePublication($event)"></app-feed>
     </div>
 </ng-template>

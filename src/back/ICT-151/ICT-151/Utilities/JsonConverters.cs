@@ -20,4 +20,17 @@ namespace ICT_151.Utilities
             writer.WriteStringValue(value.ToString());
         }
     }
+
+    public class DateTimeJsonConverter : JsonConverter<DateTime>
+    {
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return DateTime.Parse(reader.GetString(), default, System.Globalization.DateTimeStyles.AssumeUniversal);
+        }
+
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString("O"));
+        }
+    }
 }

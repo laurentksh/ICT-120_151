@@ -13,7 +13,7 @@ namespace ICT_151.Authentication
 {
     public class SessionTokenAuthenticationHandler : AuthenticationHandler<SessionTokenAuthOptions>
     {
-        private IUserService UserService;
+        private readonly IUserService UserService;
 
         public SessionTokenAuthenticationHandler(IOptionsMonitor<SessionTokenAuthOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IUserService userService) : base(options, logger, encoder, clock)
         {

@@ -41,7 +41,8 @@ namespace ICT_151.Services
                 WrongCredentialsException => (HttpStatusCode.Unauthorized, "Unauthorized", exMsg),
                 UserNotFoundException or DataNotFoundException => (HttpStatusCode.NotFound, "NotFound", exMsg),
                 ForbiddenException => (HttpStatusCode.Forbidden, "Forbidden", exMsg),
-                DataAlreadyExistsException => (HttpStatusCode.BadRequest, "Forbidden", exMsg),
+                DataAlreadyExistsException => (HttpStatusCode.BadRequest, "BadRequest", exMsg),
+                UnsupportedMediaTypeException => (HttpStatusCode.UnsupportedMediaType, "UnsupportedMediaType", exMsg),
                 NotImplementedException => (HttpStatusCode.NotImplemented, "NotImplemented", exMsg),
                 NullReferenceException => (HttpStatusCode.InternalServerError, "InternalServerError", "Unspecified server error"),
                 _ => (HttpStatusCode.InternalServerError, "InternalServerError", "Unspecified server error")

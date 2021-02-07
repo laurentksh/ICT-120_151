@@ -42,7 +42,7 @@ namespace ICT_151.Models.Dto
                 CreationDate = publication.CreationDate,
                 SubmissionType = publication.SubmissionType,
                 TextContent = publication.TextContent,
-                MediaId = publication.Media == null ? null : publication.Media.Id,
+                MediaId = publication.MediaId == null ? null : publication.MediaId,
 
                 ReplyPublicationId = publication.ReplyPublicationId,
                 User = UserSummaryViewModel.FromUser(publication.User),

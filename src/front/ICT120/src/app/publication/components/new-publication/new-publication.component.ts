@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CreatePublication } from '../../models/create-publication';
+import { MediaContainer, MediaType, MediaViewModel } from 'src/app/media/models/media-view-model';
+import { GlobalAppEventsService, MessageType } from 'src/app/services/global-app-events/global-app-events.service';
+import { OperationResult } from 'src/app/services/models/operation-result';
+import { CreatePublication, SubmissionType } from '../../models/create-publication';
 import { PublicationService } from '../../services/publication.service';
 
 @Component({
@@ -10,46 +13,70 @@ import { PublicationService } from '../../services/publication.service';
 })
 export class NewPublicationComponent implements OnInit {
   publication = {} as CreatePublication;
-  errorOccured = false;
-  errorText = "";
 
-  constructor(private publicationService: PublicationService, private router: Router) { }
+  constructor(private publicationService: PublicationService, private router: Router, private appEvents: GlobalAppEventsService) { }
 
   ngOnInit(): void {
   }
 
   onSubmit(): void {
-    this.errorOccured = false;
-    if (!this.validateInput())
+    this.appEvents.Loading();
+    this.appEvents.HideMessage();
+    
+    if (!this.validateInput()) {
+      this.appEvents.DoneLoading();
       return;
+    }
 
     this.publicationService.CreateNew(this.publication).then((x) => {
       if (x.Success) {
-        this.router.navigate(["publication/id", { id: x.Content.id }])
+        this.router.navigate(["publication/id", x.Content.id]);
       } else {
-        this.errorOccured = true;
+        let errorText = "";
 
         switch (x.Error.status) {
           case 400:
-            this.errorText = "Invalid fields, please make sure you filled the form properly and try again.";
+            errorText = "Invalid fields, please make sure you filled the form properly and try again.";
             break;
           case 401:
-            this.errorText = "It appears you are not logged in, this shouldn't be possible. Please try logging out and logging in again.";
+            this.router.navigate(["/login", { redirect: this.router.url }])
+            break;
           default:
-            this.errorText = `An unexpected error occured, please try again later. (${x.Error.status} ${x.Error.statusText})`;
+            errorText = `An unexpected error occured, please try again later. (${x.Error.status} ${x.Error.statusText})`;
             break;
         }
+
+        this.appEvents.ShowMessage(errorText, MessageType.Error);
       }
+      this.appEvents.DoneLoading();
     })
   }
 
   validateInput(): boolean {
-    if (this.publication.TextContent == null || this.publication.SubmissionType == null) {
-      this.errorOccured = true;
-      this.errorText = "Please fill the required fields.";
+    if (this.publication.textContent == null) {
+      this.appEvents.ShowMessage("Please fill the required fields.", MessageType.Error);
       return false;
     }
 
     return true;
+  }
+
+  getContainer(): MediaContainer {
+    return MediaContainer.Publication;
+  }
+
+  mediaUploaded(media: OperationResult<MediaViewModel>): void {
+    if (media.Success) {
+      if (media.Content.mediaType == MediaType.Image) {
+        this.publication.submissionType = SubmissionType.Image;
+        this.publication.mediaId = media.Content.id;
+      } else if (media.Content.mediaType == MediaType.Video) {
+        this.publication.submissionType = SubmissionType.Video;
+        this.publication.mediaId = media.Content.id;
+      } else
+        this.publication.submissionType = SubmissionType.Text;
+    } else {
+      this.appEvents.ShowSnackBarMessage(`An error occured while uploading the media, please try again. (${media.Error.status})`);
+    }
   }
 }

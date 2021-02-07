@@ -26,9 +26,9 @@ namespace ICT_151.Services
         public int DefaultPublicationAmount { get; } = 100;
         public int MaxPublicationAmount { get; } = 200;
 
-        private IUserService UserService;
-        private IPublicationService PublicationService;
-        private IFeedRepository FeedRepository;
+        private readonly IUserService UserService;
+        private readonly IPublicationService PublicationService;
+        private readonly IFeedRepository FeedRepository;
 
         public FeedService(IUserService userService, IPublicationService publicationService, IFeedRepository feedRepository)
         {

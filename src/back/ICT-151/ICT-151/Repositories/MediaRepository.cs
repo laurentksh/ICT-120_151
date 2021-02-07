@@ -1,13 +1,11 @@
-﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using ICT_151.Data;
+﻿using ICT_151.Data;
 using ICT_151.Exceptions;
 using ICT_151.Models;
 using ICT_151.Models.Dto;
 using ICT_151.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -17,51 +15,32 @@ namespace ICT_151.Repositories
 {
     public interface IMediaRepository
     {
-        /// <summary>
-        /// Returns the media with it's URL.
-        /// </summary>
-        /// <param name="userId">User accessing the media.</param>
-        /// <param name="mediaId">Media Id.</param>
-        /// <param name="container">Media container to use.</param>
-        /// <returns>Media view model</returns>
         Task<MediaViewModel> GetMedia(Guid? userId, Guid mediaId);
 
-        /// <summary>
-        /// Check whether an user has access to a media.
-        /// </summary>
-        /// <param name="userId">User accessing the media.</param>
-        /// <param name="mediaId">Media Id.</param>
-        /// <returns>true: authorized; false: forbidden</returns>
         Task<bool> HasAccess(Guid? userId, Guid mediaId);
 
-        /// <summary>
-        /// Checks whether a media exists.
-        /// </summary>
-        /// <param name="mediaId"></param>
-        /// <returns></returns>
-        Task<bool> Exists(Guid mediaId);
+        Task<MediaViewModel> UploadMedia(Guid userId, CreateMediaDTO createMediaDTO);
 
-        /// <summary>
-        /// Upload a media to Azure Blob Storage and create a database entry.
-        /// </summary>
-        /// <param name="userId">User uploading the file.</param>
-        /// <param name="dto">Create media DTO.</param>
-        /// <param name="container">Media container to use.</param>
-        /// <returns>Media view model</returns>
-        Task<MediaViewModel> UploadMedia(Guid userId, CreateMediaDTO dto, MediaContainer container);
+        Task DeleteMedia(Guid mediaId);
+
+        Task DeleteUnusedMedias(Guid userId);
+
+        Task<bool> Exists(Guid mediaId);
     }
 
     public class MediaRepository : IMediaRepository
     {
         private const int MEDIA_PROCESS_TIMEOUT = 30;
 
-        private ApplicationDbContext DbContext;
-        private IAzureBlobStorageRepository BlobStorageRepo;
+        private readonly ApplicationDbContext DbContext;
+        private readonly IAzureBlobStorageRepository BlobStorageRepo;
+        private readonly ILogger<MediaRepository> Logger;
 
-        public MediaRepository(ApplicationDbContext dbContext, IAzureBlobStorageRepository blobStorageRepo)
+        public MediaRepository(ApplicationDbContext dbContext, IAzureBlobStorageRepository blobStorageRepo, ILogger<MediaRepository> logger)
         {
             DbContext = dbContext;
             BlobStorageRepo = blobStorageRepo;
+            Logger = logger;
         }
 
         public async Task<MediaViewModel> GetMedia(Guid? userId, Guid id)
@@ -73,60 +52,83 @@ namespace ICT_151.Repositories
             if (media == null)
                 throw new DataNotFoundException($"Could not find media with id {id}");
             
-            var vm = MediaViewModel.FromMedia(media);
-            vm.BlobFullUrl = (await BlobStorageRepo.GetMediaUri(media.BlobName, media.Container)).AbsoluteUri;
+            var mediaViewModel = MediaViewModel.FromMedia(media);
+            mediaViewModel.BlobFullUrl = (await BlobStorageRepo.GetMediaUri(media.BlobName, media.Container)).AbsoluteUri;
 
-            return vm;
+            return mediaViewModel;
         }
 
         public async Task<bool> HasAccess(Guid? userId, Guid mediaId)
         {
             var media = DbContext.Medias
-                //.Include(x => x.PrivateMessage)
+                .Include(x => x.PrivateMessage)
                 .Single(x => x.Id == mediaId);
+
+            if (media.Container != MediaContainer.PrivateMessage)
+                return true;
 
             if (userId == null)
                 return false;
 
-            return media.OwnerId == userId;
-
-            /*if (media.Container != MediaContainer.PrivateMessage)
-                return true;
-
-            if (userId == null || media.PrivateMessage.RecipientId == userId || media.PrivateMessage.SenderId == userId)
+            if (media.PrivateMessage.RecipientId == userId || media.PrivateMessage.SenderId == userId)
                 return true;
             else
-                return false;*/
+                return false;
         }
 
-        public async Task<bool> Exists(Guid mediaId)
+        public async Task<MediaViewModel> UploadMedia(Guid userId, CreateMediaDTO createMediaDTO)
         {
-            return await DbContext.Medias.AnyAsync(x => x.Id == mediaId);
-        }
+            await DeleteUnusedMedias(userId);
 
-        public async Task<MediaViewModel> UploadMedia(Guid userId, CreateMediaDTO dto, MediaContainer containerType)
-        {
             using var ms = new MemoryStream();
-            await dto.Media.CopyToAsync(ms, new CancellationTokenSource(TimeSpan.FromSeconds(MEDIA_PROCESS_TIMEOUT)).Token);
+            await createMediaDTO.Media.CopyToAsync(ms, new CancellationTokenSource(TimeSpan.FromSeconds(MEDIA_PROCESS_TIMEOUT)).Token);
 
             var blobName = $"media-{Guid.NewGuid()}";
-
-            var result = await BlobStorageRepo.UploadMedia(ms, blobName, containerType);
+            
+            ms.Position = 0;
+            var result = await BlobStorageRepo.UploadMedia(ms, blobName, createMediaDTO.Container);
 
             var media = new Media
             {
-                MediaType = dto.Media.ContentType.ToMediaType(),
-                MimeType = dto.Media.ContentType,
+                MediaType = createMediaDTO.Media.ContentType.ToMediaType(),
+                MimeType = createMediaDTO.Media.ContentType,
                 BlobName = blobName,
-                Container = containerType,
-                FileSize = dto.Media.Length,
+                Container = createMediaDTO.Container,
+                FileSize = createMediaDTO.Media.Length,
                 OwnerId = userId
             };
 
             await DbContext.Medias.AddAsync(media);
             await DbContext.SaveChangesAsync();
 
-            return MediaViewModel.FromMedia(media);
+            var mediaViewModel = MediaViewModel.FromMedia(media);
+            mediaViewModel.BlobFullUrl = result.AbsoluteUri;
+
+            return mediaViewModel;
+        }
+
+        public async Task DeleteMedia(Guid mediaId)
+        {
+            DbContext.Medias.Remove(await DbContext.Medias.SingleAsync(x => x.Id == mediaId));
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteUnusedMedias(Guid userId)
+        {
+            var medias = DbContext.Medias
+                .Include(x => x.User)
+                .Include(x => x.Publication)
+                .Include(x => x.PrivateMessage)
+                .Where(x => x.OwnerId == userId)
+                .ToList()
+                .Where(x => x.User == null && x.Publication == null && x.PrivateMessage == null);
+
+            DbContext.Medias.RemoveRange(medias);
+        }
+
+        public async Task<bool> Exists(Guid mediaId)
+        {
+            return await DbContext.Medias.AnyAsync(x => x.Id == mediaId);
         }
     }
 }

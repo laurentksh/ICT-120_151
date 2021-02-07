@@ -71,7 +71,7 @@ namespace ICT_151.Models.Dto
 
         public DateTime Birthday { get; set; }
 
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationDateUtc { get; set; }
 
 
         public static UserSummaryViewModel FromUser(User user) => new UserSummaryViewModel
@@ -81,7 +81,7 @@ namespace ICT_151.Models.Dto
             ProfilePictureId = user.ProfilePictureMediaId == null ? "default_pp" : user.ProfilePictureMediaId.ToString(),
             Biography = user.Biography,
             Birthday = user.Birthday,
-            CreationDate = user.CreationDate,
+            CreationDateUtc = user.CreationDate,
         };
     }
 

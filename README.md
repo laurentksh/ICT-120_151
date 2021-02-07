@@ -35,11 +35,13 @@ This command will install Azurite globally.
 
 ### (Optional) Running Azurite {#azurite-run}
 
-To start Azurite, use the following command:
+To start Azurite, open a command prompt/PowerShell, go to the root folder of the repository and use the following command:
 
 ```bash
-azurite --silent --location c:\azurite --debug c:\azurite\debug.log
+azurite --silent --location Azurite --debug Azurite/debug.log
 ```
+
+or run the azurite.bat script present at the root foolder.
 
 You can freely change the location as it will contain the files uploaded using the application.
 

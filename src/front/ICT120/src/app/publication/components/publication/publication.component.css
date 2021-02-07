@@ -2,3 +2,12 @@
     margin-top: 25px;
     margin-right: 25px;
 }
+
+.publication-image {
+    width: 35%;
+    height: 50%;
+}
+
+.username {
+    color: black;
+}

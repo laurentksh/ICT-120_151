@@ -22,10 +22,13 @@ export class AuthService {
     const json = JSON.parse(localStorage.getItem("session"));
     let result: UserSession = {} as UserSession;
 
+    if (json == null)
+      return null;
+    
     result.id = json.id;
     result.token = json.token;
-    result.creationDateUtc = new Date(json.creationDate);
-    result.expiracyDateUtc = new Date(json.expiracyDate);
+    result.creationDateUtc = new Date(Date.parse(json.creationDateUtc));
+    result.expiracyDateUtc = new Date(Date.parse(json.expiracyDateUtc));
     result.userId = json.userId;
 
     return result;
@@ -35,11 +38,14 @@ export class AuthService {
     const json = JSON.parse(localStorage.getItem("user"));
     let result: UserSummary = {} as UserSummary;
 
+    if (json == null)
+      return null;
+    
     result.id = json.id;
     result.username = json.username;
     result.biography = json.biography;
-    result.creationDate = new Date(json.creationDate);
-    result.birthday = new Date(json.birthday);
+    result.creationDate = new Date(Date.parse(json.creationDateUtc));
+    result.birthday = new Date(Date.parse(json.birthday));
     result.profilePictureId = json.profilePictureId;
 
     return result;
@@ -97,6 +103,10 @@ export class AuthService {
     return result;
   }
 
+  /**
+   * Send an authenticate request to the back-end.
+   * @param login Authenticate DTO
+   */
   public async Authenticate(login: Login): Promise<OperationResult<void>> {
     let result: OperationResult<void> = {} as OperationResult<void>;
     let request: ApiCallResult<UserSession>;
@@ -114,6 +124,9 @@ export class AuthService {
     return result;
   }
 
+  /**
+   * Send a logout request to the back-end and delete the current session.
+   */
   public async Logout(): Promise<OperationResult<void>> {
     let result: OperationResult<void> = {} as OperationResult<void>;
     const request = await this.apiService.DeleteSession(this.Session.id);
@@ -125,11 +138,26 @@ export class AuthService {
     return result;
   }
 
+  /**
+   * Validates the current session if it exists (will return true if the user is not logged in).
+   * Use this method to check if the current session is invalid.
+   */
   public ValidateCurrentSession(): boolean {
-    const session = this.Session;
+    let session: UserSession;
+
+    try {
+      session = this.Session;
+    } catch (ex) {
+      console.warn(ex);
+      return false;
+    }
+
+    if (session == null)
+      return true;
+    
     const now = new Date(Date.now());
     const expiracyDate = session.expiracyDateUtc;
-
+    
     if (expiracyDate <= now) {
       return false;
     }

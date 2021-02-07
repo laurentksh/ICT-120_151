@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { GlobalAppEventsService, MessageType } from 'src/app/services/global-app-events/global-app-events.service';
 import { Signup } from '../../models/signup';
 import { AuthService } from '../../services/auth.service';
 
@@ -11,35 +12,40 @@ import { AuthService } from '../../services/auth.service';
 export class SignupComponent implements OnInit {
 
   signup: Signup = {} as Signup;
-  errorOccured: boolean = false;
-  errorText: string = "";
 
-  constructor(private authService: AuthService, private routeService: Router) { }
+  constructor(private authService: AuthService, private routeService: Router, private appEvents: GlobalAppEventsService) { }
 
   ngOnInit(): void {
   }
 
   onSignup(): void {
-    this.errorOccured = false;
-    if (!this.validateInput())
+    this.appEvents.HideMessage();
+    this.appEvents.Loading();
+
+    if (!this.validateInput()) {
+      this.appEvents.DoneLoading();
       return;
+    }
 
     this.authService.Signup(this.signup).then((x) => {
+      this.appEvents.DoneLoading();
       if (x.Success) {
         //Go to /u/{username}
         debugger;
         this.routeService.navigate(["u/", x.Content.username]);
       } else {
-        this.errorOccured = true;
+        let errorText = "";
 
         switch (x.Error.status) {
           case 400:
-            this.errorText = "Invalid fields, please make sure you filled the form properly and try again.";
+            errorText = "Invalid fields, please make sure you filled the form properly and try again.";
             break;
           default:
-            this.errorText = `An unexpected error occured, please try again later. (${x.Error.status} ${x.Error.statusText})`;
+            errorText = `An unexpected error occured, please try again later. (${x.Error.status} ${x.Error.statusText})`;
             break;
         }
+
+        this.appEvents.ShowMessage(errorText, MessageType.Error);
       }
     }).catch((x) => console.warn(x));
   }
@@ -49,9 +55,7 @@ export class SignupComponent implements OnInit {
       this.signup.username == null ||
       this.signup.password == null ||
       this.signup.birthDay == null) {
-      this.errorOccured = true;
-      this.errorText = "Please fill the required fields.";
-      
+      this.appEvents.ShowMessage("Please fill the required fields.", MessageType.Error);
       return false;
     }
 

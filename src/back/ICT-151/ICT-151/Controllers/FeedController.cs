@@ -15,8 +15,8 @@ namespace ICT_151.Controllers
     public class FeedController : ControllerBase
     {
         private ILogger<FeedController> Logger { get; set; }
-        private IFeedService FeedService;
-        private IExceptionHandlerService ExceptionHandlerService;
+        private readonly IFeedService FeedService;
+        private readonly IExceptionHandlerService ExceptionHandlerService;
 
         public FeedController(ILogger<FeedController> logger, IFeedService feedService, IExceptionHandlerService exceptionHandlerService)
         {

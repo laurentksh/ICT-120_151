@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/app/services/api/api.service';
 import { OperationResult } from 'src/app/services/models/operation-result';
-import { MediaViewModel } from '../models/media-view-model';
+import { MediaContainer, MediaViewModel } from '../models/media-view-model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +38,20 @@ export class MediaService {
     }
 
     return blob;
+  }
+
+  public async UploadMedia(media: File, container: MediaContainer): Promise<OperationResult<MediaViewModel>> {
+    const result: OperationResult<MediaViewModel> = {} as OperationResult<MediaViewModel>;
+
+    const request = await this.apiService.UploadMedia(media, MediaContainer[container]);
+
+    result.Success = request.Success;
+    if (request.Success) {
+      result.Content = request.ObjectResult;
+    } else {
+      result.Error = request.Error;
+    }
+
+    return result;
   }
 }

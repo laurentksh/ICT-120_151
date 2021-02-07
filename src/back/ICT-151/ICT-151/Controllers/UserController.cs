@@ -18,9 +18,9 @@ namespace ICT_151.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private ILogger<UserController> Logger;
-        private IUserService UserService;
-        private IExceptionHandlerService ExceptionHandlerService;
+        private readonly ILogger<UserController> Logger;
+        private readonly IUserService UserService;
+        private readonly IExceptionHandlerService ExceptionHandlerService;
 
         public UserController(ILogger<UserController> logger, IUserService userService, IExceptionHandlerService exceptionHandlerService)
         {

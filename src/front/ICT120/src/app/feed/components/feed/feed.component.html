@@ -1,11 +1,14 @@
-<div [hidden]="publications != null"> <!-- Rework this -->
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-</div>
-
 <div class="publications-container" (scroll)="onWindowScroll($event)" *ngIf="publications?.length; else noPublications">
-    <app-publication [Publication]="publication" *ngFor="let publication of publications"></app-publication>
+    <app-publication
+    [Publication]="publication"
+    *ngFor="let publication of publications"
+    
+    (Like)="like($event)"
+    (Repost)="repost($event)"
+    (Delete)="delete($event)">
+</app-publication>
 </div>
 
 <ng-template #noPublications>
-    <div>No publications found !</div>
+    <div *ngIf="publications != null">No publications found !</div>
 </ng-template>

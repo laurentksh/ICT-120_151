@@ -15,7 +15,9 @@ import { HtmlAddonsModule } from './html-addons/html-addons.module';
 import { EnvironmentService } from 'src/environments/service/environment.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
-
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { ContentNotFoundComponent } from './main-components/content-not-found/content-not-found.component';
 
 
 @NgModule({
@@ -23,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
     AppComponent,
     LeftSidebarComponent,
     RightSidebarComponent,
+    ContentNotFoundComponent,
   ],
   imports: [
     AuthModule,
@@ -38,7 +41,8 @@ import { MatButtonModule } from '@angular/material/button';
 
     //Angular
     BrowserAnimationsModule, //Angular Browser Animations
-    MatButtonModule
+    MatButtonModule,
+    MatProgressBarModule,
   ],
   bootstrap: [AppComponent],
   providers: [
@@ -47,6 +51,10 @@ import { MatButtonModule } from '@angular/material/button';
       useClass: SessionTokenInterceptor,
       multi: true
     },
+    {
+      provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
+      useValue: { duration: 3500 }
+    }
   ]
 })
 export class AppModule { }

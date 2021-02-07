@@ -1,40 +1,54 @@
-<mat-card class="publication-card" (click)="doViewPublication()">
-    <mat-card-header>
-        <h5 class="card-title">{{ Publication.user.username }}</h5>
-        <small class="text-muted">{{ Publication.creationDate }}</small> <!-- Format date -->
+<mat-card class="publication-card">
+    <mat-card-header (click)="doViewUser()">
+        <h4 class="card-title username">{{ Publication.user?.username }}</h4>
+        <small class="text-muted">{{ getDate().toLocaleString() }}</small> <!-- Format date -->
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content (click)="doViewPublication()">
         <p class="card-text">{{ Publication.textContent }}</p>
+        
+        <img *ngIf="Publication.mediaId != null" mat-card-image class="publication-image" src="{{ mediaUrl }}" (error)="mediaUrl = 'http://localhost:4200/assets/default_pp.svg'"/>
     </mat-card-content>
     <mat-card-actions>
         <div *ngIf="this.Publication.reposted; else unreposted">
-            <button mat-icon-button (click)="doRepost()"><i class="bi bi-megaphone-fill"></i> {{ Publication.repostsAmount }}</button>
+            <button mat-icon-button (click)="doRepost()">
+                <mat-icon color="accent">autorenew</mat-icon>
+                <span>{{ Publication.repostsAmount }}</span>
+            </button>
         </div>
         <ng-template #unreposted>
-            <button mat-icon-button (click)="doRepost()"><i class="bi bi-megaphone"></i> {{ Publication.repostsAmount }}</button>
+            <button mat-icon-button (click)="doRepost()">
+                <mat-icon>autorenew</mat-icon>
+                <span>{{ Publication.repostsAmount }}</span>
+            </button>
         </ng-template>
 
         <div *ngIf="this.Publication.liked; else unliked">
-            <button mat-icon-button (click)="doLike()"><i class="bi bi-heart-fill"></i> {{ Publication.likesAmount }}</button>
+            <button mat-icon-button (click)="doLike()">
+                <mat-icon color="accent">favorite</mat-icon>
+                <span>{{ Publication.likesAmount }}</span>
+            </button>
         </div>
         <ng-template #unliked>
-            <button mat-icon-button (click)="doLike()"><i class="bi bi-heart"></i> {{ Publication.likesAmount }}</button>
+            <button mat-icon-button (click)="doLike()">
+                <mat-icon>favorite_border</mat-icon>
+                <span>{{ Publication.likesAmount }}</span>
+            </button>
         </ng-template>
 
-        <button mat-icon-button>
-            <i class="bi bi-chat-dots"></i>
+        <button mat-icon-button (click)="doViewPublication()">
+            <mat-icon fontSet="material-icons-outlined">comment</mat-icon>
             <span>{{ Publication.repliesAmount }}</span>
         </button>
 
-        <a mat-icon-button [matMenuTriggerFor]="pubMenu"><i class="bi bi-three-dots-vertical"></i></a>
+        <a mat-icon-button [matMenuTriggerFor]="pubMenu"><mat-icon>more_vert</mat-icon></a>
         <mat-menu #pubMenu="matMenu" xPosition="before" yPosition="below">
             <button mat-menu-item [cdkCopyToClipboard]="getPath()">
-                <i class="bi bi-share-fill"></i>
+                <mat-icon>content_copy</mat-icon>
                 <span>Copy link</span>
             </button>
             <ng-template [ngIf]="isOwner()">
-                <button mat-menu-item>
-                    <i class="bi bi-trash-fill"></i>
+                <button mat-menu-item (click)="doDelete()">
+                    <mat-icon>delete_outline</mat-icon>
                     <span>Delete</span>
                 </button>
             </ng-template>

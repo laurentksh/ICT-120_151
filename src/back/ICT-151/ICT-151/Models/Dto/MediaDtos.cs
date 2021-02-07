@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,7 +9,11 @@ namespace ICT_151.Models.Dto
 {
     public class CreateMediaDTO
     {
+        [Required]
         public IFormFile Media { get; set; }
+
+        [Required]
+        public MediaContainer Container { get; set; }
     }
 
     public class MediaViewModel

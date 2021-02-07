@@ -59,7 +59,7 @@ namespace ICT_151.Repositories
 
     public class AzureBlobStorageRepository : IAzureBlobStorageRepository
     {
-        private BlobServiceClient Client;
+        private readonly BlobServiceClient Client;
 
         public string PublicationMediaContainerName { get; } = "publications-media";
 
@@ -129,7 +129,7 @@ namespace ICT_151.Repositories
             var container = await GetBlobContainer(containerType);
             await container.UploadBlobAsync(blobName, blob);
             
-            return container.GetBlobClient(blobName).Uri;
+            return new Uri(Client.Uri, container.GetBlobClient(blobName).Uri);
         }
 
         public async Task<bool> Exists(string blobName, MediaContainer containerType)
