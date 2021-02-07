@@ -3,7 +3,7 @@ import { UserSummary } from "src/app/user/models/user-summary";
 export interface Publication {
     id: string;
 
-    creationDate: Date;
+    creationDate: string;
 
     submissionType: string;
 

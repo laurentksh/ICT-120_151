@@ -5,4 +5,41 @@
 .main-app-inner {
     background-color: #4E668D;
     height: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+
+    overflow-y: auto;
+    height: 100vh;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: rgb(61, 61, 61); 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+.main-app-inner-content {
+    height: max-content;
+    padding-top: 25px;
+    padding-left: 25px;
+    padding-right: 5px;
+}
+
+.message {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    width: 90%;
 }

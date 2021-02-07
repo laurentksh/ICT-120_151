@@ -64,7 +64,7 @@ namespace ICT_151.Repositories
 
     public class UserRepository : IUserRepository
     {
-        private ApplicationDbContext DbContext;
+        private readonly ApplicationDbContext DbContext;
 
         public UserRepository(ApplicationDbContext dbContext)
         {
@@ -226,7 +226,7 @@ namespace ICT_151.Repositories
                 {
                     Id = result.Entity.Id,
                     Username = result.Entity.Username,
-                    CreationDate = result.Entity.CreationDate
+                    CreationDateUtc = result.Entity.CreationDate
                 },
                 Session = UserSessionViewModel.FromUserSession(session)
             };

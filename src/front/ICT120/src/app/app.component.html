@@ -5,7 +5,13 @@
         </div>
         <div class="col-8">
             <main class="container-xl main-app-inner">
-                <router-outlet></router-outlet>
+                <mat-progress-bar [ngStyle]="{'visibility': (isLoading) ? 'visible' : 'hidden'}" mode="indeterminate" class=""></mat-progress-bar>
+                <div *ngIf="showMessage" class="container message alert alert-danger">
+                    <p>{{ message }}</p>
+                </div>
+                <div class="main-app-inner-content">
+                    <router-outlet></router-outlet>
+                </div>
             </main>
         </div>
         <div class="col-sm right-sidebar">
@@ -13,6 +19,3 @@
         </div>
     </div>
 </div>
-
-
-

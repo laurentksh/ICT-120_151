@@ -21,6 +21,8 @@ namespace ICT_151.Repositories
 
         Task<PublicationViewModel> CreateNew(Guid userId, PublicationCreateDto publication);
 
+        Task Remove(Guid userId, Guid publicationId);
+
         Task Repost(Guid userId, Guid publicationId);
 
         Task Like(Guid userId, Guid publicationId);
@@ -38,7 +40,7 @@ namespace ICT_151.Repositories
 
     public class PublicationRepository : IPublicationRepository
     {
-        private ApplicationDbContext DbContext;
+        private readonly ApplicationDbContext DbContext;
 
         public PublicationRepository(ApplicationDbContext dbContext)
         {
@@ -102,6 +104,12 @@ namespace ICT_151.Repositories
             await DbContext.SaveChangesAsync();
 
             return PublicationViewModel.FromPublication(result.Entity);
+        }
+
+        public async Task Remove(Guid userId, Guid publicationId)
+        {
+            DbContext.Publications.Remove(await DbContext.Publications.SingleAsync(x => x.Id == publicationId && x.UserId == userId));
+            await DbContext.SaveChangesAsync();
         }
 
         public async Task Repost(Guid userId, Guid publicationId)

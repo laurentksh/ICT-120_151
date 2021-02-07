@@ -1,8 +1,8 @@
 export interface CreatePublication {
-    SubmissionType: SubmissionType;
-    TextContent: string;
-    MediaUrl: string;
-    ReplyPublicationId: string;
+    submissionType: SubmissionType;
+    textContent: string;
+    mediaId: string;
+    replyPublicationId: string;
 }
 
 export enum SubmissionType {

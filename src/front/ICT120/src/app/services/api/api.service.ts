@@ -100,6 +100,24 @@ export class ApiService {
 
     return result;
   }
+
+  public async UploadMedia(media: File, container: string): Promise<ApiCallResult<MediaViewModel>> {
+    let result: ApiCallResult<MediaViewModel> = {} as ApiCallResult<MediaViewModel>;
+    result.Success = true;
+
+    const formData: FormData = new FormData(); //This allows us to append other parameters if needed in the future.
+    formData.append("media", media, media.name);
+    formData.append("container", container);
+
+    try {
+      result.ObjectResult = await this.httpClient.post<MediaViewModel>(this.BASE_URL + "Media", formData).toPromise();
+    } catch (error) {
+      result.Success = false;
+      result.Error = error;
+    }
+
+    return result;
+  }
   //#endregion Media
 
   //#region Publication
@@ -108,7 +126,7 @@ export class ApiService {
     result.Success = true;
 
     try {
-      result.ObjectResult = await this.httpClient.get<Publication>(this.BASE_URL + "Publication/").toPromise();
+      result.ObjectResult = await this.httpClient.get<Publication>(this.BASE_URL + `Publication/${publicationId}`).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -192,7 +210,7 @@ export class ApiService {
     result.Success = true;
 
     try {
-      await this.httpClient.post(this.BASE_URL + "Publication/repost", null).toPromise();
+      await this.httpClient.post(this.BASE_URL + `Publication/${publicationId}/repost`, null).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -206,7 +224,7 @@ export class ApiService {
     result.Success = true;
 
     try {
-      await this.httpClient.post(this.BASE_URL + "Publication/like", null).toPromise();
+      await this.httpClient.post(this.BASE_URL + `Publication/${publicationId}/like`, null).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -220,7 +238,7 @@ export class ApiService {
     result.Success = true;
 
     try {
-      await this.httpClient.post(this.BASE_URL + "Publication/repost", null).toPromise();
+      await this.httpClient.delete(this.BASE_URL + `Publication/${publicationId}/repost`).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -234,7 +252,7 @@ export class ApiService {
     result.Success = true;
 
     try {
-      await this.httpClient.delete(this.BASE_URL + "Publication/like").toPromise();
+      await this.httpClient.delete(this.BASE_URL + `Publication/${publicationId}/like`).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -304,7 +322,7 @@ export class ApiService {
   public async DeleteSessions(allSessions: boolean): Promise<ApiCallResult<void>> { //TODO: Test this
     let result: ApiCallResult<void> = {} as ApiCallResult<void>;
     result.Success = true;
-
+    
     try {
       await this.httpClient.delete(this.BASE_URL + "User/sessions", { params: {"allSessions": allSessions.toString()}}).toPromise();
     } catch (error) {
@@ -329,7 +347,7 @@ export class ApiService {
     return result;
   }
 
-  public async UpdateUser(userId: string, updateDto: UpdateUser): Promise<ApiCallResult<UserSummary>> {
+  public async UpdateUser(updateDto: UpdateUser): Promise<ApiCallResult<UserSummary>> {
     let result: ApiCallResult<UserSummary> = {} as ApiCallResult<UserSummary>;
     result.Success = true;
 
@@ -343,7 +361,7 @@ export class ApiService {
     return result;
   }
 
-  public async DeleteUser(userId: string): Promise<ApiCallResult<void>> {
+  public async DeleteUser(): Promise<ApiCallResult<void>> {
     let result: ApiCallResult<void> = {} as ApiCallResult<void>;
     result.Success = true;
 
@@ -412,6 +430,35 @@ export class ApiService {
 
     return result;
   }
+
+  public async SetProfilePicture(mediaId: string): Promise<ApiCallResult<void>> {
+    let result: ApiCallResult<void> = {} as ApiCallResult<void>;
+    result.Success = true;
+
+    try {
+      await this.httpClient.post(this.BASE_URL + "User/profilepicture", { params: {"mediaId": mediaId }}).toPromise();
+    } catch (error) {
+      result.Success = false;
+      result.Error = error;
+    }
+
+    return result;
+  }
+
+  public async RemoveProfilePicture(): Promise<ApiCallResult<void>> {
+    let result: ApiCallResult<void> = {} as ApiCallResult<void>;
+    result.Success = true;
+
+    try {
+      await this.httpClient.delete(this.BASE_URL + "User/profilepicture").toPromise();
+    } catch (error) {
+      result.Success = false;
+      result.Error = error;
+    }
+
+    return result;
+  }
+
   //#endregion User
 }
 

@@ -11,6 +11,10 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { UploadMediaComponent } from '../media/components/upload-media/upload-media.component';
 
 
 @NgModule({
@@ -18,7 +22,8 @@ import { MatCardModule } from '@angular/material/card';
     PublicationComponent,
     ReplyComponent,
     NewPublicationComponent,
-    ViewPublicationComponent
+    ViewPublicationComponent,
+    UploadMediaComponent
   ],
   imports: [ //WARNING: Importing FeedModule from here causes a "Maximum call stack size exceeded" exception !
     PublicationRoutingModule,
@@ -28,7 +33,10 @@ import { MatCardModule } from '@angular/material/card';
     ClipboardModule,
     MatMenuModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   exports: [
     PublicationComponent

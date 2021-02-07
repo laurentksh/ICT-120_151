@@ -15,7 +15,7 @@ namespace ICT_151.Utilities
         public const string SpecialChars = @"+@*#%&/\|()=?^-_.,:;éèà$¨<>";
         public const string Space = " ";
 
-        private static Random random = new Random();
+        private static readonly Random random = new Random();
 
         /// <summary>
         /// Get a pseudo-random string.

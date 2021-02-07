@@ -186,8 +186,8 @@ namespace ICT_151.Services
 
     public class UserService : IUserService
     {
-        private IUserRepository UserRepository;
-        private IMediaService MediaService;
+        private readonly IUserRepository UserRepository;
+        private readonly IMediaService MediaService;
 
         public UserService(IUserRepository repository, IMediaService mediaService)
         {

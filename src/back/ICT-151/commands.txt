@@ -11,22 +11,3 @@ Migrations:
 
 No provider specified:
 dotnet ef migrations add InitialMigration
-
-SQLite:
-dotnet ef migrations add InitialMigration --context SQLiteApplicationDbContext --output-dir Migrations/SQLiteMigrations
-
-SQLServer:
-set ASPNET_ENVIRONMENT = Production
-dotnet ef migrations add InitialMigration --context SQLServerApplicationDbContext --output-dir Migrations/SQLServerMigrations
-
-
-Update:
-
-No provider specified:
-dotnet ef database update
-
-SQLite:
-dotnet ef database update --context SQLiteApplicationDbContext
-
-SQLServer:
-dotnet ef database update --context SQLServerApplicationDbContext

@@ -1,16 +1,11 @@
-<div [hidden]="!error" class="container alert alert-danger">
-    <p class="" >{{ errorMsg }}</p>
-</div>
-
 <app-publication [Publication]="this.Publication"></app-publication>
 
-<!--<app-feed [publications]="this.Replies"></app-feed>-->
 <div class="replies">
     <div class="publications-container" (scroll)="onWindowScroll($event)" *ngIf="Replies?.length; else noPublications">
         <app-publication [Publication]="reply" *ngFor="let reply of Replies"></app-publication>
     </div>
     
     <ng-template #noPublications>
-        <div>No publications found !</div>
+        <div>No reply found !</div>
     </ng-template>
 </div>

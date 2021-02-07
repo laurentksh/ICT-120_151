@@ -17,7 +17,7 @@ namespace ICT_151.Repositories
 
     public class FeedRepository : IFeedRepository
     {
-        private ApplicationDbContext DbContext;
+        private readonly ApplicationDbContext DbContext;
 
         public FeedRepository(ApplicationDbContext dbContext)
         {
@@ -34,14 +34,13 @@ namespace ICT_151.Repositories
                 .Include(x => x.Likes)
                 .Where(x => x.ReplyPublicationId.HasValue == false);
 
-            if (positionId.HasValue)
-            {
-                return publications
+            if (positionId.HasValue) {
+                return (await publications //Shitty workaround since .SkipWhile doesn't seem to be implemented by EF Core...
+                    .ToListAsync())
                     .SkipWhile(x => x.Id != positionId)
                     .Take(amount)
                     .Select(x => PublicationViewModel.FromPublication(x, requestUserId));
-            } else
-            {
+            } else {
                 return publications
                     .Take(amount)
                     .Select(x => PublicationViewModel.FromPublication(x, requestUserId));
@@ -51,21 +50,20 @@ namespace ICT_151.Repositories
         public async Task<IEnumerable<PublicationViewModel>> GetFeed(Guid userId, int amount, Guid? positionId, Guid? requestUserId)
         {
             var publications = DbContext.Publications
+                .OrderByDescending(x => x.CreationDate)
                 .Include(x => x.User)
                 .Include(x => x.Replies)
                 .Include(x => x.Reposts)
                 .Include(x => x.Likes)
                 .Where(x => x.ReplyPublicationId.HasValue == false && x.UserId == userId);
 
-            if (positionId.HasValue)
-            {
-                return publications
+            if (positionId.HasValue) {
+                return (await publications //Shitty workaround since .SkipWhile doesn't seem to be implemented by EF Core...
+                    .ToListAsync())
                     .SkipWhile(x => x.Id != positionId)
                     .Take(amount)
                     .Select(x => PublicationViewModel.FromPublication(x, requestUserId));
-            }
-            else
-            {
+            } else {
                 return publications
                     .Take(amount)
                     .Select(x => PublicationViewModel.FromPublication(x, requestUserId));

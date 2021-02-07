@@ -21,6 +21,8 @@ namespace ICT_151.Services
 
         Task<PublicationViewModel> CreateNew(Guid userId, PublicationCreateDto publication);
 
+        Task Remove(Guid userId, Guid publicationId);
+
         Task Repost(Guid userId, Guid publicationId);
 
         Task Like(Guid userId, Guid publicationId);
@@ -34,8 +36,8 @@ namespace ICT_151.Services
 
     public class PublicationService : IPublicationService
     {
-        private IPublicationRepository PublicationRepository;
-        private IUserService UserService;
+        private readonly IPublicationRepository PublicationRepository;
+        private readonly IUserService UserService;
 
         public PublicationService(IPublicationRepository publicationRepository, IUserService userService)
         {
@@ -46,7 +48,7 @@ namespace ICT_151.Services
         public async Task<PublicationViewModel> GetPublication(Guid id, Guid? requestUserId)
         {
             if (!await PublicationRepository.Exists(id))
-                throw new DataNotFoundException("Publication does not exists.");
+                throw new DataNotFoundException("Publication does not exist.");
 
             return await PublicationRepository.GetPublication(id, requestUserId);
         }
@@ -54,7 +56,7 @@ namespace ICT_151.Services
         public async Task<List<PublicationViewModel>> GetReplies(Guid id, Guid? requestUserId)
         {
             if (!await PublicationRepository.Exists(id))
-                throw new DataNotFoundException("Publication does not exists.");
+                throw new DataNotFoundException("Publication does not exist.");
 
             return (await PublicationRepository.GetReplies(id, requestUserId)).ToList();
         }
@@ -62,7 +64,7 @@ namespace ICT_151.Services
         public async Task<List<RepostViewModel>> GetReposts(Guid publicationId)
         {
             if (!await PublicationRepository.Exists(publicationId))
-                throw new DataNotFoundException("Publication does not exists.");
+                throw new DataNotFoundException("Publication does not exist.");
 
             return (await PublicationRepository.GetReposts(publicationId)).ToList();
         }
@@ -70,25 +72,30 @@ namespace ICT_151.Services
         public async Task<List<LikeViewModel>> GetLikes(Guid publicationId)
         {
             if (!await PublicationRepository.Exists(publicationId))
-                throw new DataNotFoundException("Publication does not exists.");
+                throw new DataNotFoundException("Publication does not exist.");
 
             return (await PublicationRepository.GetLikes(publicationId)).ToList();
         }
 
         public async Task<PublicationViewModel> CreateNew(Guid userId, PublicationCreateDto publication)
         {
-            if (!await UserService.Exists(userId)) //Should always exist but whatever.
-                throw new UserNotFoundException();
-
             if (publication.ReplyPublicationId.HasValue && !await PublicationRepository.Exists(publication.ReplyPublicationId.Value))
                 throw new DataNotFoundException($"Target publication {publication.ReplyPublicationId} does not exist.");
 
             return await PublicationRepository.CreateNew(userId, publication);
         }
 
+        public async Task Remove(Guid userId, Guid publicationId)
+        {
+            if (!await Exists(publicationId))
+                throw new DataNotFoundException("Publication does not exist.");
+
+            await PublicationRepository.Remove(userId, publicationId);
+        }
+
         public async Task Repost(Guid userId, Guid publicationId)
         {
-            if (!await UserService.Exists(userId) || !await Exists(publicationId))
+            if (!await Exists(publicationId))
                 throw new DataNotFoundException();
 
             if (await PublicationRepository.RepostExists(userId, publicationId))
@@ -99,7 +106,7 @@ namespace ICT_151.Services
 
         public async Task Like(Guid userId, Guid publicationId)
         {
-            if (!await UserService.Exists(userId) || !await Exists(publicationId))
+            if (!await Exists(publicationId))
                 throw new DataNotFoundException();
 
             if (await PublicationRepository.LikeExists(userId, publicationId))
@@ -110,8 +117,7 @@ namespace ICT_151.Services
 
         public async Task UnRepost(Guid userId, Guid publicationId)
         {
-            if (!await UserService.Exists(userId) ||
-                !await Exists(publicationId) ||
+            if (!await Exists(publicationId) ||
                 !await PublicationRepository.RepostExists(userId, publicationId))
                 throw new DataNotFoundException();
 
@@ -120,8 +126,7 @@ namespace ICT_151.Services
 
         public async Task UnLike(Guid userId, Guid publicationId)
         {
-            if (!await UserService.Exists(userId) ||
-                !await Exists(publicationId) ||
+            if (!await Exists(publicationId) ||
                 !await PublicationRepository.LikeExists(userId, publicationId))
                 throw new DataNotFoundException();
 

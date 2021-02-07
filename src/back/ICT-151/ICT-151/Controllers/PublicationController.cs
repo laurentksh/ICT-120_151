@@ -17,9 +17,9 @@ namespace ICT_151.Controllers
     [ApiController]
     public class PublicationController : ControllerBase
     {
-        private ILogger<PublicationController> Logger;
-        private IPublicationService PublicationService;
-        private IExceptionHandlerService ExceptionHandlerService;
+        private readonly ILogger<PublicationController> Logger;
+        private readonly IPublicationService PublicationService;
+        private readonly IExceptionHandlerService ExceptionHandlerService;
 
         public PublicationController(ILogger<PublicationController> logger, IPublicationService publicationService, IExceptionHandlerService exceptionHandlerService)
         {
@@ -53,6 +53,8 @@ namespace ICT_151.Controllers
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             try {
+                var user = await HttpContext.GetUser();
+                await PublicationService.Remove(user.Id, id);
 
                 return Ok();
             } catch (Exception ex) {

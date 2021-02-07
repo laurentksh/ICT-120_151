@@ -45,6 +45,7 @@ namespace ICT_151
                 {
                     x.JsonSerializerOptions.Converters.Add(new IPAddressJsonConverter());
                     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    x.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
                 });
 
             services.AddSwaggerGen(c =>
@@ -60,7 +61,7 @@ namespace ICT_151
                     Type = SecuritySchemeType.ApiKey,
                     In = ParameterLocation.Header,
                     Name = SessionTokenAuthOptions.TokenHeaderName,
-                    Description = @"Session token, 64-length randomly generated string (a-zA-Z0-9+@*#%&/\|()=?^-_.,:;יטא$¨<>)",
+                    Description = @"Session token, 64-length randomly generated string (a-zA-Z0-9)",
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -176,16 +177,6 @@ namespace ICT_151
             if (env.IsProduction()) {
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ICT-151 v1"));
-
-                /*using (var scope = app.ApplicationServices.CreateScope()) {
-                    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-                    if (db.Database.GetPendingMigrations().Any()) {
-                        using (var tx = db.Database.BeginTransaction()) {
-                            db.Database.Migrate();
-                        }
-                    }
-                }*/
             }
 
             app.UseHttpsRedirection();

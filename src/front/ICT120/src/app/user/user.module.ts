@@ -4,6 +4,7 @@ import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './components/user/user.component';
 import { UserSummaryComponent } from './components/user-summary/user-summary.component'
 import { FeedModule } from '../feed/feed.module';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { FeedModule } from '../feed/feed.module';
   imports: [
     CommonModule,
     UserRoutingModule,
-    FeedModule
+    FeedModule,
+    MatButtonModule
   ]
 })
 export class UserModule { }
