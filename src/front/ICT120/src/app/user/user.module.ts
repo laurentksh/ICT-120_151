@@ -10,6 +10,8 @@ import { UserEditComponent } from './components/user-edit/user-edit.component';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { ContentLoaderModule } from '@ngneat/content-loader';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 
 @NgModule({
@@ -26,6 +28,8 @@ import { ContentLoaderModule } from '@ngneat/content-loader';
     MatIconModule,
     MatCardModule,
     FormsModule,
+    MatInputModule,
+    MatDatepickerModule,
     ContentLoaderModule
   ]
 })

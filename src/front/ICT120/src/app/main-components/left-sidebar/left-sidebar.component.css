@@ -5,3 +5,10 @@
 .btn-list button {
     width: 200px;
 }
+
+a, button {
+    min-width: 200px;
+    min-height: 50px;
+    vertical-align: middle;
+    line-height: 50px;
+}

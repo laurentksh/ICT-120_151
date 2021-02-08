@@ -13,7 +13,8 @@ export class LoginComponent implements OnInit {
 
   login = {} as Login;
   redirect: string = "/home";
-
+  hidePassword = true;
+  
   constructor(private authService: AuthService, private routeService: Router, private route: ActivatedRoute, private appEvents: GlobalAppEventsService) { }
 
   ngOnInit(): void {

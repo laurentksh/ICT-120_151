@@ -40,7 +40,7 @@ namespace ICT_151.Models.Dto
 
     public class UpdateUserDto
     {
-        [Required, StringLength(128, MinimumLength = 6)]
+        [StringLength(128, MinimumLength = 6)]
         public string Password { get; set; }
 
         [StringLength(128, MinimumLength = 6)]

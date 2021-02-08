@@ -307,16 +307,16 @@ namespace ICT_151.Services
             if (remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork && remoteHost.AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
 
-            dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
-
-            if (dto.NewPassword != null)
-                dto.NewPassword = Utilities.StringUtilities.ComputeHash(dto.NewPassword, System.Security.Cryptography.HashAlgorithmName.SHA512);
-
             if (!await Exists(userId))
                 throw new UserNotFoundException("User does not exist.");
 
-            if (!await UserRepository.PasswordMatches(userId, dto.Password))
-                throw new ForbiddenException("Wrong password.");
+            if (dto.NewPassword != null) {
+                dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
+                dto.NewPassword = Utilities.StringUtilities.ComputeHash(dto.NewPassword, System.Security.Cryptography.HashAlgorithmName.SHA512);
+
+                if (!await UserRepository.PasswordMatches(userId, dto.Password))
+                    throw new ForbiddenException("Wrong password.");
+            }
 
             //TODO: Maybe do something with the ip ?
 

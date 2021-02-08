@@ -1,0 +1,8 @@
+.input {
+    width: 55%;
+}
+
+mat-card-actions {
+    margin-left: 5px;
+    padding-bottom: 5px;
+}

@@ -1,8 +1,10 @@
 <div class="d-grid justify-content-center gap-2 btn-list">
     <form name="search-form" onsubmit="return false;">
-        <input name="search" type="search" class="form-control" #searchinput>
-        <button type="submit" (click)="search(searchinput.value)">Search</button>
+        <mat-form-field class="search-input">
+            <input matInput name="search" type="search" #searchinput>
+        </mat-form-field>
+        
+        <button mat-raised-button color="primary" type="submit" (click)="search(searchinput.value)">Search</button>
     </form>
-    <a class="btn btn-primary btn-lg" routerLink="home">Search</a>
-    <a class="btn btn-primary btn-lg" routerLink="notifications">Notifications</a>
+    <!-- <a mat-raised-button routerLink="home">Search</a> -->
 </div>

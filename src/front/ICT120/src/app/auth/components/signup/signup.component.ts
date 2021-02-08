@@ -12,7 +12,8 @@ import { AuthService } from '../../services/auth.service';
 export class SignupComponent implements OnInit {
 
   signup: Signup = {} as Signup;
-
+  hidePassword = true;
+  
   constructor(private authService: AuthService, private routeService: Router, private appEvents: GlobalAppEventsService) { }
 
   ngOnInit(): void {
@@ -38,7 +39,16 @@ export class SignupComponent implements OnInit {
 
         switch (x.Error.status) {
           case 400:
-            errorText = "Invalid fields, please make sure you filled the form properly and try again.";
+            if (x.Error.error.errors.Email)
+              errorText = "Invalid email.";
+            else if (x.Error.error.errors.Username)
+              errorText = "Invalid username.";
+            else if (x.Error.error.errors.Password)
+              errorText = "Invalid password.";
+            else if (x.Error.error.errors.BirthDay)
+              errorText = "Invalid birthday (you must be 13 years old to use the service).";
+            else
+              errorText = "Invalid fields, please make sure you filled the form properly and try again.";
             break;
           default:
             errorText = `An unexpected error occured, please try again later. (${x.Error.status} ${x.Error.statusText})`;
@@ -47,7 +57,7 @@ export class SignupComponent implements OnInit {
 
         this.appEvents.ShowMessage(errorText, MessageType.Error);
       }
-    }).catch((x) => console.warn(x));
+    });
   }
 
   validateInput(): boolean {

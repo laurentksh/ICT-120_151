@@ -18,7 +18,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { ContentNotFoundComponent } from './main-components/content-not-found/content-not-found.component';
-
+import { MatMomentDateModule } from '@angular/material-moment-adapter'
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field'
 
 @NgModule({
   declarations: [
@@ -43,6 +45,9 @@ import { ContentNotFoundComponent } from './main-components/content-not-found/co
     BrowserAnimationsModule, //Angular Browser Animations
     MatButtonModule,
     MatProgressBarModule,
+    MatMomentDateModule,
+    MatInputModule,
+    MatFormFieldModule
   ],
   bootstrap: [AppComponent],
   providers: [

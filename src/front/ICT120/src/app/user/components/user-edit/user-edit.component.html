@@ -3,22 +3,32 @@
 </div> -->
 
 <!-- <ng-template #content> -->
-    <div class="container-fluid"> <!-- Profile header block -->
-        <div class="card mb-3">
+    <mat-card class="user-card"> <!-- Profile header block -->
+        <mat-card-content>
             <div class="profile-picture">
                 <mat-icon class="profile-picture-content">create</mat-icon>
             </div>
             <div class="card-body">
-                <h1 class="card-title username">{{ User.username }}</h1>
-                <label for="input-username">Username</label>
-                <input matInput name="input-username" type="text" [(ngModel)]="UserChange.Username"/>
+                <mat-form-field>
+                    <mat-label>Username</mat-label>
+                    <input matInput name="input-username" type="text" placeholder="{{ User.username }}" [(ngModel)]="UserChange.Username"/>
+                </mat-form-field>
 
-                <label for="input-biography">Biography</label>
-                <textarea name="input-biography" [(ngModel)]="UserChange.Biography"></textarea>
+                <mat-form-field>
+                    <mat-label>Birthday</mat-label>
+                    <input matInput [matDatepicker]="datePicker" [(ngModel)]="UserChange.BirthDay">
+                    <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #datePicker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field class="biography">
+                    <mat-label>Biography</mat-label>
+                    <textarea matInput name="input-biography" [(ngModel)]="UserChange.Biography"></textarea>
+                </mat-form-field>
             </div>
             <button mat-raised-button color="primary" (click)="submit()">Edit</button>
-        </div>
-    </div>
+        </mat-card-content>
+    </mat-card>
     <div class="container-fluid"> <!-- Feed -->
         
     </div>

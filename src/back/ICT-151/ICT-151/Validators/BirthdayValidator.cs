@@ -21,6 +21,9 @@ namespace ICT_151.Validators
 
         protected override ValidationResult IsValid(object value, ValidationContext context)
         {
+            if (value == null)
+                return ValidationResult.Success;
+
             var date = (DateTime)value;
 
             if (date > DateTime.Today)

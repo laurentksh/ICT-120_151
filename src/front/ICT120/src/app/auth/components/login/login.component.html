@@ -1,24 +1,27 @@
 <h1>Log in</h1>
 
 <form name="login-form" onsubmit="return false;">
-    <div class="container">
-        <label for="email">Email</label>
-        <div class="input-group mb-3">
-            <input name="email" id="email" class="form-control" type="email" autocomplete="email" [(ngModel)]="login.email"/>
-        </div>
+    <mat-card>
+        <mat-card-content>
+            <mat-form-field class="input" appearance="outline">
+                <mat-label>Email*</mat-label>
+                <input matInput name="email" id="email" type="email" autocomplete="email" [(ngModel)]="login.email" />
+            </mat-form-field>
+    
+            <mat-form-field class="input" appearance="outline">
+                <mat-label>Password*</mat-label>
+                <input matInput name="password" id="password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="login.password">
+                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
 
-        <label for="password">Password</label>
-        <div class="input-group mb-3">
-            <input name="password" id="password" class="form-control" type="password" autocomplete="current-password" [(ngModel)]="login.password"/>
-        </div>
-        
-        <div class="form-check mb-3">
-            <input name="rememberme" id="rememberme" class="form-check-input" type="checkbox" [(ngModel)]="login.extendSession"/>
-            <label for="rememberme" class="form-check-label">Remember me ?</label>
-        </div>
-
-        <div class="input-group">
-            <button (click)="onLogin()" class="btn btn-primary" type="submit">Login</button>
-        </div>
-    </div>
+            <div class="input">
+                <mat-checkbox name="rememberme" [(ngModel)]="login.extendSession">Remember me ?</mat-checkbox>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="onLogin()">Login</button>
+        </mat-card-actions>
+    </mat-card>
 </form>

@@ -138,6 +138,12 @@ export class AuthService {
     return result;
   }
 
+  public async UpdateUser(): Promise<void> {
+    /*const result: OperationResult<void> = {} as OperationResult<void>;*/
+
+    await this.getLocalUserFromAPI(this.Session.userId);
+  }
+
   /**
    * Validates the current session if it exists (will return true if the user is not logged in).
    * Use this method to check if the current session is invalid.
