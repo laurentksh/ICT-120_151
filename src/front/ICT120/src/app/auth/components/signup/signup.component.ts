@@ -37,22 +37,28 @@ export class SignupComponent implements OnInit {
       } else {
         let errorText = "";
 
-        switch (x.Error.status) {
-          case 400:
-            if (x.Error.error.errors.Email)
-              errorText = "Invalid email.";
-            else if (x.Error.error.errors.Username)
-              errorText = "Invalid username.";
-            else if (x.Error.error.errors.Password)
-              errorText = "Invalid password.";
-            else if (x.Error.error.errors.BirthDay)
-              errorText = "Invalid birthday (you must be 13 years old to use the service).";
-            else
-              errorText = "Invalid fields, please make sure you filled the form properly and try again.";
-            break;
-          default:
-            errorText = `An unexpected error occured, please try again later. (${x.Error.status} ${x.Error.statusText})`;
-            break;
+        if (x.Error.error.errors) {
+          switch (x.Error.status) {
+            case 400:
+              if (x.Error.error.errors.Email)
+                errorText = "Invalid email.";
+              else if (x.Error.error.errors.Username)
+                errorText = "Invalid username.";
+              else if (x.Error.error.errors.Password)
+                errorText = "Invalid password.";
+              else if (x.Error.error.errors.BirthDay)
+                errorText = "Invalid birthday (you must be 13 years old to use the service).";
+              else
+                errorText = "Invalid fields, please make sure you filled the form properly and try again.";
+              break;
+            default:
+              errorText = `An unexpected error occured, please try again later. (${x.Error.status})`;
+              break;
+          }
+        } else if (x.Error.error.detail) {
+          errorText = x.Error.error.detail;
+        } else {
+          errorText = `An unexpected error occured, please try again later. (${x.Error.status})`;
         }
 
         this.appEvents.ShowMessage(errorText, MessageType.Error);

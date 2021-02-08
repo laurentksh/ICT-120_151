@@ -18,7 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { ContentNotFoundComponent } from './main-components/content-not-found/content-not-found.component';
-import { MatMomentDateModule } from '@angular/material-moment-adapter'
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter'
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field'
 
@@ -59,6 +59,13 @@ import { MatFormFieldModule } from '@angular/material/form-field'
     {
       provide: MAT_SNACK_BAR_DEFAULT_OPTIONS,
       useValue: { duration: 3500 }
+    },
+    {
+      provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+      useValue:
+      {
+        useUtc: true
+      }
     }
   ]
 })

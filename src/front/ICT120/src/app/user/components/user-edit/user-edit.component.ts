@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DateAdapter } from '@angular/material/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { GlobalAppEventsService, MessageType } from 'src/app/services/global-app-events/global-app-events.service';
@@ -17,7 +18,9 @@ export class UserEditComponent implements OnInit {
   UserChange: UpdateUser = {} as UpdateUser;
   //UserProfilePicture: MediaViewModel;
   
-  constructor(private userService: UserService, private routerService: Router, private authService: AuthService, private appEvents: GlobalAppEventsService) { }
+  constructor(private userService: UserService, private routerService: Router, private authService: AuthService, private appEvents: GlobalAppEventsService, private dateAdapter: DateAdapter<any>) {
+    dateAdapter.setLocale("en-uk");
+  }
 
   ngOnInit(): void {
     this.User = this.authService.LocalUser;
