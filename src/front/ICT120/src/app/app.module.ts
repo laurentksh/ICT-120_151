@@ -21,6 +21,7 @@ import { ContentNotFoundComponent } from './main-components/content-not-found/co
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter'
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,10 @@ import { MatFormFieldModule } from '@angular/material/form-field'
       {
         useUtc: true
       }
+    },
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'en-uk'
     }
   ]
 })

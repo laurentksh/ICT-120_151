@@ -18,8 +18,8 @@ export class UserEditComponent implements OnInit {
   UserChange: UpdateUser = {} as UpdateUser;
   //UserProfilePicture: MediaViewModel;
   
-  constructor(private userService: UserService, private routerService: Router, private authService: AuthService, private appEvents: GlobalAppEventsService, private dateAdapter: DateAdapter<any>) {
-    dateAdapter.setLocale("en-uk");
+  constructor(private userService: UserService, private routerService: Router, private authService: AuthService, private appEvents: GlobalAppEventsService) {
+    
   }
 
   ngOnInit(): void {
