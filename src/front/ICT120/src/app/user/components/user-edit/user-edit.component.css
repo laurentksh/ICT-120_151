@@ -10,6 +10,15 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+
+    background-size: contain;
+    background-position: center;
+    background-blend-mode: soft-light;
+}
+
+.profile-picture-img {
+    width: 250px;
+    height: 250px;
 }
 
 .profile-picture-content {

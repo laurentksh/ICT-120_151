@@ -1,13 +1,26 @@
-<!-- <div *ngIf="User == null; else content">
-    <button mat-raised-button [routerLink]="['/home']">Return home</button>
-</div> -->
+<div *ngIf="User == null; else content">
+    <mat-card class="user-card">
+        <content-loader viewBox="0 0 1012 455" speed="2">
+            <svg:circle cx="150" cy="134" r="133" />
+            <svg:rect x="20" y="355" rx="3" ry="3" width="148" height="12" />
+            <svg:rect x="20" y="298" rx="3" ry="3" width="145" height="20" />
+            <svg:rect x="20" y="377" rx="3" ry="3" width="400" height="10" />
+            <svg:rect x="20" y="397" rx="3" ry="3" width="400" height="10" />
+            <svg:rect x="20" y="417" rx="3" ry="3" width="300" height="10" />
+            <svg:rect x="20" y="438" rx="3" ry="3" width="117" height="30" />
+            <svg:rect x="151" y="438" rx="3" ry="3" width="117" height="30" />
+        </content-loader>
+    </mat-card>
+</div>
 
-<!-- <ng-template #content> -->
+<ng-template #content>
     <mat-card class="user-card"> <!-- Profile header block -->
         <mat-card-content>
-            <div class="profile-picture">
-                <mat-icon class="profile-picture-content">create</mat-icon>
+            <div class="profile-picture" [ngStyle]="{'background-image': (currentProfilePicUrl == null) ? '' : 'url(' + currentProfilePicUrl + ')'}">
+                <mat-icon class="profile-picture-content" (click)="doOpenFileInput()">create</mat-icon>
+                <mat-icon class="profile-picture-content" *ngIf="User.profilePictureId != 'default_pp'" (click)="delete()">delete</mat-icon>
             </div>
+            <app-upload-media [ngStyle]="{ 'display': 'none' }" [OpenInput]="openFileInput.asObservable()" [ResetInput]="resetFileInput.asObservable()" [Container]="containerType" (BeginUpload)="beginUpload()" (UploadResult)="mediaUploaded($event)"></app-upload-media>
             <div class="card-body">
                 <mat-form-field>
                     <mat-label>Username</mat-label>
@@ -15,21 +28,23 @@
                 </mat-form-field>
 
                 <mat-form-field>
+                    <mat-label>Email</mat-label>
+                    <input matInput name="input-email" type="email" [(ngModel)]="UserChange.Email" />
+                </mat-form-field>
+    
+                <mat-form-field>
                     <mat-label>Birthday</mat-label>
                     <input matInput [matDatepicker]="datePicker" [(ngModel)]="UserChange.BirthDay">
                     <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-                    <mat-datepicker #datePicker></mat-datepicker>
+                    <mat-datepicker #datePicker startView="multi-year" [startAt]="startDate"></mat-datepicker>
                 </mat-form-field>
-
+    
                 <mat-form-field class="biography">
                     <mat-label>Biography</mat-label>
                     <textarea matInput name="input-biography" [(ngModel)]="UserChange.Biography"></textarea>
                 </mat-form-field>
             </div>
-            <button mat-raised-button color="primary" (click)="submit()">Edit</button>
+            <button mat-raised-button color="primary" (click)="submit()" [disabled]="this.locked">Edit</button>
         </mat-card-content>
     </mat-card>
-    <div class="container-fluid"> <!-- Feed -->
-        
-    </div>
-<!-- </ng-template> -->
+</ng-template>

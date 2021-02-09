@@ -59,11 +59,18 @@ namespace ICT_151.Models.Dto
         public DateTime? BirthDay { get; set; }
     }
 
+    public class ProfilePictureUpdate
+    {
+        public Guid MediaId { get; set; }
+    }
+
     public class UserSummaryViewModel
     {
         public Guid Id { get; set; }
 
         public string Username { get; set; }
+
+        public string Email { get; set; }
 
         public string ProfilePictureId { get; set; }
 
@@ -85,6 +92,7 @@ namespace ICT_151.Models.Dto
         {
             Id = user.Id,
             Username = user.Username,
+            Email = userId.HasValue && user.Id == userId.Value ? user.Email : null,
             ProfilePictureId = user.ProfilePictureMediaId == null ? "default_pp" : user.ProfilePictureMediaId.ToString(),
             Biography = user.Biography,
             Birthday = user.Birthday,

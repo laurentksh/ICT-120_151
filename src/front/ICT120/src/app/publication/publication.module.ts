@@ -14,10 +14,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { UploadMediaComponent } from '../media/components/upload-media/upload-media.component';
 import { ContentLoaderModule } from '@ngneat/content-loader';
 import { MatDividerModule } from '@angular/material/divider';
-
+import { MediaModule } from '../media/media.module';
+import { ViewImageDialogComponent } from './components/view-image-dialog/view-image-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { VgCoreModule } from '@videogular/ngx-videogular/core';
+import { VgControlsModule } from '@videogular/ngx-videogular/controls';
+import { VgOverlayPlayModule } from '@videogular/ngx-videogular/overlay-play';
+import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
 
 @NgModule({
   declarations: [
@@ -25,7 +30,7 @@ import { MatDividerModule } from '@angular/material/divider';
     ReplyComponent,
     NewPublicationComponent,
     ViewPublicationComponent,
-    UploadMediaComponent
+    ViewImageDialogComponent
   ],
   imports: [ //WARNING: Importing FeedModule from here causes a "Maximum call stack size exceeded" exception !
     PublicationRoutingModule,
@@ -40,11 +45,19 @@ import { MatDividerModule } from '@angular/material/divider';
     MatFormFieldModule,
     MatInputModule,
     MatDividerModule,
+    MatDialogModule,
+    MediaModule,
 
-    ContentLoaderModule
+    ContentLoaderModule,
+
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule
   ],
   exports: [
-    PublicationComponent
+    PublicationComponent,
+    ReplyComponent
   ]
 })
 export class PublicationModule { }

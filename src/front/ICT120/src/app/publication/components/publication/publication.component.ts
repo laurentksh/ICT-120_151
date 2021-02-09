@@ -5,7 +5,9 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Location } from '@angular/common';
 import { MediaService } from 'src/app/media/services/media.service';
-import { MediaViewModel } from 'src/app/media/models/media-view-model';
+import { MediaType, MediaViewModel } from 'src/app/media/models/media-view-model';
+import { MatDialog } from '@angular/material/dialog';
+import { ViewImageDialogComponent } from '../view-image-dialog/view-image-dialog.component';
 
 @Component({
   selector: 'app-publication',
@@ -21,10 +23,18 @@ export class PublicationComponent implements OnInit {
   profilePicture: MediaViewModel = null;
   media: MediaViewModel = null;
 
-  constructor(private authService: AuthService, private mediaService: MediaService, private Router: Router) { }
+  constructor(private authService: AuthService, private mediaService: MediaService, private Router: Router, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.LoadMedia().then();
+  }
+
+  isImage(): boolean {
+    return this.media != null && this.media.mediaType == MediaType.Image;
+  }
+
+  isVideo(): boolean {
+    return this.media != null && this.media.mediaType == MediaType.Video;
   }
 
   public async LoadMedia(): Promise<void> {
@@ -70,7 +80,15 @@ export class PublicationComponent implements OnInit {
     this.Router.navigate(["/u", this.Publication.user.username]);
   }
   
-  public doViewPublication(): void {
+  showMediaPopup(): void {
+    const dialogRef = this.dialog.open(ViewImageDialogComponent, {
+      width: 'auto',
+      data: { media: this.media }
+    });
+  }
+
+  public doViewPublication(fromText = false): void {
+    // if (this.media == null || fromText)
     this.Router.navigate(["/publication/id", this.Publication.id]);
   }
 

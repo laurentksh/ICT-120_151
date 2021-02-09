@@ -1,7 +1,17 @@
+.publication-media-container {
+    margin-top: 20px;
+}
+
 .publication-image {
     margin-left: 5px;
     width: 35%;
     height: 50%;
+}
+
+.publication-video {
+    margin-left: 5px;
+    max-width: 40%;
+    max-height: 100%;
 }
 
 .publication-date {

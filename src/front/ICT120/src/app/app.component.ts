@@ -62,7 +62,7 @@ export class AppComponent {
       if (!this.authService.ValidateCurrentSession() && !routerEvent.url.startsWith("/login")) {
         console.log(routerEvent.url);
         this.authService.DeleteSession();
-        this.router.navigate(["/login"], { queryParams: { redirect: routerEvent.url }});
+        this.router.navigate(["/login"], { queryParams: { redirect: routerEvent.url, reason: "Your session has expired." }});
       }
     }
 

@@ -20,9 +20,13 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(x => {
       const redirectTo = x["redirect"];
+      const reason = x["reason"];
 
       if (redirectTo != null)
         this.redirect = redirectTo;
+
+      if (reason != null)
+        this.appEvents.ShowMessage(reason, MessageType.Warning);
     });
     
     if (this.authService.IsAuthenticated) {

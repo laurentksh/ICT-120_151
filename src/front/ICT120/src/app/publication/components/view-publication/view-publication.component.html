@@ -15,18 +15,24 @@
     </mat-card>
 </div>
 
-<app-publication *ngIf="Publication != null" [Publication]="this.Publication"></app-publication>
+<app-publication *ngIf="Publication != null"
+[Publication]="this.Publication"
+(Repost)="repost(this.Publication)"
+(Like)="like(this.Publication)"
+(Delete)="delete(this.Publication)"></app-publication>
 
 <mat-divider inset="false"></mat-divider>
+
+<app-reply *ngIf="Publication != null" [Publication]="Publication" (Result)="replySent()" #reply></app-reply>
 
 <div *ngIf="Replies != null; else loader" class="replies">
     <div class="publications-container" (scroll)="onWindowScroll($event)" *ngIf="Replies?.length; else noPublications">
         <app-publication
         [Publication]="reply"
         *ngFor="let reply of Replies"
-        (Like)="like()"
-        (Repost)="repost()"
-        (Delete)="delete()">></app-publication>
+        (Like)="like(reply)"
+        (Repost)="repost(reply)"
+        (Delete)="delete(reply)"></app-publication>
     </div>
     
     <ng-template #noPublications>

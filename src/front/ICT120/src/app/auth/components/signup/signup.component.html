@@ -1,6 +1,6 @@
 <h1>Sign up</h1>
 
-<form name="signup-form" onsubmit="return false;">
+<form name="signup-form" onsubmit="return false;" (keydown.enter)="onSignup()">
     <mat-card>
         <mat-card-content>
             <mat-form-field class="input" appearance="outline">
@@ -20,17 +20,17 @@
                 <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
                 <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
-                </mat-form-field>
+            </mat-form-field>
     
             <mat-form-field class="input" appearance="outline">
-                <mat-label>Birthday</mat-label>
+                <mat-label>Birthday*</mat-label>
                 <input matInput [matDatepicker]="datePicker" [(ngModel)]="signup.birthDay" name="rememberme">
                 <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
-                <mat-datepicker #datePicker></mat-datepicker>
+                <mat-datepicker #datePicker startView="multi-year" [startAt]="startDate"></mat-datepicker>
             </mat-form-field>
         </mat-card-content>
         <mat-card-actions>
-            <button mat-raised-button color="primary" (click)="onSignup()">Sign up</button>
+            <button type="submit" mat-raised-button color="primary" (click)="onSignup()">Sign up</button>
         </mat-card-actions>
     </mat-card>
 </form>

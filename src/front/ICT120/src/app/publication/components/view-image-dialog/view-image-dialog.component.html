@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{ data.media.owner.username}}'s media</h1>
+<div mat-dialog-content class="content" *ngIf="isImage() || isVideo()">
+    <img class="media" *ngIf="isImage(); else notImage" src="{{ data.media.blobFullUrl }}"/>
+    <ng-template #notImage>
+        <i>Could not load media (INVALID_MEDIA_TYPE)</i>
+    </ng-template>
+</div>
+<div mat-dialog-actions>
+    <button mat-flat-button cdkFocusInitial (click)="close()">Close</button>
+</div>

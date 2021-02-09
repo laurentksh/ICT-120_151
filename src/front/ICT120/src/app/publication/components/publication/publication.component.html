@@ -8,7 +8,40 @@
     <mat-card-content class="publication-card-content" (click)="doViewPublication()">
         <p class="publication-card-text">{{ Publication.textContent }}</p>
         
-        <img *ngIf="Publication.mediaId != null && media != null" mat-card-image class="publication-image" src="{{ media.blobFullUrl }}" (error)="mediaUrl = '/assets/media-load-error.png'"/>
+        <!-- <img *ngIf="Publication.mediaId != null && media != null" mat-card-image class="publication-image" src="{{ media.blobFullUrl }}" (error)="mediaUrl = '/assets/media-load-error.png'"/> -->
+        <div class="publication-media-container" (click)="$event.stopPropagation()" *ngIf="Publication.mediaId != null && media != null">
+            <img class="publication-image" (click)="showMediaPopup()" mat-card-image *ngIf="isImage(); else video" src="{{ media.blobFullUrl }}" (error)="mediaUrl = '/assets/media-load-error.png'"/>
+            
+            <vg-player *ngIf="isVideo()" class="publication-video">
+                <vg-overlay-play></vg-overlay-play>
+                <vg-buffering></vg-buffering>
+
+                <vg-scrub-bar>
+                    <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                    <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+                </vg-scrub-bar>
+
+                <vg-controls>
+                    <vg-play-pause></vg-play-pause>
+                    <vg-playback-button></vg-playback-button>
+
+                    <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
+
+                    <vg-scrub-bar style="pointer-events: none;"></vg-scrub-bar>
+
+                    <!-- <vg-time-display vgProperty="left" vgFormat="mm:ss"></vg-time-display> -->
+                    <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+
+                    <vg-mute></vg-mute>
+                    <vg-volume></vg-volume>
+
+                    <vg-fullscreen></vg-fullscreen>
+                </vg-controls>
+                <video [vgMedia]="video" preload="auto" #video>
+                    <source src="{{ media.blobFullUrl }}" type="{{ media.mimeType }}"/>
+                </video>
+            </vg-player>
+        </div>
     </mat-card-content>
     <mat-card-actions>
         <button mat-icon-button *ngIf="this.Publication.reposted; else unreposted" (click)="doRepost()">
