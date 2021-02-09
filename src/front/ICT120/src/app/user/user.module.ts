@@ -12,6 +12,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ContentLoaderModule } from '@ngneat/content-loader';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MediaModule } from '../media/media.module';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     FormsModule,
     MatInputModule,
     MatDatepickerModule,
-    ContentLoaderModule
+    ContentLoaderModule,
+    MediaModule
   ]
 })
 export class UserModule { }

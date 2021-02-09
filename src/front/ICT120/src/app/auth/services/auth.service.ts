@@ -43,6 +43,7 @@ export class AuthService {
     
     result.id = json.id;
     result.username = json.username;
+    result.email = json.email;
     result.biography = json.biography;
     result.creationDate = new Date(Date.parse(json.creationDateUtc));
     result.birthday = new Date(Date.parse(json.birthday));
@@ -138,10 +139,10 @@ export class AuthService {
     return result;
   }
 
-  public async UpdateUser(): Promise<void> {
+  public async UpdateUser(): Promise<OperationResult<void>> {
     /*const result: OperationResult<void> = {} as OperationResult<void>;*/
 
-    await this.getLocalUserFromAPI(this.Session.userId);
+    return await this.getLocalUserFromAPI(this.Session.userId);
   }
 
   /**

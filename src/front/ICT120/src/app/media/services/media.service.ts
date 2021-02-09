@@ -18,6 +18,7 @@ export class MediaService {
     media.Success = result.Success;
     if (result.Success) {
       media.Content = result.ObjectResult;
+      media.Content.mediaType = (<any>MediaType)[media.Content.mediaType];
     } else {
       media.Error = result.Error;
     }

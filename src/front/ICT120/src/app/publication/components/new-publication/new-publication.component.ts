@@ -13,6 +13,7 @@ import { PublicationService } from '../../services/publication.service';
 })
 export class NewPublicationComponent implements OnInit {
   publication = {} as CreatePublication;
+  locked = false;
 
   constructor(private publicationService: PublicationService, private router: Router, private appEvents: GlobalAppEventsService) { }
 
@@ -65,7 +66,14 @@ export class NewPublicationComponent implements OnInit {
     return MediaContainer.Publication;
   }
 
+  beginUpload(): void {
+    this.locked = true;
+    this.appEvents.Loading();
+  }
+
   mediaUploaded(media: OperationResult<MediaViewModel>): void {
+    this.locked = false;
+    this.appEvents.DoneLoading();
     if (media.Success) {
       if (media.Content.mediaType == MediaType.Image) {
         this.publication.submissionType = SubmissionType.Image;
@@ -76,6 +84,8 @@ export class NewPublicationComponent implements OnInit {
       } else
         this.publication.submissionType = SubmissionType.Text;
     } else {
+      this.publication.submissionType = SubmissionType.Text;
+      this.publication.mediaId = null;
       this.appEvents.ShowSnackBarMessage(`An error occured while uploading the media, please try again. (${media.Error.status})`);
     }
   }

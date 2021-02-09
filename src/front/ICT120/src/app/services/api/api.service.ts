@@ -14,6 +14,7 @@ import { UpdateUser } from 'src/app/user/models/update-user';
 import { UserSummary } from 'src/app/user/models/user-summary';
 import { EnvironmentService } from 'src/environments/service/environment.service';
 import { ApiCallResult } from './models/api-call-result';
+import { ProfilePictureUpdate } from './models/profile-picture-update';
 
 /**
  * Global service that allows easy access to all API Endpoints exposed by the .NET server.
@@ -433,12 +434,15 @@ export class ApiService {
     return result;
   }
 
-  public async SetProfilePicture(mediaId: string): Promise<ApiCallResult<void>> {
-    let result: ApiCallResult<void> = {} as ApiCallResult<void>;
+  public async SetProfilePicture(mediaId: string): Promise<ApiCallResult<MediaViewModel>> {
+    let result: ApiCallResult<MediaViewModel> = {} as ApiCallResult<MediaViewModel>;
     result.Success = true;
 
+    const payload: ProfilePictureUpdate = {} as ProfilePictureUpdate;
+    payload.mediaId = mediaId;
+
     try {
-      await this.httpClient.post(this.BASE_URL + "User/profilepicture", { params: {"mediaId": mediaId }}).toPromise();
+      result.ObjectResult = await this.httpClient.post<MediaViewModel>(this.BASE_URL + "User/profilepicture", payload).toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;
@@ -447,12 +451,12 @@ export class ApiService {
     return result;
   }
 
-  public async RemoveProfilePicture(): Promise<ApiCallResult<void>> {
-    let result: ApiCallResult<void> = {} as ApiCallResult<void>;
+  public async RemoveProfilePicture(): Promise<ApiCallResult<MediaViewModel>> {
+    let result: ApiCallResult<MediaViewModel> = {} as ApiCallResult<MediaViewModel>;
     result.Success = true;
 
     try {
-      await this.httpClient.delete(this.BASE_URL + "User/profilepicture").toPromise();
+      result.ObjectResult = await this.httpClient.delete<MediaViewModel>(this.BASE_URL + "User/profilepicture").toPromise();
     } catch (error) {
       result.Success = false;
       result.Error = error;

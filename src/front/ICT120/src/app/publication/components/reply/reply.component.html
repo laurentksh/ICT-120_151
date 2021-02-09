@@ -1,0 +1,17 @@
+<form>
+    <mat-card>
+        <mat-card-content>
+            <mat-form-field appearance="standard" class="text-field">
+                <mat-label>Publication text</mat-label>
+                <textarea name="text" id="text" rows="3" maxlength="280" placeholder="An interesting post..." [(ngModel)]="Reply.textContent" matInput #textInput></textarea>
+                <mat-hint align="end">{{ textInput.value?.length || 0}}/280</mat-hint>
+            </mat-form-field>
+            
+            <div class="upload-media">
+                <app-upload-media [Container]="getContainer()" (BeginUpload)="beginUpload()" (UploadResult)="mediaUploaded($event)" #upMedia></app-upload-media>
+            </div>
+
+            <button mat-raised-button (click)="doReply()" class="btn btn-primary" type="submit" [disabled]="locked">Submit</button>
+        </mat-card-content>
+    </mat-card>
+</form>

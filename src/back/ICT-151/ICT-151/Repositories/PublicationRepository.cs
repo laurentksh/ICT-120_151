@@ -63,7 +63,7 @@ namespace ICT_151.Repositories
         public async Task<IEnumerable<PublicationViewModel>> GetReplies(Guid id, Guid? requestUserId)
         {
             return DbContext.Publications
-                .OrderBy(x => x.CreationDate)
+                .OrderByDescending(x => x.CreationDate)
                 .Include(x => x.User)
                 .Include(x => x.Replies)
                 .Include(x => x.Reposts)
@@ -75,7 +75,7 @@ namespace ICT_151.Repositories
         public async Task<IEnumerable<RepostViewModel>> GetReposts(Guid publicationId)
         {
             return DbContext.Reposts
-                .OrderBy(x => x.CreationDate)
+                .OrderByDescending(x => x.CreationDate)
                 .Include(x => x.User)
                 .Where(x => x.PublicationId == publicationId)
                 .Select(x => RepostViewModel.FromRepost(x));
@@ -84,6 +84,7 @@ namespace ICT_151.Repositories
         public async Task<IEnumerable<LikeViewModel>> GetLikes(Guid publicationId)
         {
             return DbContext.Likes
+                .OrderByDescending(x => x.CreationDate)
                 .Include(x => x.User)
                 .Where(x => x.PublicationId == publicationId)
                 .Select(x => LikeViewModel.FromLike(x));
@@ -108,7 +109,16 @@ namespace ICT_151.Repositories
 
         public async Task Remove(Guid userId, Guid publicationId)
         {
+            var replies = DbContext.Publications.Where(x => x.ReplyPublicationId == publicationId);
+            DbContext.Publications.RemoveRange(replies);
             DbContext.Publications.Remove(await DbContext.Publications.SingleAsync(x => x.Id == publicationId && x.UserId == userId));
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveReplies(Guid publicationId)
+        {
+            var replies = DbContext.Publications.Where(x => x.ReplyPublicationId == publicationId);
+            DbContext.Publications.RemoveRange(replies);
             await DbContext.SaveChangesAsync();
         }
 

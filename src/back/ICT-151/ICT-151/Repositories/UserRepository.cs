@@ -64,6 +64,8 @@ namespace ICT_151.Repositories
         Task<bool> FollowExists(Guid followerId, Guid followedId);
 
         Task<bool> BlockExists(Guid blockerId, Guid blockedId);
+
+        Task<bool> EmailExists(string email);
     }
 
     public class UserRepository : IUserRepository
@@ -372,6 +374,11 @@ namespace ICT_151.Repositories
         public async Task<bool> BlockExists(Guid blockerId, Guid blockedId)
         {
             return await DbContext.Blocks.AnyAsync(x => x.BlockerId == blockerId && x.BlockTargetId == blockedId);
+        }
+
+        public async Task<bool> EmailExists(string email)
+        {
+            return await DbContext.Users.AnyAsync(x => x.Email == email);
         }
     }
 }

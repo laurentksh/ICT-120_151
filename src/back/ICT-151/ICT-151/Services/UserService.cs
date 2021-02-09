@@ -155,7 +155,7 @@ namespace ICT_151.Services
         /// <param name="userId">User Id</param>
         /// <param name="mediaId">Media Id</param>
         /// <returns></returns>
-        Task SetProfilePicture(Guid userId, Guid mediaId);
+        Task<MediaViewModel> SetProfilePicture(Guid userId, Guid mediaId);
 
         /// <summary>Remove the profile picture of a specified user.</summary>
         /// <param name="userId">User Id</param>
@@ -175,6 +175,13 @@ namespace ICT_151.Services
         /// <param name="id">Username to check</param>
         /// <returns>True if the user exists, otherwise false</returns>
         Task<bool> Exists(string username);
+
+        /// <summary>
+        /// Check if the email is already used
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<bool> EmailExists(string email);
     }
 
     public class UserService : IUserService
@@ -294,6 +301,8 @@ namespace ICT_151.Services
                 throw new ArgumentOutOfRangeException(nameof(remoteHost), "Invalid IP Address");
             if (await Exists(dto.Username))
                 throw new ArgumentException("Username already taken.", nameof(dto));
+            if (await EmailExists(dto.Email))
+                throw new ArgumentException("Email already taken.", nameof(dto));
 
             dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
             
@@ -309,6 +318,10 @@ namespace ICT_151.Services
 
             if (!await Exists(userId))
                 throw new UserNotFoundException("User does not exist.");
+
+            var user = await UserRepository.GetBaseUser(userId);
+            if (await EmailExists(dto.Email) && user.Email != dto.Email)
+                throw new ArgumentException("Email already taken.", nameof(dto));
 
             if (dto.NewPassword != null) {
                 dto.Password = Utilities.StringUtilities.ComputeHash(dto.Password, System.Security.Cryptography.HashAlgorithmName.SHA512);
@@ -403,15 +416,18 @@ namespace ICT_151.Services
             return (await UserRepository.GetPrivateMessages(userId, recipientId)).ToList();
         }
 
-        public async Task SetProfilePicture(Guid userId, Guid mediaId)
+        public async Task<MediaViewModel> SetProfilePicture(Guid userId, Guid mediaId)
         {
-            if (!await Exists(userId) || !await MediaService.Exists(mediaId))
+            if (!await Exists(userId))
                 throw new UserNotFoundException("User does not exist.");
+            if (!await MediaService.Exists(mediaId))
+                throw new DataNotFoundException("Media does not exist.");
 
             if (!await MediaService.HasAccess(userId, mediaId))
                 throw new ForbiddenException($"User {userId} does not have access to resource {mediaId}");
-
+            
             await UserRepository.SetProfilePicture(userId, mediaId);
+            return await MediaService.GetMedia(userId, mediaId);
         }
 
         public async Task RemoveProfilePicture(Guid userId)
@@ -430,6 +446,11 @@ namespace ICT_151.Services
         public async Task<bool> Exists(string username)
         {
             return await UserRepository.Exists(username);
+        }
+
+        public async Task<bool> EmailExists(string email)
+        {
+            return await UserRepository.EmailExists(email);
         }
     }
 }

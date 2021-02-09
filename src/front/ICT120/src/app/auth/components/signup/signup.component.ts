@@ -13,6 +13,7 @@ export class SignupComponent implements OnInit {
 
   signup: Signup = {} as Signup;
   hidePassword = true;
+  startDate = new Date(2000, 0);
   
   constructor(private authService: AuthService, private routeService: Router, private appEvents: GlobalAppEventsService) { }
 
