@@ -341,7 +341,7 @@ namespace ICT_151.Services
             if (!await Exists(userId) || !await Exists(toDeleteUserId))
                 throw new UserNotFoundException();
 
-            var user = await UserRepository.GetFullUser(userId);
+            var user = await UserRepository.GetBaseUser(userId);
 
             if (user.AccountType != AccountType.Administrator)
             {

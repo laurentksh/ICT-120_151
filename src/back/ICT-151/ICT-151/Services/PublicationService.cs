@@ -90,6 +90,14 @@ namespace ICT_151.Services
             if (!await Exists(publicationId))
                 throw new DataNotFoundException("Publication does not exist.");
 
+            var user = await UserService.GetFullUser(userId);
+            var publication = await PublicationRepository.GetPublication(publicationId, userId);
+
+            if (user.AccountType != AccountType.Administrator) {
+                if (publication.User.Id != user.Id)
+                    throw new ForbiddenException($"User {user.Username}#{user.Id} does not have access to delete publication {publicationId}.");
+            }
+
             await PublicationRepository.Remove(userId, publicationId);
         }
 
