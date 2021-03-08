@@ -8,8 +8,10 @@
 ## Installation & Testing
 A "production" application instance hosted on Azure is available here:
 
-- Back-End  : https://ict-151-back.azurewebsites.net
-- Front-End : https://agreeable-forest-06fae7003.azurestaticapps.net (randomly generated subdomain...)
+- Back-End  : ~~https://ict-151-back.azurewebsites.net~~
+- Front-End : ~~https://agreeable-forest-06fae7003.azurestaticapps.net (randomly generated subdomain...)~~
+
+UPDATE: The Azure instances have been removed to save money.
 
 However, if you still want to run a local instance, there are quite a few steps required beforehand.
 
